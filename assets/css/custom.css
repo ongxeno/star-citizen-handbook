@@ -67,24 +67,36 @@ h1, h2, h3, h4, h5, h6 {
 .footer {
   background-color: #f8f9fa;
   border-top: 1px solid #eee;
-  padding: 2rem 0;
+  padding: 10px 0 !important;
   margin-top: 1rem;
+}
+
+/* Override theme's footer padding on larger screens */
+@media only screen and (min-width: 768px) {
+  footer {
+    padding: 10px 0 !important;
+  }
+}
+
+.footer .container {
+  padding: 0;
 }
 
 .footer-content {
   text-align: center;
+  padding: 0;
 }
 
 .footer-title {
   font-family: var(--font-family-headings);
   font-weight: 600;
   font-size: 1.1rem;
-  margin-bottom: 1rem;
-  color: #333;
+  margin-bottom: 5px;
+  color: #181818;
 }
 
 .community-logo {
-  margin: 1.5rem 0;
+  margin: 5px 0;
 }
 
 .community-logo img {
@@ -97,7 +109,7 @@ h1, h2, h3, h4, h5, h6 {
 .legal-notice {
   font-size: 0.8rem;
   color: #666;
-  margin-top: 1.5rem;
+  margin-top: 5px;
   margin-bottom: 0;
   line-height: 1.4;
 }
@@ -105,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Responsive footer */
 @media (max-width: 768px) {
   .footer {
-    padding: 1.5rem 0;
+    padding: 10px 0;
   }
   
   .footer-title {
