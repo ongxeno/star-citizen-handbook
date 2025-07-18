@@ -1,0 +1,25 @@
+{{ define "main" }}
+<div class="td-section td-section-guides">
+  <div class="td-section-header">
+    <div class="container">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<div class="lead">{{ . | markdownify }}</div>{{ end }}
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      {{ range .Pages }}
+      <div class="col-lg-6">
+        <div class="td-card-guide">
+          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          {{ with .Description }}<p>{{ . | markdownify }}</p>{{ end }}
+          {{ if .Params.game_version }}
+          <div class="text-muted">Game Version: {{ .Params.game_version }}</div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}
