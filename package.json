@@ -9,6 +9,11 @@
   "license": "Apache-2.0",
   "bugs": "https://github.com/google/docsy-example/issues",
   "spelling": "cSpell:ignore docsy hugo htmltest precheck postbuild rtlcss -",
+  "dependencies": {
+    "autoprefixer": "^10.4.17",
+    "postcss-cli": "^11.0.0",
+    "postcss": "^8.4.35"
+  },
   "scripts": {
     "_build": "npm run _hugo-dev --",
     "_check:links": "echo IMPLEMENTATION PENDING for check-links; echo",

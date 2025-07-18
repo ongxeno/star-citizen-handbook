@@ -56,9 +56,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '22'
-      - name: Install PostCSS CLI
+      - name: Install PostCSS and dependencies
         run: |
-          npm install -g postcss-cli autoprefixer
+          npm install -g postcss-cli
+          npm install autoprefixer postcss
       - name: Setup Hugo theme
         run: |
           mkdir -p themes
