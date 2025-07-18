@@ -1,0 +1,43 @@
+# Hugo default output directory
+public/
+resources/
+
+# Node modules and dependencies
+node_modules/
+package-lock.json
+
+# Hugo generated files
+.hugo_build.lock
+.hugo_build.json
+
+# Theme files (manage these with Hugo modules)
+themes/
+
+# Hugo cache and temporary files
+.cache/
+resources/_gen/
+assets/jsconfig.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific files
+.idea
+.vscode
+*.swp
+*.swo
+
+# Example files
+docsy-example/
+
+# Local Netlify folder
+.netlify
+
+# Log files
+*.log
