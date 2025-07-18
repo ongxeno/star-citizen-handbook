@@ -1,23 +1,35 @@
-# Hugo default output directory
-public/
-resources/
+# Jekyll generated files
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+.bundle/
+vendor/
 
-# Node modules and dependencies
+# Ruby environment
+.ruby-version
+.ruby-gemset
+Gemfile.lock
+
+# Node.js dependencies
 node_modules/
 package-lock.json
 
-# Hugo generated files
-.hugo_build.lock
-.hugo_build.json
+# Environment specific
+.env
+.env.*
+!.env.example
 
-# Theme files (manage these with Hugo modules)
-themes/*
-!themes/docsy
+# Algolia search index
+.algolia-index/
 
-# Hugo cache and temporary files
-.cache/
-resources/_gen/
-assets/jsconfig.json
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
 
 # OS generated files
 .DS_Store
@@ -28,17 +40,20 @@ assets/jsconfig.json
 ehthumbs.db
 Thumbs.db
 
-# IDE specific files
-.idea
-.vscode
-*.swp
-*.swo
-
-# Example files
-docsy-example/
-
-# Local Netlify folder
-.netlify
-
-# Log files
+# Temporary files
+*.bak
+*.tmp
+*.temp
 *.log
+
+# Image processing cache
+.jekyll-cache/
+.jekyll-picture-tag-cache/
+
+# Local development
+.asset-cache/
+.development/
+tmp/
+
+# Documentation drafts
+_drafts/

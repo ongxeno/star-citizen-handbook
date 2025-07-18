@@ -8,6 +8,7 @@ You are an expert assistant for the "Star Citizen Handbook" project. Please adhe
 * **Hosting:** The site is hosted on **GitHub Pages**.
 * **Theme:** We are using the **Docsy** theme, managed via Hugo Modules.
 * **Dependencies:** Front-end dependencies (like Bootstrap, Font Awesome) are managed via **npm** (`package.json`).
+* **OS:** The project is developed on **Windows**.
 
 ### **2. Content & Architecture Rules**
 
