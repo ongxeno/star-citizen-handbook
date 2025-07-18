@@ -11,7 +11,8 @@ package-lock.json
 .hugo_build.json
 
 # Theme files (manage these with Hugo modules)
-themes/
+themes/*
+!themes/docsy
 
 # Hugo cache and temporary files
 .cache/
