@@ -42,7 +42,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          fetch-depth: 0
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
@@ -52,11 +52,16 @@ jobs:
           go-version: '1.21'
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+      - name: Setup Hugo theme
+        run: |
+          git submodule add --depth 1 https://github.com/google/docsy.git themes/docsy
+          cd themes/docsy
+          npm install
+          cd ../..
       - name: Setup Hugo Modules
         run: |
-          rm -rf themes
+          hugo mod init github.com/ongxeno/star-citizen-handbook
           hugo mod get -u
-          hugo mod tidy
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
