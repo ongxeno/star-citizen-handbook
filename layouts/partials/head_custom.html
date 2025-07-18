@@ -1,5 +1,10 @@
 {{- /* Custom head partial to include our minimalist CSS */ -}}
 
+{{- /* Google Fonts */ -}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 {{- /* Add our custom CSS for minimalist design */ -}}
 {{- $customCSS := resources.Get "css/custom.css" -}}
 {{- if $customCSS -}}

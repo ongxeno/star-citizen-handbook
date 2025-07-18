@@ -1,6 +1,6 @@
 baseURL = 'https://ongxeno.github.io/star-citizen-handbook/'
 languageCode = 'th'
-title = 'Star Citizen Handbook - คู่มือผู้เล่นใหม่'
+title = 'Star Citizen Handbook'
 theme = "beautifulhugo"
 
 # Syntax highlighting
@@ -26,6 +26,9 @@ pygmentsCodefencesGuessSyntax = true
   useHLJS = true
   socialShare = false  # Disabled for cleaner look
   showRelatedPosts = false
+  
+  # Disable homepage posts completely - use empty array
+  mainSections = []
   
   # Custom parameters for game version
   defaultGameVersion = "Alpha 4.2.1"
