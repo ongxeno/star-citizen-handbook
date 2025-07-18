@@ -1,0 +1,60 @@
+baseURL = 'https://ongxeno.github.io/star-citizen-handbook/'
+languageCode = 'th'
+title = 'Star Citizen Handbook - คู่มือผู้เล่นใหม่'
+theme = "beautifulhugo"
+
+# Syntax highlighting
+pygmentsStyle = "github-dark"
+pygmentsUseClasses = true
+pygmentsCodeFences = true
+pygmentsCodefencesGuessSyntax = true
+
+[Services]
+  [Services.googleAnalytics]
+    # id = "YOUR_GA_ID" # Add your Google Analytics ID here if needed
+
+[Params]
+  subtitle = "คู่มือเริ่มต้นสำหรับผู้เล่นใหม่ในจักรวาล Star Citizen"
+  # logo = "img/logo.png"  # Disabled for cleaner header
+  favicon = "img/favicon.ico"
+  dateFormat = "2 January 2006"
+  commit = false
+  rss = false
+  comments = false
+  readingTime = false  # Disabled for cleaner look
+  wordCount = false    # Disabled for cleaner look
+  useHLJS = true
+  socialShare = false  # Disabled for cleaner look
+  showRelatedPosts = false
+  
+  # Custom parameters for game version
+  defaultGameVersion = "Alpha 4.2.1"
+
+[Params.author]
+  name = "Star Citizen Handbook"
+
+# Navigation menu
+[[menu.main]]
+    name = "หน้าแรก"
+    url = ""
+    weight = 1
+
+[[menu.main]]
+    name = "คู่มือ"
+    url = "guides/"
+    weight = 2
+
+[[menu.main]]
+    name = "ยานอวกาศ"
+    url = "ships/"
+    weight = 3
+
+[[menu.main]]
+    name = "แนวคิด"
+    url = "concepts/"
+    weight = 4
+
+[[menu.main]]
+    name = "เกี่ยวกับ"
+    url = "about/"
+    weight = 5

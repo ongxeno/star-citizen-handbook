@@ -1,19 +1,18 @@
+
 # Project Overview: Star Citizen Handbook
 
 **Last Updated:** 2025-07-18
 
 ## 1. Project Goal
 
-The primary goal of this project is to create a clear, user-friendly, and multilingual guide for new and intermediate Star Citizen players. The website, `star-citizen-handbook`, will be hosted on GitHub Pages and serve as a go-to reference to help players become self-sufficient in the 'Verse.
+The primary goal of this project is to create a clear, user-friendly, Thai-language guide for new and intermediate Star Citizen players. The website, `star-citizen-handbook`, will be hosted on GitHub Pages and serve as a go-to reference to help players become self-sufficient in the 'Verse.
+
 
 ## 2. Core Principles
 
-* **Multilingual Support:** The site is built to support multiple languages from the ground up.
-    * **Initial Languages:** Thai (`th`) and English (`en`).
-    * **Default Language:** Thai (`th`).
-    * **Structure:** Multilingual content managed through Jekyll's [Polyglot](https://github.com/untra/polyglot) plugin.
+* **Thai Language Only:** All content is written and maintained in Thai (`th`).
+* **Content Versioning:** Every guide and content page must be tagged with the specific game version it applies to, using the `game_version` parameter in the front matter (e.g., `game_version: "Alpha 3.23.1"`).
 
-* **Content Versioning:** This is a critical feature. Every guide and content page must be tagged with the specific game version it applies to, using the `game_version` parameter in the front matter (e.g., `game_version: "Alpha 3.23.1"`).
 
 ## 3. Website Features & Functionality
 
@@ -25,17 +24,12 @@ The primary goal of this project is to create a clear, user-friendly, and multil
 * **Smart Navigation:**
     * Sticky navigation header with auto-hiding behavior on scroll.
     * Algolia DocSearch integration for powerful, fast searching.
-    * Auto-generated breadcrumbs using Jekyll's built-in collection features.
+    * Auto-generated breadcrumbs using Hugo's built-in features.
 
 * **Mobile-First Design:**
     * Responsive layout using CSS Grid and Flexbox.
     * Touch-optimized menus and interactions.
-    * Optimized images using Jekyll Picture Tag plugin.
-
-* **Language Features:**
-    * Language selector in the header (English/ภาษาไทย).
-    * LocalStorage-based language preference.
-    * Fallback content handling when translations are missing.
+    * Optimized images using Hugo image processing.
 
 * **Version Management:**
     * Game version banner on all guide pages.
@@ -45,18 +39,18 @@ The primary goal of this project is to create a clear, user-friendly, and multil
 * **Enhanced Content:**
     * Lightbox galleries using PhotoSwipe.
     * Copy buttons for code blocks using Clipboard.js.
-    * Syntax highlighting with Rouge.
+    * Syntax highlighting with Chroma (Hugo default).
+
 
 ## 4. Technology Stack
 
-* **Static Site Generator:** Jekyll 4.3+
-* **Key Plugins:**
-    * `jekyll-polyglot` - Multilingual support
-    * `jekyll-algolia` - Search functionality
-    * `jekyll-picture-tag` - Responsive images
-    * `jekyll-feed` - RSS feeds
-    * `jekyll-seo-tag` - SEO optimization
-    * `jekyll-sitemap` - Sitemap generation
+* **Static Site Generator:** Hugo (latest)
+* **Key Hugo Modules/Plugins:**
+    * Algolia search integration
+    * Hugo image processing
+    * RSS feeds
+    * SEO optimization
+    * Sitemap generation
 
 * **Front-end:**
     * Vanilla JavaScript (no heavy frameworks)
@@ -66,8 +60,7 @@ The primary goal of this project is to create a clear, user-friendly, and multil
     * Clipboard.js for copy functionality
 
 * **Development Tools:**
-    * Ruby 3.2+ (Jekyll requirement)
-    * Bundler for dependency management
+    * Go (Hugo requirement)
     * Node.js & npm for front-end tooling
     * GitHub Actions for CI/CD
 
@@ -75,41 +68,42 @@ The primary goal of this project is to create a clear, user-friendly, and multil
 
 ## 5. Development Roadmap
 
+
 ### **Phase 1: Project Setup & Foundation**
 
-* **Objective:** Set up Jekyll project with multilingual support and basic functionality.
+* **Objective:** Set up Hugo project with Thai language support and basic functionality.
 * **Key Tasks:**
-    * [ ] Initialize Jekyll project with recommended structure:
+    * [ ] Initialize Hugo project with recommended structure:
         ```
         .
-        ├── _config.yml
-        ├── _data/
-        │   ├── i18n/
-        │   │   ├── en.yml
-        │   │   └── th.yml
+        ├── config.toml
+        ├── content/
+        │   ├── guides/
+        │   ├── ships/
+        │   └── concepts/
+        ├── data/
         │   └── ships.yml
-        ├── _includes/
-        ├── _layouts/
-        ├── _plugins/
-        ├── _sass/
+        ├── layouts/
+        │   ├── _default/
+        │   ├── guides/
+        │   ├── ships/
+        │   └── concepts/
         ├── assets/
-        └── collections/
-            ├── _guides/
-            ├── _ships/
-            └── _concepts/
+        ├── static/
+        └── themes/
         ```
-    * [ ] Configure Jekyll plugins and dependencies:
-        * Set up Bundler and Gemfile
-        * Configure jekyll-polyglot for multilingual support
-        * Set up jekyll-algolia for search
-    * [ ] Create base layouts and includes:
-        * Default layout with language switcher
+    * [ ] Configure Hugo modules and dependencies:
+        * Set up Algolia search integration
+        * Configure SEO and sitemap
+    * [ ] Create base layouts and partials:
+        * Default layout
         * Guide layout with version banner
         * Ship template for vessel information
     * [ ] Implement core styling:
         * Dark theme setup using Sass
         * Responsive navigation
         * Typography system
+
 
 ### **Phase 2: Core Features & Initial Content**
 
@@ -118,9 +112,8 @@ The primary goal of this project is to create a clear, user-friendly, and multil
     * [ ] **Search Implementation:**
         * Set up Algolia DocSearch
         * Create search UI components
-        * Configure language-aware indexing
     * [ ] **Ship Database:**
-        * Create ship collection structure
+        * Create ship content structure
         * Design ship detail templates
         * Add initial ship data (10-15 starter ships)
     * [ ] **Core Guides:**
@@ -132,6 +125,7 @@ The primary goal of this project is to create a clear, user-friendly, and multil
         * Mining Locations & Prices
         * Key Bindings Reference
         * Ship Insurance Guide
+
 
 ### **Phase 3: Polish & Community Features**
 
@@ -146,7 +140,3 @@ The primary goal of this project is to create a clear, user-friendly, and multil
         * Create contribution guidelines
         * Set up issue templates
         * Add commenting system (optional)
-    * [ ] **Translation Management:**
-        * Implement translation status tracking
-        * Add missing translation indicators
-        * Set up automated translation workflows

@@ -1,0 +1,83 @@
+/* Custom CSS for more minimalistic design */
+
+/* Reduce padding and margins for cleaner look */
+.main-content {
+  padding-top: 2rem;
+}
+
+/* Cleaner navigation */
+.navbar {
+  border-bottom: 1px solid #eee;
+  box-shadow: none;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Remove unnecessary visual elements */
+.post-meta {
+  display: none;
+}
+
+.blog-tags {
+  display: none;
+}
+
+.share-box {
+  display: none;
+}
+
+/* Cleaner content layout */
+.post-preview {
+  border-bottom: 1px solid #eee;
+  padding: 1.5rem 0;
+}
+
+.post-preview:last-child {
+  border-bottom: none;
+}
+
+/* Minimalist footer */
+.footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #eee;
+  padding: 2rem 0;
+}
+
+/* Clean typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Remove author info and social sharing */
+.post-heading .post-meta,
+.post-heading .post-subheading {
+  display: none;
+}
+
+/* Cleaner blockquotes */
+blockquote {
+  border-left: 4px solid #007bff;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  background-color: transparent;
+  font-style: normal;
+}
+
+/* Minimize header subtitle on pages */
+.intro-header .page-heading .page-subheading {
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+/* Clean up navigation spacing */
+.navbar-nav .nav-item {
+  margin: 0 0.5rem;
+}
+
+/* Remove unnecessary elements */
+.pager {
+  margin-top: 2rem;
+}
