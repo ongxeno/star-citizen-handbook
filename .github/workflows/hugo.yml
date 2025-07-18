@@ -48,6 +48,11 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+      - name: Setup Hugo Modules
+        run: |
+          hugo mod init github.com/ongxeno/star-citizen-handbook
+          hugo mod get -u github.com/google/docsy@v0.7.1
+          hugo mod tidy
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
