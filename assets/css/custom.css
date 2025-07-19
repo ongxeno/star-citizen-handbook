@@ -77,7 +77,6 @@ p {
   .navbar-header {
     width: 100%;
     text-align: center;
-    margin-bottom: 10px;
   }
   
   .navbar-nav {
@@ -320,6 +319,45 @@ blockquote {
   color: #333;
 }
 
+/* Dark theme code blocks */
+pre {
+  background-color: #1e1e1e !important;
+  border: 1px solid #333 !important;
+  color: #d4d4d4 !important;
+  padding: 1.5rem !important;
+  border-radius: 6px !important;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  overflow-x: auto !important;
+}
+
+code {
+  background-color: #2d2d2d !important;
+  color: #f8f8f2 !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 0.9em !important;
+  border: none !important;
+}
+
+/* Inline code in paragraphs */
+p code, li code, h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+  background-color: #2d2d2d !important;
+  color: #f8f8f2 !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  font-size: 0.85em !important;
+}
+
+/* Code block syntax highlighting colors */
+pre code {
+  background-color: transparent !important;
+  color: #d4d4d4 !important;
+  padding: 0 !important;
+}
+
 /* Control main title size for all page types */
 .intro-header .page-heading h1,
 .intro-header .post-heading h1,
@@ -363,7 +401,7 @@ blockquote {
 
 /* Responsive subtitle sizes */
 @media (max-width: 768px) {
-  /* Smaller main title on mobile */
+  /* Smaller main title on mobile but still visible */
   .intro-header .page-heading h1,
   .intro-header .post-heading h1,
   .intro-header .site-heading h1,
@@ -371,18 +409,68 @@ blockquote {
   .intro-header .guides-heading h1,
   .intro-header .ships-heading h1,
   .intro-header .concepts-heading h1 {
-    font-size: 2rem !important;
+    font-size: 2.5rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 1rem !important;
   }
   
   /* Smaller subtitles on mobile */
   .intro-header .page-heading .page-subheading,
   .intro-header .post-heading .post-subheading,
   .intro-header .site-heading .home-subheading,
+  .intro-header .site-heading h2,
   .intro-header .list-heading .list-subheading,
   .intro-header .guides-heading .guides-subheading,
   .intro-header .ships-heading .ships-subheading,
   .intro-header .concepts-heading .concepts-subheading {
-    font-size: 18px !important;
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
+    margin-top: 0.5rem !important;
+  }
+  
+  /* Better mobile spacing for intro header */
+  .intro-header {
+    margin-top: 120px !important;
+    margin-bottom: 30px !important;
+    padding: 1.5rem 0 !important;
+    min-height: auto !important;
+    display: block !important;
+  }
+  
+  /* Force visibility of no-img headers with balanced spacing */
+  .intro-header.no-img {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    min-height: 100px !important;
+    margin-top: 120px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  /* Ensure heading containers are visible with proper spacing */
+  .intro-header .page-heading,
+  .intro-header .post-heading,
+  .intro-header .site-heading,
+  .intro-header .list-heading,
+  .intro-header .guides-heading,
+  .intro-header .ships-heading,
+  .intro-header .concepts-heading {
+    padding: 1rem 0 !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Specific fix for homepage title */
+  .intro-header .site-heading h1,
+  .intro-header .site-heading h2 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Reduce main content top padding on mobile */
+  .main-content {
+    padding-top: 1rem !important;
   }
 }
 
