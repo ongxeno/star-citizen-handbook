@@ -2,7 +2,7 @@
 
 /* Custom Font Setup */
 :root {
-  --font-family-base: 'Inter', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-family-base: 'Sarabun', 'Noto Serif Thai', 'Times New Roman', Georgia, serif;
   --font-family-headings: 'Orbitron', 'Inter', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
@@ -10,7 +10,7 @@
 body, .navbar, .footer {
   font-family: var(--font-family-base);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -27,7 +27,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Reduce padding and margins for cleaner look */
 .main-content {
-  padding-top: 2rem;
+  padding-top: 3rem;
+}
+
+/* Add more spacing around content */
+.container {
+  max-width: 800px;
+}
+
+/* Better paragraph spacing */
+p {
+  margin-bottom: 1.5rem;
 }
 
 /* Cleaner navigation */
@@ -56,11 +66,27 @@ h1, h2, h3, h4, h5, h6 {
 /* Cleaner content layout */
 .post-preview {
   border-bottom: 1px solid #eee;
-  padding: 1.5rem 0;
+  padding: 2rem 0;
 }
 
 .post-preview:last-child {
   border-bottom: none;
+}
+
+/* Add more spacing to content sections */
+.post-content, .page-content {
+  padding: 0 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Better spacing for lists */
+ul, ol {
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
 }
 
 /* Minimalist footer */
@@ -85,31 +111,94 @@ h1, h2, h3, h4, h5, h6 {
 .footer-content {
   text-align: center;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Footer header - logo and title on same line */
+.footer-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 02px 0;
 }
 
 .footer-title {
   font-family: var(--font-family-headings);
   font-weight: 600;
   font-size: 1.1rem;
-  margin-bottom: 5px;
-  color: #181818;
+  margin: 0;
+  color: #e1e1e1;
 }
 
 .community-logo {
-  margin: 5px 0;
+  margin: 0;
 }
 
 .community-logo img {
-  max-height: 40px;
-  max-width: 200px;
+  max-height: 25px;
+  max-width: 180px;
   opacity: 0.7;
   object-fit: contain;
 }
 
+/* Referral section styling - now at top */
+.referral-section {
+  margin: 0 0 10px 0;
+}
+
+.referral-text {
+  margin: 0 0 3px 0;
+  font-size: 1.5rem;
+  color: #e1e1e1;
+  line-height: 1.4;
+}
+
+.referral-help {
+  margin-left: 5px;
+  color: #e1e1e1;
+  text-decoration: none;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border: 2px solid #e1e1e1;
+  border-radius: 100%;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.referral-help:hover {
+  color: #007bff;
+  border-color: #007bff;
+  text-decoration: none;
+}
+
+.referral-link {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.referral-link a {
+  color: #e1e1e1;
+  text-decoration: none;
+  font-weight: 200;
+}
+
+.referral-link a:hover {
+  color: #3c9aff;
+  text-decoration: underline;
+}
+
 .legal-notice {
   font-size: 0.8rem;
-  color: #666;
-  margin-top: 5px;
+  color: #c7c7c7;
+  margin-top: 2px;
   margin-bottom: 0;
   line-height: 1.4;
 }
@@ -120,13 +209,26 @@ h1, h2, h3, h4, h5, h6 {
     padding: 10px 0;
   }
   
+  .footer-header {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
   .footer-title {
     font-size: 1rem;
   }
   
   .community-logo img {
-    max-height: 35px;
+    max-height: 25px;
     max-width: 180px;
+  }
+  
+  .referral-text {
+    font-size: 0.85rem;
+  }
+  
+  .referral-link {
+    font-size: 0.85rem;
   }
   
   .legal-notice {
@@ -138,7 +240,12 @@ h1, h2, h3, h4, h5, h6 {
 /* Clean typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+h1:first-child, h2:first-child, h3:first-child {
+  margin-top: 0;
 }
 
 /* Remove author info and social sharing */
@@ -150,10 +257,12 @@ h1, h2, h3, h4, h5, h6 {
 /* Cleaner blockquotes */
 blockquote {
   border-left: 4px solid #007bff;
-  padding-left: 1rem;
-  margin: 1.5rem 0;
-  background-color: transparent;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  background-color: #f8f9fa;
   font-style: normal;
+  border-radius: 0 4px 4px 0;
+  color: #333;
 }
 
 /* Control main title size for all page types */

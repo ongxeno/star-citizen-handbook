@@ -5,15 +5,28 @@
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="footer-content">
           
-          {{- /* Community logo */ -}}
-          <div class="community-logo">
-            <img src="{{ "img/MadeByTheCommunity_Black_small.png" | relURL }}" alt="Made by the Community" />
+          {{- /* Referral code section */ -}}
+          <div class="referral-section">
+            <p class="referral-text">
+              🚀 เริ่มต้นการผจญภัยใน Star Citizen กับรหัสแนะนำ: <strong>STAR-QJ2F-257X</strong>
+              <a href="{{ "concepts/referral-code/" | relURL }}" class="referral-help" title="เรียนรู้เพิ่มเติมเกี่ยวกับรหัสแนะนำ">?</a>
+            </p>
+            <p class="referral-link">
+              <a href="https://robertsspaceindustries.com/enlist?referral=STAR-QJ2F-257X" target="_blank" rel="noopener">
+                [ สมัครสมาชิกเกม Star Citizen และรับ 50,000 UEC ฟรี ]
+              </a>
+            </p>
           </div>
           
-          {{- /* Main footer text */ -}}
-          <p class="footer-title">
-            Star Citizen Handbook © 2025
-          </p>
+          {{- /* Header section with logo and title */ -}}
+          <div class="footer-header">
+            <div class="community-logo">
+              <img src="{{ "img/MadeByTheCommunity_Black_small.png" | relURL }}" alt="Made by the Community" />
+            </div>
+            <p class="footer-title">
+              Star Citizen Handbook © 2025
+            </p>
+          </div>
           
           {{- /* Legal notice */ -}}
           <p class="legal-notice">
