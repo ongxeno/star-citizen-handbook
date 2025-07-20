@@ -15,7 +15,6 @@ pygmentsCodefencesGuessSyntax = true
 
 [Params]
   subtitle = "คู่มือเริ่มต้นสำหรับผู้เล่นใหม่ในจักรวาล Star Citizen"
-  logo = "img/Player_Deco_Statue_Stand_NavyPilot_21_9_4K.jpg"  # Default sharing image
   favicon = "img/favicon.ico"
   dateFormat = "2 January 2006"
   commit = false
