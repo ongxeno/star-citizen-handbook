@@ -8,6 +8,8 @@ game_version: "Alpha 4.2.1"
 tags: ["เริ่มต้น", "การบิน", "ห้องพัก", "วงโคจร", "MicroTech", "New Babbage"]
 categories: ["คู่มือเริ่มต้น"]
 author: "Star Citizen Handbook Team"
+image: "img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_18-24-07-526.jpg"
+description: "คู่มือเริ่มต้นสำหรับผู้เล่น MicroTech (New Babbage) - วิธีออกจาก Hab และบินขึ้นสู่วงโคจร พร้อมภาพประกอบแต่ละขั้นตอนอย่างละเอียด"
 ---
 
 ## สารบัญ
