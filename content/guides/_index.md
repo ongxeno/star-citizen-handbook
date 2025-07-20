@@ -22,7 +22,7 @@ lastmod: 2025-07-18
 - การใช้งาน mobiGlas (เร็วๆ นี้)
 
 ### การจัดเก็บและอุปกรณ์ (Storage & Equipment)
-- Personal Storage และ Armor (เร็วๆ นี้)
+- [ระบบ Inventory และอุปกรณ์สวมใส่](inventory-equipment/)
 - การใช้งาน Storage Access Terminal (เร็วๆ นี้)
 - Freight Elevator และการขนส่งสินค้า (เร็วๆ นี้)
 - [อุปกรณ์และเครื่องมือ](gadgets-and-tools/) - คู่มือการใช้งาน Multi-Tool, อุปกรณ์การแพทย์ และเครื่องมือต่างๆ
@@ -32,6 +32,9 @@ lastmod: 2025-07-18
 - ASOP และ Fleet Manager Terminal (เร็วๆ นี้)
 - Flight 101 - การบินขั้นพื้นฐาน (เร็วๆ นี้)
 - Ground Vehicle 101 - การขับรถภาคพื้นดิน (เร็วๆ นี้)
+
+### เทคนิคขั้นสูง (Advanced Techniques)
+- [Advanced Camera Control](advance-camera-control/) - การควบคุมกล้องขั้นสูง, Director Mode, และเทคนิคการถ่ายภาพ
 
 ---
 

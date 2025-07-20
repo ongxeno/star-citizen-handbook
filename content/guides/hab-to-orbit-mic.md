@@ -89,7 +89,10 @@ author: "Star Citizen Handbook Team"
     ![เดินไปทาง Spaceport Lobby](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-14-46-981.jpg)
     - เดินผ่าน scanner ตัวไหนก็ได้ (ยังไม่เปิดใช้งาน)
     ![เดินผ่าน scanner ตัวไหนก็ได้](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-15-20-D93.jpg)
+    - ผ่าน scanner แล้วหันซ้ายเล็กน้อยจะเห็นทางเดิน
+    ![ผ่าน scanner แล้วหันซ้ายเล็กน้อยจะเห็นทางเดิน](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-15-49-D3F.jpg)
     - เดินขึ้นบันใด แล้วเลี้ยวซ้าย ตามสัญลักษณ์เครื่องบิน
+    ![ตามสัญลักษณ์เครื่องบิ](<../../img/guides/hab-to-orbit-mic/Screenshot 2025-07-20 104808.png>)
     ![เดินขึ้นบันใด แล้วเลี้ยวซ้าย](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-17-10-C03.jpg)
     ![ตามสัญลักษณ์เครื่องบิน](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-17-55-9CE.jpg)
     - มองหาป้าย Hangers
@@ -123,7 +126,8 @@ author: "Star Citizen Handbook Team"
 เมื่อถึง Hangar ของคุณแล้ว ให้ทำการตรวจสอบและเตรียมพร้อมก่อนบิน
 
 ### การขึ้นยาน:
-ยานแต่ละลำจะไม่เหมือนกัน ตัวอย่างนี้เป็นยาน RSI Aurora MR
+วิธีการขึ้นยานแต่ละลำจะไม่เหมือนกัน ในตัวอย่างนี้เป็นยาน RSI Aurora MR
+> ดูคู่มือของยานแบบละเอียดได้ที่ [ยานอวกาศ](../../ships/)
 1. เดินไปที่ยานอวกาศ
 ![เดินไปที่ยานอวกาศ](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-32-28-CCD.jpg)
 2. มองหา **Entry Point** (จุดเข้ายาน)
@@ -173,7 +177,7 @@ author: "Star Citizen Handbook Team"
 
 ### วิธีการ:
 1. **เปิด Quantum Drive:**
-   - กดปุ่ม **B** เพื่อเปิดโหมด **Quantum**
+   - กดปุ่ม **B** ค้างไว้เพื่อเปิดโหมด **Quantum**
    - เลือกจุดหมายในวงโคจรหรือในอวกาศ
 
 2. **การเร่งเครื่องออกจากชั้นบรรยากาศ:**
