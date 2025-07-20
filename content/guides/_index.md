@@ -29,7 +29,7 @@ lastmod: 2025-07-18
 
 ### การบินและยานพาหนะ
 - [Flight 101: การควบคุมการบินขั้นพื้นฐาน](basic-flight-control/) - เรียนรู้การควบคุมยานอวกาศเบื้องต้นสำหรับนักบินใหม่
-- ASOP และ Fleet Manager Terminal (เร็วๆ นี้)
+- [ASOP และ Fleet Manager Terminal](asop-fleet-manager/) - การใช้งาน ASOP Terminal และ Fleet Manager สำหรับการจัดการยานอวกาศ
 - Flight 101 - การบินขั้นพื้นฐาน (เร็วๆ นี้)
 - Ground Vehicle 101 - การขับรถภาคพื้นดิน (เร็วๆ นี้)
 
