@@ -16,7 +16,7 @@ description: "คู่มือเริ่มต้นสำหรับผู
 
 1. [การตื่นขึ้นในห้องพัก](#waking-up)
 2. [การออกจากห้องพัก](#leaving-hab)  
-3. [การเดินทางไปยัง Spaceport และการเรียกรถ](#spaceport-travel)
+3. [การเดินทางไปยัง Spaceport และการเรียกยาน](#spaceport-travel)
 4. [การขึ้นยานและการตรวจสอบก่อนบิน](#boarding-ship)
 5. [การบินออกจากแพลตฟอร์ม](#takeoff)
 6. [การบินสู่วงโคจร](#to-orbit)
@@ -59,7 +59,7 @@ description: "คู่มือเริ่มต้นสำหรับผู
 
 ---
 
-## การเดินทางไปยัง Spaceport และการเรียกรถ {#spaceport-travel}
+## การเดินทางไปยัง Spaceport และการเรียกยาน {#spaceport-travel}
 
 หลังจากลงมาที่ล็อบบี้แล้ว คุณต้องเดินทางไปยัง Spaceport ของ New Babbage เพื่อเข้าถึงยานของคุณ
 
@@ -102,10 +102,10 @@ description: "คู่มือเริ่มต้นสำหรับผู
 
 3. **ค้นหา ASOP Terminal ที่ Spaceport:**
    - เมื่อถึง Spaceport แล้ว ให้เดินตามป้ายบอกทางไปยัง **"ASOP Terminals"**
-   - คุณจะพบกับแผงควบคุมหลายเครื่องสำหรับเรียกรถ
+   - คุณจะพบกับแผงควบคุมหลายเครื่องสำหรับเรียกยาน
 ![บริเวณ ASOP Terminals ใน Spaceport](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-27-57-980.jpg)
 
-4. **เรียกรถจาก ASOP Terminal:**
+4. **เรียกยานจาก ASOP Terminal:**
    - เดินไปที่ Terminal เครื่องใดเครื่องหนึ่งแล้วกด **F** เพื่อใช้งาน
    ![เดินไปที่ Terminal](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-18-25-FA4.jpg)
    - เลือกยานอวกาศของคุณจากรายการ
