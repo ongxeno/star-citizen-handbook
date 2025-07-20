@@ -76,61 +76,61 @@ weight: 1
 ### ระดับผลตอบแทน
 ยิ่งแนะนำคนเยอะ ยิ่งได้รางวัลมากและดีขึ้น:
 
-![CDS GCD-Army Medium Armor Set](../../img/Referral_Armor_21_9_4K.jpg)
+![CDS GCD-Army Medium Armor Set](../../img/concepts/referal-code/Referral_Armor_21_9_4K.jpg)
 - **1 คน**: CDS GCD-Army Medium Armor Set (ชุดเกราะกลาง + ชุดข้างใน UEE Army)
 
-![VOLT Quartz 'GCD-Army' SMG](../../img/Volt_SMG_Energy_01_UEE01_4k.jpg)
+![VOLT Quartz 'GCD-Army' SMG](../../img/concepts/referal-code/Volt_SMG_Energy_01_UEE01_4k.jpg)
 - **2 คน**: VOLT Quartz 'GCD-Army' SMG (ปืนกลต้องขนาดกะทัดรัดสไตล์ทหาร)
 
-![Gladius Dunlevy Model](../../img/Referral_Gladius_Statue_4k.jpg)
+![Gladius Dunlevy Model](../../img/concepts/referal-code/Referral_Gladius_Statue_4k.jpg)
 - **3 คน**: Gladius Dunlevy Model (โมเดลยาน Gladius ในเกม เพื่อเกียรติ Captain Alexandra Dunlevy)
 
-![Mirai Pulse & 'GCD-Army' Paint](../../img/Referral_Pulse_4K.jpg)
+![Mirai Pulse & 'GCD-Army' Paint](../../img/concepts/referal-code/Referral_Pulse_4K.jpg)
 - **4 คน**: Mirai Pulse & 'GCD-Army' Paint (รถจักรยานยนต์โฮเวอร์ + สีพิเศษ 'GCD-Army')
 
-![VOLT Parallax 'GCD-Army' Assault Rifle](../../img/Volt_Rifle_Energy_01_UEE01_4k.jpg)
+![VOLT Parallax 'GCD-Army' Assault Rifle](../../img/concepts/referal-code/Volt_Rifle_Energy_01_UEE01_4k.jpg)
 - **5 คน**: VOLT Parallax 'GCD-Army' Assault Rifle (ปืนไฟฟ้าไรเฟิลจู่โจมแบบอัตโนมัติ)
 
-![Archibald Hurston Figurine](../../img/Referral_Statue_Hurston.jpg)
+![Archibald Hurston Figurine](../../img/concepts/referal-code/Referral_Statue_Hurston.jpg)
 - **6 คน**: Archibald Hurston Figurine (รูปปั้นอาร์คิบาลด์ เฮิร์สตัน)
 
-![ArcCorp Cog Sphere Replica](../../img/Referral_Flair_Arccorp_statue_4k.jpg)
+![ArcCorp Cog Sphere Replica](../../img/concepts/referal-code/Referral_Flair_Arccorp_statue_4k.jpg)
 - **7 คน**: ArcCorp Cog Sphere Replica (โมเดลจำลองทรงกลมเฟืองของ ArcCorp)
 
-![Stormwal Sculpture Replica](../../img/Referral_Flair_Orison_statue.jpg)
+![Stormwal Sculpture Replica](../../img/concepts/referal-code/Referral_Flair_Orison_statue.jpg)
 - **8 คน**: Stormwal Sculpture Replica (โมเดลจำลองรูปปั้น Stormwal)
 
-![Wally's Bar Hologram Replica](../../img/Referral_Flair_Newbabbage_statue.jpg)
+![Wally's Bar Hologram Replica](../../img/concepts/referal-code/Referral_Flair_Newbabbage_statue.jpg)
 - **9 คน**: Wally's Bar Hologram Replica (โมเดลจำลองโฮโลแกรม Wally's Bar)
 
-![Big Benny's 'Classic' Vending Machine](../../img/Referral_Flair_BigBennys_4k.jpg)
+![Big Benny's 'Classic' Vending Machine](../../img/concepts/referal-code/Referral_Flair_BigBennys_4k.jpg)
 - **10 คน**: Big Benny's 'Classic' Vending Machine (เครื่องขายของอัตโนมัติ Big Benny's รุ่นคลาสสิก)
 
-![Spirit of the Starman Statue](../../img/Player_Deco_Statue_Stand_NavyPilot_21_9_4K.jpg)
+![Spirit of the Starman Statue](../../img/concepts/referal-code/Player_Deco_Statue_Stand_NavyPilot_21_9_4K.jpg)
 - **15 คน**: Spirit of the Starman Statue (รูปปั้น Spirit of the Starman)
 
-![Enemy of the Empire Statue](../../img/Player_Deco_Statue_Stand_Vanduul_21_9_4K.jpg)
+![Enemy of the Empire Statue](../../img/concepts/referal-code/Player_Deco_Statue_Stand_Vanduul_21_9_4K.jpg)
 - **25 คน**: Enemy of the Empire Statue (รูปปั้น Enemy of the Empire)
 
-![Aegis Gladius Dunlevy](../../img/Referral_Gladius_Paint_Squadron.jpg)
+![Aegis Gladius Dunlevy](../../img/concepts/referal-code/Referral_Gladius_Paint_Squadron.jpg)
 - **42 คน**: Aegis Gladius Dunlevy (เรือรบ Aegis Gladius Dunlevy รุ่นพิเศษ)
 
-![MISC RAPTOR](../../img/Referral_MISC_Raptor.jpg)
+![MISC RAPTOR](../../img/concepts/referal-code/Referral_MISC_Raptor.jpg)
 - **50 คน**: MISC RAPTOR (ยานพาหนะ MISC RAPTOR)
 
-![Tumbril Storm & 'GCD-Army' Paint](../../img/Referral_Storm_Paint_UEE.jpg)
+![Tumbril Storm & 'GCD-Army' Paint](../../img/concepts/referal-code/Referral_Storm_Paint_UEE.jpg)
 - **75 คน**: Tumbril Storm & 'GCD-Army' Paint (รถถัง Tumbril Storm พร้อมสีพิเศษ GCD-Army)
 
-![Freelancer MAX & 'Big Brands' Paint Pack](../../img/Referral_Freelancer_Group.jpg)
+![Freelancer MAX & 'Big Brands' Paint Pack](../../img/concepts/referal-code/Referral_Freelancer_Group.jpg)
 - **100 คน**: Freelancer MAX & 'Big Brands' Paint Pack (เรือ Freelancer MAX พร้อมชุดสี Big Brands)
 
-![Unannounced Vehicle](../../img/Referral_UnannouncedVehicle.jpg)
+![Unannounced Vehicle](../../img/concepts/referal-code/Referral_UnannouncedVehicle.jpg)
 - **200 คน**: Unannounced Vehicle (ยานพาหนะที่ยังไม่เปิดเผย)
 
-![Captured Vanduul Scyth](../../img/Referral_Scythe.jpg)
+![Captured Vanduul Scyth](../../img/concepts/referal-code/Referral_Scythe.jpg)
 - **500 คน**: Captured Vanduul Scyth (เรือรบ Vanduul Scythe ที่ถูกยึดมา)
 
-![Idris-M](../../img/Referral_AEGIS_Idris_M.jpg)
+![Idris-M](../../img/concepts/referal-code/Referral_AEGIS_Idris_M.jpg)
 - **1042 คน**: Idris-M (เรือรบขนาดใหญ่ Idris-M รุ่นทหาร - รางวัลสูงสุด)
 
 > **📋 ข้อมูลล่าสุด**: ตรวจสอบระดับรางวัลและของรางวัลปัจจุบันได้ที่ [หน้า Referral Program อย่างเป็นทางการ](https://robertsspaceindustries.com/en/referral-program) เพราะรางวัลและจำนวนคนที่ต้องแนะนำอาจมีการเปลี่ยนแปลง
