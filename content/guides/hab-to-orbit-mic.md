@@ -94,7 +94,7 @@ description: "คู่มือเริ่มต้นสำหรับผู
     - ผ่าน scanner แล้วหันซ้ายเล็กน้อยจะเห็นทางเดิน
     ![ผ่าน scanner แล้วหันซ้ายเล็กน้อยจะเห็นทางเดิน](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-15-49-D3F.jpg)
     - เดินขึ้นบันใด แล้วเลี้ยวซ้าย ตามสัญลักษณ์เครื่องบิน
-    ![ตามสัญลักษณ์เครื่องบิ](<../../img/guides/hab-to-orbit-mic/Screenshot 2025-07-20 104808.png>)
+    ![ตามสัญลักษณ์เครื่องบิ](<../../img/guides/hab-to-orbit-mic/Screenshot-2025-07-20-104808.png>)
     ![เดินขึ้นบันใด แล้วเลี้ยวซ้าย](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-17-10-C03.jpg)
     ![ตามสัญลักษณ์เครื่องบิน](../../img/guides/hab-to-orbit-mic/ScreenShot-2025-07-19_17-17-55-9CE.jpg)
     - มองหาป้าย Hangers

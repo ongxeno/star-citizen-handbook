@@ -15,7 +15,7 @@ pygmentsCodefencesGuessSyntax = true
 
 [Params]
   subtitle = "คู่มือเริ่มต้นสำหรับผู้เล่นใหม่ในจักรวาล Star Citizen"
-  # logo = "img/logo.png"  # Disabled for cleaner header
+  logo = "img/Player_Deco_Statue_Stand_NavyPilot_21_9_4K.jpg"  # Default sharing image
   favicon = "img/favicon.ico"
   dateFormat = "2 January 2006"
   commit = false
@@ -35,6 +35,7 @@ pygmentsCodefencesGuessSyntax = true
 
 [Params.author]
   name = "Star Citizen Handbook"
+  # twitter = "your_twitter_handle"  # Remove # and add your Twitter handle if available
 
 # Navigation menu
 [[menu.main]]
