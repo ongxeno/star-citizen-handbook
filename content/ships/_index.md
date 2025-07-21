@@ -11,7 +11,7 @@ lastmod: 2025-07-18
 
 ### ยานอเนกประสงค์
 
-- [RSI Aurora MR](../../ships/rsi_aurora_mr/) - ยานเริ่มต้นราคาประหยัด
+- [RSI Aurora MR](rsi_aurora_mr/) - ยานเริ่มต้นราคาประหยัด
 - Mustang Alpha - ยานเริ่มต้นเน้นความเร็ว (เร็วๆ นี้)
 - Avenger Titan - ยานอเนกประสงค์ขนาดเล็ก (เร็วๆ นี้)
 
