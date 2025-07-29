@@ -1,6 +1,6 @@
 # **Data Gathering Prompt for Star Citizen Ship Guide**
 
-**Objective:** Collect factual, up-to-date information for the Star Citizen ship, `Drake` (MANUFACTURER) `Cutlass Black` (SHIP NAME), based on the latest available game version (Alpha 4.2.1 or newer if available). Present the information clearly and concisely. Avoid writing prose or full paragraphs; use bullet points and simple key-value pairs.
+**Objective:** Collect factual, up-to-date information for the Star Citizen ship, `RSI` (MANUFACTURER) `Aurora MR` (SHIP NAME), based on the latest available game version (Alpha 4.2.1 or newer if available). Present the information clearly and concisely. Avoid writing prose or full paragraphs; use bullet points and simple key-value pairs.
 
 ### **1\. Core Identity**
 
