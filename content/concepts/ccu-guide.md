@@ -1,6 +1,6 @@
 ---
-title: "คู่มือฉบับสมบูรณ์สำหรับนักอัปเกรดยานมือใหม่: ประหยัดเงินใน Star Citizen ด้วยระบบ CCU"
-subtitle: "คู่มือสู่ยานในฝันในราคาที่ถูกกว่า"
+title: "คู่มือ CCU Chain: สู่ยานในฝันในราคาที่ถูกกว่า"
+subtitle: "เปลี่ยนส่วนลดเล็กๆ ให้เป็นยานในฝันลำใหญ่"
 date: 2025-07-29
 lastmod: 2025-07-29
 tags: ["CCU", "Ship Upgrade", "RSI Store", "Pledge", "Warbond", "LTI", "CCU Chain"]
