@@ -1,6 +1,14 @@
 baseURL = 'https://ongxeno.github.io/star-citizen-handbook/'
 languageCode = 'th'
 title = 'Star Citizen Handbook'
+theme = 'beautifulhugo'
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+RL = 'https://ongxeno.github.io/star-citizen-handbook/'
+languageCode = 'th'
+title = 'Star Citizen Handbook'
 theme = "beautifulhugo"
 
 # Syntax highlighting
