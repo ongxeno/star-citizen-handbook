@@ -1,5 +1,11 @@
 /* Custom CSS for more minimalistic design */
 
+/* Image styling - curved corners for all images */
+img {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
 /* Custom Font Setup */
 :root {
   --font-family-base: 'Sarabun', 'Noto Serif Thai', 'Times New Roman', Georgia, serif;
