@@ -5,7 +5,7 @@ date: 2025-07-30
 lastmod: 2025-07-30
 tags: ["Event", "Guide", "IAE", "Invictus", "CitizenCon", "Sales", "Red Festival", "Pirate Week"]
 categories: ["Guides", "คู่มือการเล่น"]
-image: "img/guides/events/event-calendar.jpg"
+image: "Screenshot 2025-07-30 100730.png"
 ---
 
 **สารบัญ**
