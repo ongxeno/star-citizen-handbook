@@ -53,42 +53,198 @@ EXAMPLES:
   {{/* Create unique carousel ID */}}
   {{ $carouselID := printf "carousel-%d" .Ordinal }}
   
-  <div id="{{ $carouselID }}" class="carousel slide" style="margin-bottom: 30px;">
+  <div id="{{ $carouselID }}" class="carousel slide">
     {{/* Indicators (Bootstrap 3 style) */}}
-    <ol class="carousel-indicators">
+    <ol class="carousel-indicators" style="bottom: -20px; opacity: 0.7; z-index: 10; position: absolute;">
       {{ range $index, $image := $images }}
-      <li data-target="#{{ $carouselID }}" data-slide-to="{{ $index }}" {{ if eq $index 0 }}class="active"{{ end }}></li>
+      <li data-slide-to="{{ $index }}" {{ if eq $index 0 }}class="active"{{ end }}></li>
       {{ end }}
     </ol>
     
     {{/* Carousel inner content */}}
-    <div class="carousel-inner" role="listbox">
+    <div class="carousel-inner" role="listbox" style="position: relative; overflow: hidden; height: {{ $height }};">
       {{ range $index, $image := $images }}
-      <div class="item {{ if eq $index 0 }}active{{ end }}">
-        <img src="{{ $image.RelPermalink }}" alt="Carousel Image {{ add $index 1 }}" style="width: 100%; height: {{ $height }}; object-fit: cover;">
+      <div class="item {{ if eq $index 0 }}active{{ end }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block !important; z-index: {{ if eq $index 0 }}2{{ else }}1{{ end }};">
+        <img src="{{ $image.RelPermalink }}" alt="Carousel Image {{ add $index 1 }}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 500ms ease-in-out; opacity: {{ if eq $index 0 }}1{{ else }}0{{ end }};">
       </div>
       {{ end }}
     </div>
     
     {{/* Controls (Bootstrap 3 style) */}}
-    <a class="left carousel-control" href="#{{ $carouselID }}" role="button" data-slide="prev">
+    <a class="left carousel-control" href="javascript:void(0)" role="button" style="background: transparent; color: white; text-decoration: none; z-index: 10; position: absolute;">
       <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
     </a>
-    <a class="right carousel-control" href="#{{ $carouselID }}" role="button" data-slide="next">
+    <a class="right carousel-control" href="javascript:void(0)" role="button" style="background: transparent; color: white; text-decoration: none; z-index: 10; position: absolute;">
       <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
       <span class="sr-only">Next</span>
     </a>
   </div>
   
-  {{/* Initialize carousel with JavaScript */}}
+  {{/* Simplified working JavaScript */}}
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    $('#{{ $carouselID }}').carousel({
-      interval: {{ $interval }},
-      pause: 'hover'
-    });
-  });
+  (function() {
+    var carouselId = '{{ $carouselID }}';
+    var currentSlide = 0;
+    var totalSlides = {{ len $images }};
+    var autoInterval = null;
+    
+    console.log('🎠 Initializing carousel:', carouselId, 'with', totalSlides, 'slides');
+    
+    function showSlide(index) {
+      var carousel = document.getElementById(carouselId);
+      if (!carousel) {
+        console.error('❌ Carousel not found:', carouselId);
+        return;
+      }
+      
+      var slides = carousel.querySelectorAll('.carousel-inner .item');
+      var indicators = carousel.querySelectorAll('.carousel-indicators li');
+      
+      console.log('👀 Showing slide', index, 'of', slides.length);
+      
+      // Don't change anything if we're already on this slide
+      if (currentSlide === index) {
+        return;
+      }
+      
+      // Simply fade out all slides and fade in the target slide
+      for (var i = 0; i < slides.length; i++) {
+        var img = slides[i].querySelector('img');
+        if (i === index) {
+          slides[i].style.zIndex = '2';
+          slides[i].style.display = 'block';  // Ensure slide is visible
+          slides[i].classList.add('active');
+          img.style.opacity = '1';
+        } else {
+          slides[i].style.zIndex = '1';
+          slides[i].style.display = 'block';  // Keep all slides visible for stacking
+          slides[i].classList.remove('active');
+          img.style.opacity = '0';
+        }
+      }
+      
+      // Update indicators
+      for (var i = 0; i < indicators.length; i++) {
+        indicators[i].classList.remove('active');
+      }
+      if (indicators[index]) {
+        indicators[index].classList.add('active');
+      }
+      
+      currentSlide = index;
+      console.log('✅ Slide', index, 'is now active with image crossfade');
+    }
+    
+    function nextSlide() {
+      console.log('➡️ Next slide');
+      var next = (currentSlide + 1) % totalSlides;
+      showSlide(next);
+      // Don't reset auto-advance here to avoid conflicts with hover events
+    }
+    
+    function prevSlide() {
+      console.log('⬅️ Previous slide');  
+      var prev = (currentSlide - 1 + totalSlides) % totalSlides;
+      showSlide(prev);
+      // Don't reset auto-advance here to avoid conflicts with hover events
+    }
+    
+    function goToSlide(index) {
+      console.log('🎯 Go to slide', index);
+      showSlide(index);
+      // Don't reset auto-advance here to avoid conflicts with hover events
+    }
+    
+    function startAutoAdvance() {
+      // Always clear any existing interval first
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+      }
+      
+      console.log('⏰ Starting auto-advance');
+      autoInterval = setInterval(function() {
+        console.log('🔄 Auto-advancing...');
+        var next = (currentSlide + 1) % totalSlides;
+        showSlide(next);
+      }, {{ $interval }});
+    }
+    
+    function stopAutoAdvance() {
+      if (autoInterval) {
+        console.log('⏸️ Stopping auto-advance');
+        clearInterval(autoInterval);
+        autoInterval = null;
+      }
+    }
+    
+    function resetAutoAdvance() {
+      stopAutoAdvance();
+      startAutoAdvance();
+    }
+    
+    function init() {
+      var carousel = document.getElementById(carouselId);
+      if (!carousel) {
+        console.error('❌ Carousel element not found');
+        return;
+      }
+      
+      console.log('🔧 Setting up event listeners...');
+      
+      // Navigation buttons
+      var prevBtn = carousel.querySelector('.left.carousel-control');
+      var nextBtn = carousel.querySelector('.right.carousel-control');
+      var indicators = carousel.querySelectorAll('.carousel-indicators li');
+      
+      if (prevBtn) {
+        prevBtn.onclick = function(e) {
+          e.preventDefault();
+          prevSlide();
+          return false;
+        };
+      }
+      
+      if (nextBtn) {
+        nextBtn.onclick = function(e) {
+          e.preventDefault();
+          nextSlide();
+          return false;
+        };
+      }
+      
+      // Indicator buttons
+      for (var i = 0; i < indicators.length; i++) {
+        (function(idx) {
+          indicators[idx].onclick = function(e) {
+            e.preventDefault();
+            goToSlide(idx);
+            return false;
+          };
+        })(i);
+      }
+      
+      // Hover pause/resume
+      carousel.onmouseenter = stopAutoAdvance;
+      carousel.onmouseleave = startAutoAdvance;
+      
+      // Initialize
+      showSlide(0);
+      startAutoAdvance();
+      
+      console.log('✅ Carousel initialized successfully!');
+    }
+    
+    // Start when ready
+    if (document.readyState === 'complete') {
+      init();
+    } else {
+      document.addEventListener('DOMContentLoaded', init);
+      window.addEventListener('load', init); // Fallback
+    }
+    
+  })();
   </script>
   
 {{ else }}
