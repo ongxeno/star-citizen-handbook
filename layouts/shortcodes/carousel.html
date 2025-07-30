@@ -1,0 +1,103 @@
+ {{/*
+layouts/shortcodes/carousel.html
+Dynamic carousel that automatically finds images in a page bundle
+
+USAGE:
+1. **Page Bundle Approach (Recommended):**
+   - Create a page bundle: content/my-page/my-page.md
+   - Put images directly in: content/my-page/image1.jpg, content/my-page/image2.png, etc.
+   - Use: {{< carousel >}}
+   - Use: {{< carousel height="500px" interval="3000" >}}
+
+2. **Static Directory Approach (Limited):**
+   - Put images in: static/img/my-carousel/
+   - Use: {{< carousel path="img/my-carousel" >}}
+   - Note: Requires manual specification of images or theme customization
+
+PARAMETERS:
+- path: Optional. For static directory approach only.
+- height: Optional. Default "400px". Height of carousel images.
+- interval: Optional. Default "5000". Auto-advance interval in milliseconds.
+
+EXAMPLES:
+{{< carousel >}}                                    // Uses all images in page bundle
+{{< carousel height="300px" >}}                     // Custom height
+{{< carousel height="500px" interval="8000" >}}     // Custom height and timing
+*/}}
+
+{{ $path := .Get "path" }}
+{{ $height := .Get "height" | default "400px" }}
+{{ $interval := .Get "interval" | default "5000" }}
+
+{{ $images := slice }}
+
+{{/* If path is specified, try to get images from static directory */}}
+{{ if $path }}
+  {{/* For static files, we can't dynamically read directory, so this requires manual specification */}}
+  {{/* This is a limitation - static directories can't be scanned dynamically in Hugo */}}
+  <div class="alert alert-warning">
+    <p><strong>Note:</strong> Static directory scanning not implemented. Please use page bundle approach by putting images directly in the page bundle folder and omit the path parameter.</p>
+  </div>
+{{ else }}
+  {{/* Use page bundle resources - this is the recommended approach */}}
+  {{ if .Page.Resources }}
+    {{ range .Page.Resources }}
+      {{ if (findRE "(?i)\\.(jpe?g|png|gif|webp)$" .Name) }}
+        {{ $images = $images | append (dict "Name" .Name "RelPermalink" .RelPermalink) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if $images }}
+  {{/* Create unique carousel ID */}}
+  {{ $carouselID := printf "carousel-%d" .Ordinal }}
+  
+  <div id="{{ $carouselID }}" class="carousel slide" style="margin-bottom: 30px;">
+    {{/* Indicators (Bootstrap 3 style) */}}
+    <ol class="carousel-indicators">
+      {{ range $index, $image := $images }}
+      <li data-target="#{{ $carouselID }}" data-slide-to="{{ $index }}" {{ if eq $index 0 }}class="active"{{ end }}></li>
+      {{ end }}
+    </ol>
+    
+    {{/* Carousel inner content */}}
+    <div class="carousel-inner" role="listbox">
+      {{ range $index, $image := $images }}
+      <div class="item {{ if eq $index 0 }}active{{ end }}">
+        <img src="{{ $image.RelPermalink }}" alt="Carousel Image {{ add $index 1 }}" style="width: 100%; height: {{ $height }}; object-fit: cover;">
+      </div>
+      {{ end }}
+    </div>
+    
+    {{/* Controls (Bootstrap 3 style) */}}
+    <a class="left carousel-control" href="#{{ $carouselID }}" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#{{ $carouselID }}" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+  
+  {{/* Initialize carousel with JavaScript */}}
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    $('#{{ $carouselID }}').carousel({
+      interval: {{ $interval }},
+      pause: 'hover'
+    });
+  });
+  </script>
+  
+{{ else }}
+  <div class="alert alert-info">
+    <p><strong>No images found for carousel.</strong></p>
+    <p>To use this carousel:</p>
+    <ul>
+      <li><strong>Page Bundle approach:</strong> Put images directly in the same folder as your .md file</li>
+      <li><strong>Static folder approach:</strong> Specify path parameter like <code>{{ printf "{{< carousel path=\"img/my-folder\" >}}" }}</code></li>
+    </ul>
+  </div>
+{{ end }}

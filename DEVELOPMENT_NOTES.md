@@ -11,3 +11,8 @@
 - **Anchors**: Use English IDs for Thai headings (`{#getting-up}`)
 - **Files**: kebab-case names, avoid special characters in images
 - **Testing**: Always verify table of contents navigation works
+
+## Interactive Elements
+- **Image Carousel**: See `CAROUSEL_GUIDE.md` for static carousel implementation
+- **Dynamic Carousel**: See `CAROUSEL_GUIDE_DYNAMIC.md` for automatic image loading system  
+- **Components**: Keep all code self-contained in markdown files for deployment safety
