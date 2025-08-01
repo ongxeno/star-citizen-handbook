@@ -18,6 +18,7 @@ import os
 import sys
 import json
 import re
+import argparse
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
@@ -363,6 +364,220 @@ class HugoBlogGenerator:
         except Exception as e:
             print(f"⚠️  Could not update category index: {e}")
     
+    def generate_ship_handbook(self, ship_name: str) -> str:
+        """Generate a ship handbook using the standardized template"""
+        print(f"🛸 Starting Ship Handbook generation for: '{ship_name}'")
+        print("=" * 60)
+        
+        try:
+            # Step 1: Load template
+            template_path = self.script_dir / "ship-handbook-template.md"
+            with open(template_path, 'r', encoding='utf-8') as f:
+                template_content = f.read()
+            
+            # Step 2: Generate ship data using AI
+            ship_data = self.generate_ship_data(ship_name)
+            
+            # Step 3: Replace placeholders in template
+            complete_content = self.populate_ship_template(template_content, ship_data, ship_name)
+            
+            # Step 4: Generate content for each section
+            final_content = self.generate_ship_sections(complete_content, ship_data, ship_name)
+            
+            # Step 5: Save to file
+            file_path = self.save_ship_handbook(final_content, ship_data)
+            
+            print("=" * 60)
+            print(f"🎉 Ship Handbook generation completed successfully!")
+            print(f"📁 File created: {file_path}")
+            print(f"🛸 Ship: {ship_name}")
+            
+            return file_path
+            
+        except Exception as e:
+            print(f"💥 Ship Handbook generation failed: {e}")
+            raise
+
+    def generate_ship_data(self, ship_name: str) -> Dict:
+        """Generate ship metadata and basic information"""
+        print("🔍 Step 1: Generating ship metadata...")
+        
+        prompt = f"""
+        You are a Star Citizen ship expert. Generate metadata and basic information for the ship: {ship_name}
+        
+        Provide the following information in JSON format:
+        - manufacturer: The ship manufacturer (e.g., "Drake", "RSI", "Aegis")
+        - ship_name: The exact ship name
+        - primary_role_description: Brief role description in English (e.g., "Multi-role Fighter", "Cargo Hauler")
+        - thai_subtitle: A catchy Thai subtitle for the guide
+        - thai_description: SEO-friendly Thai description (1-2 sentences)
+        - keywords: Array of 3-5 relevant English keywords
+        - thai_keyword: One relevant Thai keyword
+        - weight: A number 1-10 for ordering
+        - hero_shot_description: Brief description for hero image (e.g., "landing on a moon", "in combat")
+        - ship_name_slug: URL-friendly version of ship name (lowercase, hyphens)
+        
+        Return ONLY valid JSON.
+        """
+        
+        try:
+            response = self.cost_effective_model.generate_content(prompt)
+            
+            # Clean JSON response
+            response_text = response.text.strip()
+            if response_text.startswith('```json'):
+                response_text = response_text[7:]
+            if response_text.endswith('```'):
+                response_text = response_text[:-3]
+            response_text = response_text.strip()
+            
+            ship_data = json.loads(response_text)
+            print("✅ Ship metadata generated")
+            return ship_data
+        except Exception as e:
+            print(f"❌ Error generating ship data: {e}")
+            raise
+
+    def populate_ship_template(self, template_content: str, ship_data: Dict, ship_name: str) -> str:
+        """Replace placeholders in the template with actual data"""
+        print("🔧 Step 2: Populating template with ship data...")
+        
+        # Get current date
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        
+        # Replace placeholders
+        populated_content = template_content.replace("{{MANUFACTURER}}", ship_data.get('manufacturer', ''))
+        populated_content = populated_content.replace("{{SHIP_NAME}}", ship_data.get('ship_name', ship_name))
+        populated_content = populated_content.replace("{{PRIMARY_ROLE_DESCRIPTION}}", ship_data.get('primary_role_description', ''))
+        populated_content = populated_content.replace("{{THAI_SUBTITLE}}", ship_data.get('thai_subtitle', ''))
+        populated_content = populated_content.replace("{{DATE}}", current_date)
+        populated_content = populated_content.replace("{{WEIGHT}}", str(ship_data.get('weight', 5)))
+        populated_content = populated_content.replace("{{SHIP_NAME_SLUG}}", ship_data.get('ship_name_slug', ''))
+        populated_content = populated_content.replace("{{THAI_DESCRIPTION}}", ship_data.get('thai_description', ''))
+        populated_content = populated_content.replace("{{HERO_SHOT_DESCRIPTION}}", ship_data.get('hero_shot_description', ''))
+        
+        # Handle keywords
+        keywords = ship_data.get('keywords', [])
+        if len(keywords) >= 2:
+            populated_content = populated_content.replace("{{KEYWORD_1}}", keywords[0])
+            populated_content = populated_content.replace("{{KEYWORD_2}}", keywords[1])
+        
+        populated_content = populated_content.replace("{{THAI_KEYWORD}}", ship_data.get('thai_keyword', ''))
+        
+        print("✅ Template populated with ship data")
+        return populated_content
+
+    def generate_ship_sections(self, template_content: str, ship_data: Dict, ship_name: str) -> str:
+        """Generate content for each section using AI"""
+        print("✨ Step 3: Generating content for each section...")
+        
+        prompt = f"""
+        You are an expert Star Citizen ship guide writer. Generate detailed content for the ship: {ship_name}
+        
+        Using the template structure provided, generate natural, conversational Thai content for each section marked with "<!-- AI will generate ... -->".
+        
+        Template:
+        {template_content}
+        
+        **WRITING REQUIREMENTS:**
+        - Write in natural, conversational Thai (like a gamer talking to a friend)
+        - Use English for technical terms, ship names, and game mechanics
+        - Be informative and practical
+        - Include specific details about the ship's capabilities
+        - Use the exact same structure as the template
+        
+        **SECTIONS TO GENERATE:**
+        1. Overview and role description
+        2. Key features list
+        3. Important cautions
+        4. Entry/exit points
+        5. Cargo system information
+        6. Interior layout description
+        7. Flight characteristics
+        8. Component management details
+        9. Defensive capabilities
+        10. Ship comparisons
+        11. Encounter tactics
+        12. Suitable for list
+        13. Not suitable for list
+        14. Concluding paragraph
+        
+        Replace all "<!-- AI will generate ... -->" comments with actual content.
+        Return the complete markdown file with all sections filled in.
+        """
+        
+        try:
+            response = self.cost_effective_model.generate_content(prompt)
+            final_content = response.text.strip()
+            
+            # Clean up potential code block wrappers
+            if final_content.startswith("```markdown"):
+                final_content = final_content[10:]
+            if final_content.endswith("```"):
+                final_content = final_content[:-3]
+            
+            print("✅ All sections generated")
+            return final_content.strip()
+        except Exception as e:
+            print(f"❌ Error generating ship sections: {e}")
+            raise
+
+    def save_ship_handbook(self, content: str, ship_data: Dict) -> str:
+        """Save the ship handbook to a file"""
+        print("💾 Step 4: Saving ship handbook...")
+        
+        # Create file path
+        ship_slug = ship_data.get('ship_name_slug', 'unknown-ship')
+        file_path = self.content_dir / "ships" / f"{ship_slug}.md"
+        
+        # Ensure directory exists
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Write file
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        print(f"✅ Ship handbook saved to: {file_path}")
+        
+        # Update category index
+        self.update_ships_category_index(ship_data)
+        
+        return str(file_path)
+
+    def update_ships_category_index(self, ship_data: Dict):
+        """Update the ships category index with the new handbook"""
+        print("📝 Updating ships category index...")
+        
+        index_path = self.content_dir / "ships" / "_index.md"
+        if not index_path.exists():
+            print(f"⚠️  Ships index not found: {index_path}")
+            return
+        
+        try:
+            # Read existing index
+            with open(index_path, 'r', encoding='utf-8') as f:
+                index_content = f.read()
+            
+            # Create link entry
+            manufacturer = ship_data.get('manufacturer', '')
+            ship_name = ship_data.get('ship_name', '')
+            slug = ship_data.get('ship_name_slug', '')
+            description = ship_data.get('thai_description', '')
+            
+            title = f"{manufacturer} {ship_name}"
+            link_entry = f"\n- [{title}]({slug}) - {description}\n"
+            
+            # Append to the end
+            updated_content = index_content + link_entry
+            
+            # Write back
+            with open(index_path, 'w', encoding='utf-8') as f:
+                f.write(updated_content)
+            
+            print(f"✅ Updated ships category index")
+        except Exception as e:
+            print(f"⚠️  Could not update ships category index: {e}")
+
     def generate_blog_post(self, topic: str) -> str:
         """Main method to generate a complete blog post"""
         print(f"🎯 Starting blog generation for topic: '{topic}'")
@@ -398,16 +613,70 @@ class HugoBlogGenerator:
 
 def main():
     """Main entry point"""
-    if len(sys.argv) != 2:
-        print("Usage: python blog_generator.py \"topic for the blog post\"")
-        print("Example: python blog_generator.py \"Drake Cutlass Red medical ship guide\"")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description='AI-Powered Hugo Blog Post Generator for Star Citizen Handbook',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python blog_generator.py --mode ship "Anvil F7C Hornet"
+  python blog_generator.py --mode freestyle "Crime in the 'Verse"
+  python blog_generator.py "Drake Cutlass Red"  (interactive mode)
+        """
+    )
     
-    topic = sys.argv[1]
+    parser.add_argument(
+        'topic',
+        help='The topic or ship name for the blog post'
+    )
+    
+    parser.add_argument(
+        '--mode', '-m',
+        choices=['ship', 'freestyle'],
+        help='Content generation mode: "ship" for standardized ship handbook, "freestyle" for flexible content'
+    )
+    
+    args = parser.parse_args()
+    topic = args.topic
+    
+    # If mode is specified via command line, use it
+    if args.mode:
+        mode_choice = '1' if args.mode == 'ship' else '2'
+        mode_name = "Ship Handbook" if args.mode == 'ship' else "Free Style"
+        print(f"🚀 Star Citizen Handbook Generator")
+        print("=" * 40)
+        print(f"Mode: {mode_name}")
+        print(f"Topic: {topic}")
+        print()
+    else:
+        # Interactive mode selection
+        print("🚀 Star Citizen Handbook Generator")
+        print("=" * 40)
+        print("Please choose a content mode:")
+        print("1) Ship Handbook - Standardized ship guide format")
+        print("2) Free Style - Flexible content structure")
+        print()
+        
+        while True:
+            try:
+                mode_choice = input("Enter your choice (1 or 2): ").strip()
+                if mode_choice in ['1', '2']:
+                    break
+                else:
+                    print("❌ Please enter 1 or 2")
+            except KeyboardInterrupt:
+                print("\n👋 Goodbye!")
+                sys.exit(0)
     
     try:
         generator = HugoBlogGenerator()
-        generator.generate_blog_post(topic)
+        
+        if mode_choice == '1':
+            print(f"\n🛸 Generating Ship Handbook for: '{topic}'")
+            generator.generate_ship_handbook(topic)
+        else:
+            print(f"\n✨ Generating Free Style content for: '{topic}'")
+            generator.generate_blog_post(topic)
+            
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
