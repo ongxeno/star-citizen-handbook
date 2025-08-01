@@ -51,3 +51,9 @@ yarn.lock
 # Compiled CSS/JS (if using build tools)
 assets/css/compiled/
 assets/js/compiled/
+
+# AI Blog Generator
+generator/.env
+generator/__pycache__/
+generator/*.pyc
+generator/test_output/
