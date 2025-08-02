@@ -402,25 +402,15 @@ class HugoBlogGenerator:
         """Generate ship metadata and basic information"""
         print("🔍 Step 1: Generating ship metadata...")
         
-        prompt = f"""
-        You are a Star Citizen ship expert. Generate metadata and basic information for the ship: {ship_name}
-        
-        Provide the following information in JSON format:
-        - manufacturer: The ship manufacturer (e.g., "Drake", "RSI", "Aegis")
-        - ship_name: The exact ship name
-        - primary_role_description: Brief role description in English (e.g., "Multi-role Fighter", "Cargo Hauler")
-        - thai_subtitle: A catchy Thai subtitle for the guide
-        - thai_description: SEO-friendly Thai description (1-2 sentences)
-        - keywords: Array of 3-5 relevant English keywords
-        - thai_keyword: One relevant Thai keyword
-        - weight: A number 1-10 for ordering
-        - hero_shot_description: Brief description for hero image (e.g., "landing on a moon", "in combat")
-        - ship_name_slug: URL-friendly version of ship name (lowercase, hyphens)
-        
-        Return ONLY valid JSON.
-        """
-        
         try:
+            # Load the prompt from file
+            prompt_path = self.script_dir / "prompts" / "generate-ship-data.md"
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                prompt_template = f.read()
+            
+            # Replace placeholder
+            prompt = prompt_template.replace("{{SHIP_NAME}}", ship_name)
+
             response = self.cost_effective_model.generate_content(prompt)
             
             # Clean JSON response
@@ -434,6 +424,9 @@ class HugoBlogGenerator:
             ship_data = json.loads(response_text)
             print("✅ Ship metadata generated")
             return ship_data
+        except FileNotFoundError:
+            print(f"    ❌ Error: Prompt file not found at prompts/generate-ship-data.md")
+            raise
         except Exception as e:
             print(f"❌ Error generating ship data: {e}")
             raise
@@ -468,59 +461,146 @@ class HugoBlogGenerator:
         return populated_content
 
     def generate_ship_sections(self, template_content: str, ship_data: Dict, ship_name: str) -> str:
-        """Generate content for each section using AI"""
+        """Generate content for each section using individual focused prompts"""
         print("✨ Step 3: Generating content for each section...")
         
-        prompt = f"""
-        You are an expert Star Citizen ship guide writer. Generate detailed content for the ship: {ship_name}
+        # List of section prompts to process
+        section_prompts = [
+            "section-1-overview.md",
+            "section-2-exterior.md", 
+            "section-3-interior.md",
+            "section-4-flight.md",
+            "section-5-components.md",
+            "section-6-defenses.md",
+            "section-7-comparisons.md",
+            "section-8-tactics.md",
+            "section-9-who-is-this-for.md"
+        ]
         
-        Using the template structure provided, generate natural, conversational Thai content for each section marked with "<!-- AI will generate ... -->".
+        generated_sections = {}
         
-        Template:
-        {template_content}
+        # Generate each section individually
+        for i, prompt_file in enumerate(section_prompts, 1):
+            print(f"  📝 Generating section {i}/9: {prompt_file}")
+            
+            try:
+                # Load the section prompt
+                prompt_path = self.script_dir / "prompts" / prompt_file
+                with open(prompt_path, 'r', encoding='utf-8') as f:
+                    section_prompt = f.read()
+                
+                # Replace placeholders in the prompt
+                section_prompt = section_prompt.replace("{{SHIP_NAME}}", ship_data.get('ship_name', ship_name))
+                section_prompt = section_prompt.replace("{{MANUFACTURER}}", ship_data.get('manufacturer', ''))
+                
+                # Generate content for this section
+                response = self.deep_research_model.generate_content(section_prompt)
+                section_content = response.text.strip()
+                
+                # Clean up potential code block wrappers
+                if section_content.startswith("```markdown"):
+                    section_content = section_content[10:]
+                if section_content.endswith("```"):
+                    section_content = section_content[:-3]
+                
+                # Store the generated section
+                section_key = f"section_{i}"
+                generated_sections[section_key] = section_content.strip()
+                
+                print(f"    ✅ Section {i} completed")
+                
+            except Exception as e:
+                print(f"    ❌ Error generating section {i}: {e}")
+                # Use placeholder content if generation fails
+                generated_sections[section_key] = f"<!-- Section {i} generation failed -->"
         
-        **WRITING REQUIREMENTS:**
-        - Write in natural, conversational Thai (like a gamer talking to a friend)
-        - Use English for technical terms, ship names, and game mechanics
-        - Be informative and practical
-        - Include specific details about the ship's capabilities
-        - Use the exact same structure as the template
+        # Now combine all sections into a body section
+        print("  🔧 Combining all sections into body content...")
+        body_content = self.combine_sections_into_body(generated_sections)
         
-        **SECTIONS TO GENERATE:**
-        1. Overview and role description
-        2. Key features list
-        3. Important cautions
-        4. Entry/exit points
-        5. Cargo system information
-        6. Interior layout description
-        7. Flight characteristics
-        8. Component management details
-        9. Defensive capabilities
-        10. Ship comparisons
-        11. Encounter tactics
-        12. Suitable for list
-        13. Not suitable for list
-        14. Concluding paragraph
+        # Polish the entire body content using deep research model
+        print("  ✨ Polishing body content with deep research model...")
+        polished_body = self.polish_thai_content(body_content)
         
-        Replace all "<!-- AI will generate ... -->" comments with actual content.
-        Return the complete markdown file with all sections filled in.
-        """
+        # Finally combine the polished body with the template
+        print("  📝 Assembling final content with template...")
+        final_content = self.combine_body_with_template(template_content, polished_body)
+        
+        print("✅ All sections generated, combined, and polished")
+        return final_content
+
+    def combine_sections_into_body(self, generated_sections: Dict[str, str]) -> str:
+        """Combine all generated sections into a single body content"""
+        
+        # The sections are already in the correct order (1-9)
+        body_parts = []
+        
+        for i in range(1, 10):  # sections 1-9
+            section_key = f"section_{i}"
+            if section_key in generated_sections:
+                section_content = generated_sections[section_key].strip()
+                if section_content and not section_content.startswith("<!-- Section"):
+                    body_parts.append(section_content)
+        
+        # Join all sections with double newlines
+        body_content = "\n\n".join(body_parts)
+        return body_content
+    
+    def combine_body_with_template(self, template_content: str, polished_body: str) -> str:
+        """Combine the polished body content with the template structure"""
+        
+        # Replace the single body placeholder with the polished content
+        body_placeholder = "<!-- AI will generate body content -->"
+        
+        if body_placeholder in template_content:
+            final_content = template_content.replace(body_placeholder, polished_body)
+            return final_content
+        
+        # Fallback: if placeholder not found, insert after table of contents
+        toc_end_marker = "9. [ยานลำนี้เหมาะกับใคร?](#who-is-this-for)"
+        
+        if toc_end_marker in template_content:
+            parts = template_content.split(toc_end_marker, 1)
+            if len(parts) == 2:
+                before_body = parts[0] + toc_end_marker + "\n\n"
+                after_body = parts[1]
+                final_content = before_body + polished_body + after_body
+                return final_content
+        
+        # Last resort: append to the end
+        return template_content + "\n\n" + polished_body
+
+    def polish_thai_content(self, content: str) -> str:
+        """Polish the Thai content using deep research model for more natural language"""
         
         try:
-            response = self.cost_effective_model.generate_content(prompt)
-            final_content = response.text.strip()
+            # Load the polishing prompt from file
+            prompt_path = self.script_dir / "prompts" / "polish-thai-content.md"
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                prompt_template = f.read()
+            
+            # Replace placeholder with actual content
+            prompt = prompt_template.replace("{{CONTENT}}", content)
+
+            response = self.deep_research_model.generate_content(prompt)
+            polished_content = response.text.strip()
             
             # Clean up potential code block wrappers
-            if final_content.startswith("```markdown"):
-                final_content = final_content[10:]
-            if final_content.endswith("```"):
-                final_content = final_content[:-3]
+            if polished_content.startswith("```markdown"):
+                polished_content = polished_content[10:]
+            if polished_content.endswith("```"):
+                polished_content = polished_content[:-3]
             
-            print("✅ All sections generated")
-            return final_content.strip()
+            print("    ✅ Content polished for natural Thai language")
+            return polished_content.strip()
+        except FileNotFoundError:
+            print(f"    ❌ Error: Polishing prompt file not found at prompts/polish-thai-content.md")
+            print("    📝 Using original content")
+            return content
         except Exception as e:
-            print(f"❌ Error generating ship sections: {e}")
-            raise
+            print(f"    ⚠️  Warning: Content polishing failed: {e}")
+            print("    📝 Using original content")
+            return content
 
     def save_ship_handbook(self, content: str, ship_data: Dict) -> str:
         """Save the ship handbook to a file"""
