@@ -72,6 +72,6 @@ lastmod: 2025-07-18
 
 ### **🖥️ สภาพแวดล้อมเซิร์ฟเวอร์**
 
-* [รู้จักทุกเซิร์ฟเวอร์ Star Citizen: LIVE, PTU, ePTU, HOTFIX 🚀](star-citizen-server-environments-live-ptu-eptu-hotfix/) - LIVE, PTU, ePTU, HOTFIX และการใช้งานแต่ละประเภท
+* [รู้จักทุกเซิร์ฟเวอร์ Star Citizen: LIVE, PTU, ePTU, HOTFIX](star-citizen-server-environments-live-ptu-eptu-hotfix/) 🚀
 
 *ข้อมูลระบบเกมอัปเดตสำหรับ Star Citizen Alpha 4.2.1*
