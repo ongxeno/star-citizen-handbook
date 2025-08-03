@@ -96,61 +96,13 @@ class HugoBlogGenerator:
         """Step 1: Generate Hugo front matter and content outline"""
         print("🏗️  Step 1: Generating blog structure and outline...")
         
-        prompt = f"""
-        You are an expert Hugo content creator and Star Citizen game expert. You will be creating content for a Thai audience, but some parts of the metadata must be in English for technical reasons.
-
-        Topic: {topic}
-
-        Generate a complete blog structure with:
-        1. Hugo front matter in YAML format.
-        2. A content outline with main sections.
-        3. The appropriate category.
-
-        **CRITICAL RULES:**
-        - **English-only for Metadata:** `slug`, `category`, `tags`, and `categories` (in front_matter) MUST be in English.
-        - **Thai for User Content:** `title`, `subtitle`, `description`, and the `outline` MUST be in natural, conversational Thai. The writing style should be like a gamer talking to a friend, not a formal translation.
-
-        **DETAILED REQUIREMENTS:**
-        - **`slug`**: URL-friendly, English, based on the topic.
-        - **`category`**: Must be one of: "ships", "concepts", "guides".
-        - **`tags`**: A list of relevant English tags.
-        - **`categories` (in front_matter)**: A list containing the single English category from above.
-        - **`title` / `subtitle`**: Catchy and informative in Thai, with appropriate emoji.
-        - **`description`**: SEO-friendly and written in natural Thai.
-        - **`outline`**: All section and subsection titles must be in Thai. `anchor_id` must be in English.
-        - **`date`**: Today's date.
-        - **`game_version`**: "Alpha 4.2.1".
-        - **`image`**: A placeholder path, e.g., "img/category/slug/hero_image.jpg".
-
-        Return ONLY a valid JSON object with this structure:
-        {{
-            "front_matter": {{
-                "title": "Thai title with emoji",
-                "subtitle": "Thai subtitle",
-                "date": "YYYY-MM-DD",
-                "lastmod": "YYYY-MM-DD",
-                "draft": false,
-                "game_version": "Alpha 4.2.1",
-                "tags": ["english-tag1", "english-tag2"],
-                "categories": ["english-category"],
-                "author": "Star Citizen Handbook Team",
-                "weight": 5,
-                "image": "img/category/slug/hero_image.jpg",
-                "description": "Thai description"
-            }},
-            "category": "ships|concepts|guides",
-            "slug": "english-url-friendly-slug",
-            "outline": [
-                {{
-                    "section": "Thai section title",
-                    "subsections": ["Thai subsection 1", "Thai subsection 2"],
-                    "anchor_id": "english-anchor-id"
-                }}
-            ]
-        }}
-        """
-        
         try:
+            prompt_path = self.script_dir / "prompts" / "deep-research" / "step1_generate_structure.md"
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                prompt_template = f.read()
+            
+            prompt = prompt_template.replace("{{TOPIC}}", topic)
+
             response = self.cost_effective_model.generate_content(prompt)
             
             # Debug: Print raw response
@@ -185,26 +137,14 @@ class HugoBlogGenerator:
         """Step 2: Create detailed research prompt based on structure"""
         print("🔍 Step 2: Creating deep research prompt...")
         
-        prompt = f"""
-        You are an AI research coordinator. Based on the blog structure and topic provided, create a comprehensive research prompt that will guide a deep research AI to gather all necessary information.
-        
-        Original Topic: {topic}
-        Blog Structure: {json.dumps(structure, indent=2, ensure_ascii=False)}
-        
-        Create a detailed research prompt that:
-        1. Clearly defines what information is needed for each section
-        2. Specifies the depth of research required
-        3. Includes specific Star Citizen game mechanics, lore, or technical details needed
-        4. Requests current game information (Alpha 4.2.1)
-        5. Asks for practical examples and use cases
-        6. Requests both beginner-friendly and advanced information where appropriate
-        
-        The research prompt should be comprehensive and specific to ensure the research AI can gather all necessary data to create a complete, informative blog post.
-        
-        Return only the research prompt text (no JSON wrapper).
-        """
-        
         try:
+            prompt_path = self.script_dir / "prompts" / "deep-research" / "step2_create_research_prompt.md"
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                prompt_template = f.read()
+
+            prompt = prompt_template.replace("{{TOPIC}}", topic)
+            prompt = prompt.replace("{{STRUCTURE}}", json.dumps(structure, indent=2, ensure_ascii=False))
+
             response = self.cost_effective_model.generate_content(prompt)
             research_prompt = response.text.strip()
             print("✅ Research prompt created")
@@ -230,45 +170,15 @@ class HugoBlogGenerator:
         """Step 4: Format research data into complete blog post"""
         print("✨ Step 4: Formatting and polishing blog content...")
         
-        prompt = f"""
-        You are an expert Hugo content creator and Star Citizen specialist writing for Thai players. Your primary goal is to produce content that is natural, engaging, and sounds like a real gamer talking to another gamer.
-
-        Original Topic: {topic}
-        Blog Structure: {json.dumps(structure, indent=2, ensure_ascii=False)}
-        Research Data: {research_data}
-
-        Create a complete, polished blog post in Markdown format.
-
-        **WRITING STYLE (MOST IMPORTANT):**
-        - **Natural & Conversational Thai:** Write in a natural, flowing Thai style. The tone should be friendly, engaging, and like a knowledgeable gamer sharing tips with a friend.
-        - **AVOID "TRANSLATED" LANGUAGE:** Do not write in a way that sounds like a direct, literal translation from English. Use common Thai gamer slang and phrasing where appropriate.
-        - **Helpful & Informative:** The tone should be helpful and easy to understand for both new and experienced players.
-
-        CONTENT REQUIREMENTS:
-        - Write ENTIRELY in Thai language (except for specific technical terms, ship names, code, and anchor IDs).
-        - Use the research data to fill out the sections defined in the blog structure.
-        - Include appropriate emoji throughout the content to make it more lively.
-        - Create a table of contents (สารบัญ) at the beginning with clickable anchor links.
-        - Add practical examples, pro-tips, and warnings.
-        - Include relevant Star Citizen terminology.
-
-        FORMATTING REQUIREMENTS:
-        - Use proper Markdown syntax.
-        - Create manual anchor IDs in English for all H2 and H3 headers: `## หัวข้อภาษาไทย {{ #english-anchor-id }}`
-        - Use H2 for main sections and H3 for subsections as defined in the outline.
-        - Use blockquotes (`>`) for important tips or warnings.
-        - Use tables for comparative data (e.g., ship stats).
-        - Include placeholder comments for images: `<!-- Photo: คำอธิบายรูปภาพภาษาไทย -->`
-
-        HUGO-SPECIFIC REQUIREMENTS:
-        - **Do NOT include front matter.** It will be added in a later step.
-        - Avoid making up Hugo shortcodes. Use standard Markdown.
-        - Ensure the final output is only the raw Markdown body of the article.
-
-        Return only the Markdown content (no front matter, no code block wrappers).
-        """
-        
         try:
+            prompt_path = self.script_dir / "prompts" / "deep-research" / "step4_format_content.md"
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                prompt_template = f.read()
+            
+            prompt = prompt_template.replace("{{TOPIC}}", topic)
+            prompt = prompt.replace("{{STRUCTURE}}", json.dumps(structure, indent=2, ensure_ascii=False))
+            prompt = prompt.replace("{{RESEARCH_DATA}}", research_data)
+
             response = self.cost_effective_model.generate_content(prompt)
             formatted_content = response.text.strip()
             
@@ -404,7 +314,7 @@ class HugoBlogGenerator:
         
         try:
             # Load the prompt from file
-            prompt_path = self.script_dir / "prompts" / "generate-ship-data.md"
+            prompt_path = self.script_dir / "prompts" / "ships" / "generate-ship-data.md"
             with open(prompt_path, 'r', encoding='utf-8') as f:
                 prompt_template = f.read()
             
@@ -425,7 +335,7 @@ class HugoBlogGenerator:
             print("✅ Ship metadata generated")
             return ship_data
         except FileNotFoundError:
-            print(f"    ❌ Error: Prompt file not found at prompts/generate-ship-data.md")
+            print(f"    ❌ Error: Prompt file not found at {prompt_path}")
             raise
         except Exception as e:
             print(f"❌ Error generating ship data: {e}")
@@ -485,7 +395,7 @@ class HugoBlogGenerator:
             
             try:
                 # Load the section prompt
-                prompt_path = self.script_dir / "prompts" / prompt_file
+                prompt_path = self.script_dir / "prompts" / "ships" / prompt_file
                 with open(prompt_path, 'r', encoding='utf-8') as f:
                     section_prompt = f.read()
                 
@@ -575,7 +485,7 @@ class HugoBlogGenerator:
         
         try:
             # Load the polishing prompt from file
-            prompt_path = self.script_dir / "prompts" / "polish-thai-content.md"
+            prompt_path = self.script_dir / "prompts" / "ships" / "polish-thai-content.md"
             with open(prompt_path, 'r', encoding='utf-8') as f:
                 prompt_template = f.read()
             
@@ -594,7 +504,7 @@ class HugoBlogGenerator:
             print("    ✅ Content polished for natural Thai language")
             return polished_content.strip()
         except FileNotFoundError:
-            print(f"    ❌ Error: Polishing prompt file not found at prompts/polish-thai-content.md")
+            print(f"    ❌ Error: Polishing prompt file not found at {prompt_path}")
             print("    📝 Using original content")
             return content
         except Exception as e:
@@ -691,6 +601,59 @@ class HugoBlogGenerator:
             print(f"💥 Blog generation failed: {e}")
             raise
 
+    def generate_short_article(self, topic: str) -> str:
+        """Generates a complete short article in a single step."""
+        print(f"✍️  Starting Short Article generation for: '{topic}'")
+        print("=" * 60)
+
+        try:
+            # Step 1: Load the prompt template
+            prompt_path = self.script_dir / "prompts" / "short-article" / "short-article.md"
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                prompt_template = f.read()
+            
+            # Step 2: Create the final prompt
+            prompt = prompt_template.replace("{{TOPIC}}", topic)
+            
+            # Step 3: Generate content and structure from AI
+            print("🤖 Calling AI to generate the article...")
+            response = self.deep_research_model.generate_content(prompt)
+            
+            # Clean and parse JSON response
+            response_text = response.text.strip()
+            if response_text.startswith('```json'):
+                response_text = response_text[7:]
+            if response_text.endswith('```'):
+                response_text = response_text[:-3]
+            response_text = response_text.strip()
+            
+            result_data = json.loads(response_text)
+            structure = result_data['structure']
+            content = result_data['content']
+            print("✅ AI generation complete.")
+
+            # Step 4: Integrate into Hugo project
+            file_path = self.step5_integrate_content(structure, content)
+            
+            print("=" * 60)
+            print(f"🎉 Short article generation completed successfully!")
+            print(f"📁 File created: {file_path}")
+            print(f"🏷️  Category: {structure['category']}")
+            print(f"🔗 Slug: {structure['slug']}")
+            
+            return file_path
+
+        except FileNotFoundError:
+            print(f"❌ Error: Prompt file not found at {prompt_path}")
+            raise
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON parsing error in Short Article generation: {e}")
+            print(f"🔍 Response text: {response.text}")
+            raise
+        except Exception as e:
+            print(f"💥 Short Article generation failed: {e}")
+            raise
+
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
@@ -699,7 +662,8 @@ def main():
         epilog="""
 Examples:
   python blog_generator.py --mode ship "Anvil F7C Hornet"
-  python blog_generator.py --mode freestyle "Crime in the 'Verse"
+  python blog_generator.py --mode deep-research "Crime in the 'Verse"
+  python blog_generator.py --mode short-article "What is LTI?"
   python blog_generator.py "Drake Cutlass Red"  (interactive mode)
         """
     )
@@ -711,8 +675,8 @@ Examples:
     
     parser.add_argument(
         '--mode', '-m',
-        choices=['ship', 'freestyle'],
-        help='Content generation mode: "ship" for standardized ship handbook, "freestyle" for flexible content'
+        choices=['ship', 'deep-research', 'short-article'],
+        help='Content generation mode: "ship" for standardized ship handbook, "deep-research" for flexible content, "short-article" for a brief article.'
     )
     
     args = parser.parse_args()
@@ -720,8 +684,16 @@ Examples:
     
     # If mode is specified via command line, use it
     if args.mode:
-        mode_choice = '1' if args.mode == 'ship' else '2'
-        mode_name = "Ship Handbook" if args.mode == 'ship' else "Free Style"
+        if args.mode == 'ship':
+            mode_choice = '1'
+            mode_name = "Ship Handbook"
+        elif args.mode == 'deep-research':
+            mode_choice = '2'
+            mode_name = "Deep Research"
+        else: # short-article
+            mode_choice = '3'
+            mode_name = "Short Article"
+
         print(f"🚀 Star Citizen Handbook Generator")
         print("=" * 40)
         print(f"Mode: {mode_name}")
@@ -733,16 +705,17 @@ Examples:
         print("=" * 40)
         print("Please choose a content mode:")
         print("1) Ship Handbook - Standardized ship guide format")
-        print("2) Free Style - Flexible content structure")
+        print("2) Deep Research - Flexible content structure")
+        print("3) Short Article - Quick, concise article")
         print()
         
         while True:
             try:
-                mode_choice = input("Enter your choice (1 or 2): ").strip()
-                if mode_choice in ['1', '2']:
+                mode_choice = input("Enter your choice (1, 2, or 3): ").strip()
+                if mode_choice in ['1', '2', '3']:
                     break
                 else:
-                    print("❌ Please enter 1 or 2")
+                    print("❌ Please enter 1, 2, or 3")
             except KeyboardInterrupt:
                 print("\n👋 Goodbye!")
                 sys.exit(0)
@@ -753,9 +726,12 @@ Examples:
         if mode_choice == '1':
             print(f"\n🛸 Generating Ship Handbook for: '{topic}'")
             generator.generate_ship_handbook(topic)
-        else:
-            print(f"\n✨ Generating Free Style content for: '{topic}'")
+        elif mode_choice == '2':
+            print(f"\n✨ Generating Deep Research content for: '{topic}'")
             generator.generate_blog_post(topic)
+        else: # mode_choice == '3'
+            print(f"\n✍️  Generating Short Article for: '{topic}'")
+            generator.generate_short_article(topic)
             
     except Exception as e:
         print(f"Error: {e}")
