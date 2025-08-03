@@ -21,6 +21,7 @@ Your task is to take a given topic and generate a complete, ready-to-publish blo
     *   `image`: Create a logical placeholder path, e.g., `img/category/slug/hero.jpg`.
     *   `date` / `lastmod`: Use today's date.
     *   `game_version`: "Alpha 4.2.1".
+5.  **Cover Image Prompt** Create prompt for the perfect cover image that looks interesting and fitting with the content of this article.
 5.  **Formatting:**
     *   The body of the article must be in proper Markdown.
     *   Use H2 (`##`) for main headings.
@@ -51,6 +52,8 @@ Return **ONLY** a single, valid JSON object. Do not include any other text or co
     "category": "ships|concepts|guides",
     "slug": "english-url-friendly-slug"
   },
-  "content": "The complete, polished Markdown content of the article, written in natural Thai. It should be between 300 and 500 words."
+  "content": "<!-- Cover Image Prompt -->
+  
+  The complete, polished Markdown content of the article, written in natural Thai. It should be between 300 and 500 words."
 }
 ```

@@ -32,10 +32,10 @@ Generate ONLY the "การจัดการส่วนประกอบ" se
 [Brief introduction about the ship's component loadout and upgrade potential]
 
 [List the default components in a clear format:
-- **Power Plant:** [Size and default component name]
-- **Coolers:** [Size, quantity, and default component names]
-- **Shield Generator:** [Size, quantity, and default component names]
-- **Quantum Drive:** [Size and default component name]
+- **Power Plant:** [Size and default `component name`]
+- **Coolers:** [Size, quantity, and default `component names`]
+- **Shield Generator:** [Size, quantity, and default `component names`]
+- **Quantum Drive:** [Size and default `component name`]
 - [Any other notable components]
 
 Include upgrade recommendations and notes about component quality/performance.]

@@ -38,7 +38,7 @@ Generate ONLY the "การออกแบบภายนอกและระ�
 
 ### ระบบขนส่งสินค้า {#cargo-system}
 
-[Describe the cargo capacity in SCU, loading mechanisms, and accessibility. Include practical tips for cargo operations if applicable.]
+[Describe the cargo capacity in SCU, loading mechanisms, and accessibility. Include practical tips for cargo operations if applicable. If the ship doesn't have any cargo carrying capability at all, just say so and move on.]
 ```
 
 Generate detailed, informative content for each subsection. Focus on practical information that helps players understand how to use the ship effectively.
