@@ -96,15 +96,15 @@ description: "คู่มือฉบับสมบูรณ์เกี่ย
 <tbody>
 <tr><td>ซื้อในเกม</td><td style="text-align:center;">ไม่มี</td><td style="text-align:center;">-</td><td>ไม่ได้อะไรเลย</td></tr>
 <tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 1</td><td style="text-align:center;">-</td><td>💰 ได้เงินค่ายานคืน</td></tr>
-<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 2</td><td style="text-align:center;">-</td><td>💰 ได้เงินค่ายานและ 🛠️ components ที่ upgrade ไว้คืน</td></tr>
-<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 3</td><td style="text-align:center;">-</td><td>💰 ได้เงินค่ายาน 🛠️ component และ 🖼️ ของตกแต่ง คืน</td></tr>
+<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 2</td><td style="text-align:center;">-</td><td>💰 ได้เงินค่ายานและมูลค่า components ที่ upgrade ไว้คืน</td></tr>
+<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 3</td><td style="text-align:center;">-</td><td>💰 ได้เงินค่ายาน มูลค่า component และ มูลค่าของตกแต่ง คืน</td></tr>
 <tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 1</td><td style="text-align:center;">โอนย้ายได้</td><td>🚀 ได้ยานกลับมา</td></tr>
-<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 2</td><td style="text-align:center;">โอนย้ายได้</td><td>🚀 ได้ยาน และ 🛠️ component เป็นแบบที่ upgrade ไว้กลับมา</td></tr>
-<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 3</td><td style="text-align:center;">โอนย้ายได้</td><td>🚀 ได้ยาน 🛠️ component เป็นแบบที่ upgrade และ 📦 ของในยานกลับมา</td></tr>
+<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 2</td><td style="text-align:center;">โอนย้ายได้</td><td>🚀 ได้ยาน และ 🛠️ component ที่ upgrade ไว้กลับมา</td></tr>
+<tr><td>ซื้อในเกม</td><td style="text-align:center;">Level 3</td><td style="text-align:center;">โอนย้ายได้</td><td>🚀 ได้ยาน 🛠️ component ที่ upgrade ไว้ และ 📦 ของในยานกลับมา</td></tr>
 <tr><td>Pledge Store</td><td style="text-align:center;">หมดอายุ</td><td style="text-align:center;">ถาวร</td><td>💸 จ่ายค่าธรรมเนียม 🚀 ได้ยานกลับมา</td></tr>
 <tr><td>Pledge Store</td><td style="text-align:center;">Level 1</td><td style="text-align:center;">ถาวร</td><td>🚀 ได้ยานกลับมา</td></tr>
-<tr><td>Pledge Store</td><td style="text-align:center;">Level 2</td><td style="text-align:center;">ถาวร</td><td>🚀 ได้ยานและ 🛠️ components ที่ upgrade ไว้กลับมา</td></tr>
-<tr><td>Pledge Store</td><td style="text-align:center;">Level 3</td><td style="text-align:center;">ถาวร</td><td>🚀 ได้ยาน 🛠️ component เป็นแบบที่ upgrade และ 📦 ของในยานกลับมา</td></tr>
+<tr><td>Pledge Store</td><td style="text-align:center;">Level 2</td><td style="text-align:center;">ถาวร</td><td>🚀 ได้ยานและ 🛠️ component ที่ upgrade ไว้กลับมา</td></tr>
+<tr><td>Pledge Store</td><td style="text-align:center;">Level 3</td><td style="text-align:center;">ถาวร</td><td>🚀 ได้ยาน 🛠️ component ที่ upgrade ไว้ และ 📦 ของในยานกลับมา</td></tr>
 </tbody>
 </table>
 
