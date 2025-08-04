@@ -601,9 +601,11 @@ class HugoBlogGenerator:
             print(f"💥 Blog generation failed: {e}")
             raise
 
-    def generate_short_article(self, topic: str) -> str:
+    def generate_short_article(self, topic: str, context_sources: Optional[List[str]] = None) -> str:
         """Generates a complete short article in a single step."""
         print(f"✍️  Starting Short Article generation for: '{topic}'")
+        if context_sources:
+            print(f"📚 Using {len(context_sources)} additional context source(s)")
         print("=" * 60)
 
         try:
@@ -612,8 +614,18 @@ class HugoBlogGenerator:
             with open(prompt_path, 'r', encoding='utf-8') as f:
                 prompt_template = f.read()
             
-            # Step 2: Create the final prompt
+            # Step 2: Create the final prompt with context sources
             prompt = prompt_template.replace("{{TOPIC}}", topic)
+            
+            # Add context sources if provided
+            if context_sources and len(context_sources) > 0:
+                context_section = "\n\n## Additional Context Sources:\n"
+                for i, source in enumerate(context_sources, 1):
+                    context_section += f"{i}. {source}\n"
+                context_section += "\nNote: Please use these sources as reference material alongside your existing knowledge. You are not limited to only these sources - feel free to incorporate your broader understanding of Star Citizen and related topics.\n"
+                prompt = prompt.replace("{{CONTEXT_SOURCES}}", context_section)
+            else:
+                prompt = prompt.replace("{{CONTEXT_SOURCES}}", "")
             
             # Step 3: Generate content and structure from AI
             print("🤖 Calling AI to generate the article...")
@@ -664,6 +676,8 @@ Examples:
   python blog_generator.py --mode ship "Anvil F7C Hornet"
   python blog_generator.py --mode deep-research "Crime in the 'Verse"
   python blog_generator.py --mode short-article "What is LTI?"
+  python blog_generator.py --mode short-article "Chairman's Club" --context "https://robertsspaceindustries.com/comm-link/transmission/12978-Introducing-The-Chairman-s-Club"
+  python blog_generator.py --mode short-article "New Ship Sale" --context "https://rsi.com/sale-page" "Additional reference material"
   python blog_generator.py "Drake Cutlass Red"  (interactive mode)
         """
     )
@@ -677,6 +691,12 @@ Examples:
         '--mode', '-m',
         choices=['ship', 'deep-research', 'short-article'],
         help='Content generation mode: "ship" for standardized ship handbook, "deep-research" for flexible content, "short-article" for a brief article.'
+    )
+    
+    parser.add_argument(
+        '--context', '-c',
+        nargs='*',
+        help='Additional context sources (URLs, references, etc.) for short-article mode. Can be used multiple times.'
     )
     
     args = parser.parse_args()
@@ -731,7 +751,34 @@ Examples:
             generator.generate_blog_post(topic)
         else: # mode_choice == '3'
             print(f"\n✍️  Generating Short Article for: '{topic}'")
-            generator.generate_short_article(topic)
+            
+            # Handle context sources
+            if args.mode:
+                # Command line mode - use provided context
+                context_sources = args.context if args.context else None
+            else:
+                # Interactive mode - ask for context sources
+                context_sources = []
+                print("\n📚 Optional: Add context sources (URLs, references, etc.)")
+                print("   Press Enter without typing anything to skip.")
+                print("   Type 'done' when finished adding sources.")
+                
+                while True:
+                    try:
+                        source = input("   Enter source (or 'done'): ").strip()
+                        if source == '' or source.lower() == 'done':
+                            break
+                        context_sources.append(source)
+                        print(f"   ✅ Added: {source}")
+                    except KeyboardInterrupt:
+                        print("\n👋 Goodbye!")
+                        sys.exit(0)
+                
+                context_sources = context_sources if context_sources else None
+                if context_sources:
+                    print(f"   📝 Using {len(context_sources)} context source(s)")
+            
+            generator.generate_short_article(topic, context_sources)
             
     except Exception as e:
         print(f"Error: {e}")

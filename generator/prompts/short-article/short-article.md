@@ -4,6 +4,8 @@ Your task is to take a given topic and generate a complete, ready-to-publish blo
 
 **Topic:** {{TOPIC}}
 
+{{CONTEXT_SOURCES}}
+
 **CRITICAL INSTRUCTIONS:**
 
 1.  **Analyze the Topic:** First, determine the most appropriate category for the topic. The category **MUST** be one of the following. Use these descriptions to guide your choice:
@@ -11,6 +13,9 @@ Your task is to take a given topic and generate a complete, ready-to-publish blo
     *   `guides`: For step-by-step instructions, tutorials, or "how-to" articles.
     *   `concepts`: For explanations of game mechanics, lore, systems, or abstract ideas.
 2.  **Generate Content:** Write a short article of **300-500 words**. The content should be well-structured, easy to read, and provide real value to the reader.
+    *   **Use provided context sources:** If additional context sources are provided above, use them as reference material to enhance accuracy and depth.
+    *   **Combine with your knowledge:** You are not limited to only the provided sources. Use your existing knowledge of Star Citizen to provide comprehensive coverage.
+    *   **Fact-check and verify:** Ensure information is accurate and up-to-date based on your training data and any provided sources.
 3.  **Writing Style:**
     *   **Language:** Natural, conversational Thai. Write like a knowledgeable adult gamer talking to a friend. Keep it polite but not too formal.
     *   **Tone:** Engaging, helpful, and informative.
