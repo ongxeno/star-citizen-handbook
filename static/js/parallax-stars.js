@@ -5,15 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Star configuration - easily adjustable
     const starConfig = {
-        // Star density (stars per 10000 square pixels)
-        distantDensity: 50,    // Distant stars (lots of small ones)
-        midDensity: 15,        // Mid-distance stars  
-        closeDensity: 2,     // Close stars (fewer, bigger ones)
+        // Star density (stars per 10000 square pixels) - 5 layers for better depth
+        farthestDensity: 40,   // Farthest stars (tiny, most numerous)
+        distantDensity: 20,    // Distant stars (small, many)
+        midDensity: 10,        // Mid-distance stars (medium)
+        nearDensity: 2,        // Near stars (larger, fewer)
+        closestDensity: 1,     // Closest stars (largest, fewest)
         
-        // Parallax speeds
-        distantSpeed: -0.02,    // Very slow movement
-        midSpeed: -0.08,        // Medium speed
-        closeSpeed: -0.15,      // Fastest movement
+        // Parallax speeds - progressive depth layers
+        farthestSpeed: -0.01,  // Almost stationary
+        distantSpeed: -0.03,   // Very slow movement
+        midSpeed: -0.07,       // Medium speed
+        nearSpeed: -0.12,      // Faster movement
+        closestSpeed: -0.18,   // Fastest movement
         
         // Star colors by stellar type (realistic astronomy)
         starColors: {
@@ -118,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize star field
     function initStarField(fadeTransition = false) {
-        const existingCanvases = document.querySelectorAll('.star-layer-distant, .star-layer-mid, .star-layer-close');
+        const existingCanvases = document.querySelectorAll('.star-layer-farthest, .star-layer-distant, .star-layer-mid, .star-layer-near, .star-layer-closest');
         
         if (fadeTransition && existingCanvases.length > 0) {
             // Create new canvases with fade-in effect
@@ -158,56 +162,74 @@ document.addEventListener('DOMContentLoaded', function() {
             ...starConfig.starColors.red
         ];
         
-        // Create distant star canvas (smallest, most numerous)
+        // Create farthest star canvas (tiniest, most numerous, cool colors)
+        const farthestCanvas = createStarLayer(
+            starConfig.farthestDensity, 
+            0.3, 0.8, 
+            [...starConfig.starColors.hot, ...starConfig.starColors.white], 
+            'star-layer-farthest',
+            -5
+        );
+        
+        // Create distant star canvas (small, many, blue-white dominant)
         const distantCanvas = createStarLayer(
             starConfig.distantDensity, 
-            0.5, 1.5, 
+            0.5, 1.2, 
             [...starConfig.starColors.hot, ...starConfig.starColors.white], 
             'star-layer-distant',
+            -4
+        );
+        
+        // Create mid-distance star canvas (medium, mixed colors)
+        const midCanvas = createStarLayer(
+            starConfig.midDensity,
+            0.8, 2.0,
+            [...starConfig.starColors.white, ...starConfig.starColors.yellow],
+            'star-layer-mid',
             -3
         );
         
-        // Create mid-distance star canvas
-        const midCanvas = createStarLayer(
-            starConfig.midDensity,
-            1, 2.5,
-            [...starConfig.starColors.white, ...starConfig.starColors.yellow],
-            'star-layer-mid',
+        // Create near star canvas (larger, fewer, warm colors)
+        const nearCanvas = createStarLayer(
+            starConfig.nearDensity,
+            1.5, 3.0,
+            [...starConfig.starColors.yellow, ...starConfig.starColors.orange],
+            'star-layer-near',
             -2
         );
         
-        // Create close star canvas (largest, fewest)
-        const closeCanvas = createStarLayer(
-            starConfig.closeDensity,
-            2, 4,
+        // Create closest star canvas (largest, fewest, all colors including red giants)
+        const closestCanvas = createStarLayer(
+            starConfig.closestDensity,
+            2.5, 5.0,
             allColors,
-            'star-layer-close',
+            'star-layer-closest',
             -1
         );
         
+        const canvases = [farthestCanvas, distantCanvas, midCanvas, nearCanvas, closestCanvas];
+        
         if (fadeIn) {
             // Start with opacity 0 and fade in
-            [distantCanvas, midCanvas, closeCanvas].forEach(canvas => {
+            canvases.forEach(canvas => {
                 canvas.style.opacity = '0';
                 canvas.style.transition = 'opacity 0.8s ease-in';
             });
         }
         
         // Add to DOM
-        document.body.appendChild(distantCanvas);
-        document.body.appendChild(midCanvas);
-        document.body.appendChild(closeCanvas);
+        canvases.forEach(canvas => document.body.appendChild(canvas));
         
         if (fadeIn) {
             // Trigger fade-in after a short delay
             setTimeout(() => {
-                [distantCanvas, midCanvas, closeCanvas].forEach(canvas => {
+                canvases.forEach(canvas => {
                     canvas.style.opacity = '1';
                 });
             }, 50);
         }
         
-        console.log(`Star field ${fadeIn ? 'recreated with crossfade' : 'initialized'}: ${Math.floor((currentWidth * currentHeight / 10000) * (starConfig.distantDensity + starConfig.midDensity + starConfig.closeDensity))} total stars using Canvas`);
+        console.log(`Star field ${fadeIn ? 'recreated with crossfade' : 'initialized'}: ${Math.floor((currentWidth * currentHeight / 10000) * (starConfig.farthestDensity + starConfig.distantDensity + starConfig.midDensity + starConfig.nearDensity + starConfig.closestDensity))} total stars using 5-layer Canvas`);
     }
     
     // Optimized resize handler - uses crossfade for all significant changes
@@ -242,18 +264,26 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateParallax() {
         scrollY = window.pageYOffset || document.documentElement.scrollTop;
         
+        const farthestCanvas = document.querySelector('.star-layer-farthest');
         const distantCanvas = document.querySelector('.star-layer-distant');
         const midCanvas = document.querySelector('.star-layer-mid');
-        const closeCanvas = document.querySelector('.star-layer-close');
+        const nearCanvas = document.querySelector('.star-layer-near');
+        const closestCanvas = document.querySelector('.star-layer-closest');
         
+        if (farthestCanvas) {
+            farthestCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.farthestSpeed}px)`;
+        }
         if (distantCanvas) {
             distantCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.distantSpeed}px)`;
         }
         if (midCanvas) {
             midCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.midSpeed}px)`;
         }
-        if (closeCanvas) {
-            closeCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.closeSpeed}px)`;
+        if (nearCanvas) {
+            nearCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.nearSpeed}px)`;
+        }
+        if (closestCanvas) {
+            closestCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.closestSpeed}px)`;
         }
         
         ticking = false;
