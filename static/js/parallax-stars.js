@@ -35,76 +35,110 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentHeight = window.innerHeight;
     let resizeTimeout = null;
     
-    // Create star layers
+    // Create star layers using Canvas for better performance
     function createStarLayer(density, minSize, maxSize, colors, className, zIndex, targetWidth = null, targetHeight = null) {
         const width = targetWidth || window.innerWidth;
         const height = targetHeight || window.innerHeight;
         
-        const layer = document.createElement('div');
-        layer.className = className;
-        layer.style.cssText = `
+        // Create canvas element
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas properties
+        canvas.className = className;
+        canvas.width = width;
+        canvas.height = height * 1.2; // Extended height for parallax
+        
+        canvas.style.cssText = `
             position: fixed;
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: ${width}px;
-            height: ${height * 1.2}px;
             pointer-events: none;
             z-index: ${zIndex};
             will-change: transform;
         `;
         
+        // Generate star data
         const viewportArea = width * height;
         const starCount = Math.floor((viewportArea / 10000) * density);
+        const stars = [];
         
         for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            const size = minSize + Math.random() * (maxSize - minSize);
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const x = Math.random() * 100;
-            const y = Math.random() * 120; // Extended height for parallax
-            const opacity = 0.3 + Math.random() * 0.7;
-            
-            star.style.cssText = `
-                position: absolute;
-                left: ${x}%;
-                top: ${y}%;
-                width: ${size}px;
-                height: ${size}px;
-                background: radial-gradient(circle, ${color} 0%, transparent 70%);
-                border-radius: 50%;
-                opacity: ${opacity};
-            `;
-            
-            layer.appendChild(star);
+            const star = {
+                x: Math.random() * width,
+                y: Math.random() * (height * 1.2),
+                size: minSize + Math.random() * (maxSize - minSize),
+                color: colors[Math.floor(Math.random() * colors.length)],
+                opacity: 0.3 + Math.random() * 0.7
+            };
+            stars.push(star);
         }
         
-        return layer;
+        // Draw stars on canvas
+        drawStars(ctx, stars);
+        
+        // Store star data for potential redrawing
+        canvas.starData = stars;
+        
+        return canvas;
+    }
+    
+    // Draw stars on canvas with radial gradient effect
+    function drawStars(ctx, stars) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        
+        stars.forEach(star => {
+            // Create radial gradient for star glow effect
+            const gradient = ctx.createRadialGradient(
+                star.x, star.y, 0,
+                star.x, star.y, star.size * 0.8  // Much smaller glow radius
+            );
+            
+            // Convert hex color to rgba for gradient
+            const rgba = hexToRgba(star.color, star.opacity);
+            gradient.addColorStop(0, rgba);
+            gradient.addColorStop(0.7, hexToRgba(star.color, star.opacity * 0.3));
+            gradient.addColorStop(1, 'transparent');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);  // Use actual star size, not doubled
+            ctx.fill();
+        });
+    }
+    
+    // Helper function to convert hex color to rgba
+    function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
     
     // Initialize star field
     function initStarField(fadeTransition = false) {
-        const existingLayers = document.querySelectorAll('.star-layer-distant, .star-layer-mid, .star-layer-close');
+        const existingCanvases = document.querySelectorAll('.star-layer-distant, .star-layer-mid, .star-layer-close');
         
-        if (fadeTransition && existingLayers.length > 0) {
-            // Create new layers with fade-in effect
+        if (fadeTransition && existingCanvases.length > 0) {
+            // Create new canvases with fade-in effect
             createNewStarLayers(true);
             
-            // Fade out old layers
-            existingLayers.forEach((layer, index) => {
-                layer.style.transition = 'opacity 0.8s ease-out';
-                layer.style.opacity = '0';
+            // Fade out old canvases
+            existingCanvases.forEach((canvas, index) => {
+                canvas.style.transition = 'opacity 0.8s ease-out';
+                canvas.style.opacity = '0';
                 
-                // Remove old layers after fade completes
+                // Remove old canvases after fade completes
                 setTimeout(() => {
-                    if (layer.parentNode) {
-                        layer.parentNode.removeChild(layer);
+                    if (canvas.parentNode) {
+                        canvas.parentNode.removeChild(canvas);
                     }
                 }, 800);
             });
         } else {
-            // Remove existing layers immediately
-            existingLayers.forEach(layer => layer.remove());
+            // Remove existing canvases immediately
+            existingCanvases.forEach(canvas => canvas.remove());
             createNewStarLayers(false);
         }
     }
@@ -124,8 +158,8 @@ document.addEventListener('DOMContentLoaded', function() {
             ...starConfig.starColors.red
         ];
         
-        // Create distant star layer (smallest, most numerous)
-        const distantLayer = createStarLayer(
+        // Create distant star canvas (smallest, most numerous)
+        const distantCanvas = createStarLayer(
             starConfig.distantDensity, 
             0.5, 1.5, 
             [...starConfig.starColors.hot, ...starConfig.starColors.white], 
@@ -133,8 +167,8 @@ document.addEventListener('DOMContentLoaded', function() {
             -3
         );
         
-        // Create mid-distance star layer
-        const midLayer = createStarLayer(
+        // Create mid-distance star canvas
+        const midCanvas = createStarLayer(
             starConfig.midDensity,
             1, 2.5,
             [...starConfig.starColors.white, ...starConfig.starColors.yellow],
@@ -142,8 +176,8 @@ document.addEventListener('DOMContentLoaded', function() {
             -2
         );
         
-        // Create close star layer (largest, fewest)
-        const closeLayer = createStarLayer(
+        // Create close star canvas (largest, fewest)
+        const closeCanvas = createStarLayer(
             starConfig.closeDensity,
             2, 4,
             allColors,
@@ -153,27 +187,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (fadeIn) {
             // Start with opacity 0 and fade in
-            [distantLayer, midLayer, closeLayer].forEach(layer => {
-                layer.style.opacity = '0';
-                layer.style.transition = 'opacity 0.8s ease-in';
+            [distantCanvas, midCanvas, closeCanvas].forEach(canvas => {
+                canvas.style.opacity = '0';
+                canvas.style.transition = 'opacity 0.8s ease-in';
             });
         }
         
         // Add to DOM
-        document.body.appendChild(distantLayer);
-        document.body.appendChild(midLayer);
-        document.body.appendChild(closeLayer);
+        document.body.appendChild(distantCanvas);
+        document.body.appendChild(midCanvas);
+        document.body.appendChild(closeCanvas);
         
         if (fadeIn) {
             // Trigger fade-in after a short delay
             setTimeout(() => {
-                [distantLayer, midLayer, closeLayer].forEach(layer => {
-                    layer.style.opacity = '1';
+                [distantCanvas, midCanvas, closeCanvas].forEach(canvas => {
+                    canvas.style.opacity = '1';
                 });
             }, 50);
         }
         
-        console.log(`Star field ${fadeIn ? 'recreated with crossfade' : 'initialized'}: ${Math.floor((currentWidth * currentHeight / 10000) * (starConfig.distantDensity + starConfig.midDensity + starConfig.closeDensity))} total stars`);
+        console.log(`Star field ${fadeIn ? 'recreated with crossfade' : 'initialized'}: ${Math.floor((currentWidth * currentHeight / 10000) * (starConfig.distantDensity + starConfig.midDensity + starConfig.closeDensity))} total stars using Canvas`);
     }
     
     // Optimized resize handler - uses crossfade for all significant changes
@@ -208,18 +242,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateParallax() {
         scrollY = window.pageYOffset || document.documentElement.scrollTop;
         
-        const distantLayer = document.querySelector('.star-layer-distant');
-        const midLayer = document.querySelector('.star-layer-mid');
-        const closeLayer = document.querySelector('.star-layer-close');
+        const distantCanvas = document.querySelector('.star-layer-distant');
+        const midCanvas = document.querySelector('.star-layer-mid');
+        const closeCanvas = document.querySelector('.star-layer-close');
         
-        if (distantLayer) {
-            distantLayer.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.distantSpeed}px)`;
+        if (distantCanvas) {
+            distantCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.distantSpeed}px)`;
         }
-        if (midLayer) {
-            midLayer.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.midSpeed}px)`;
+        if (midCanvas) {
+            midCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.midSpeed}px)`;
         }
-        if (closeLayer) {
-            closeLayer.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.closeSpeed}px)`;
+        if (closeCanvas) {
+            closeCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.closeSpeed}px)`;
         }
         
         ticking = false;
