@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Gravitational Lensing</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
+        /* The WebGL canvas will act as the background */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            outline: none;
+        }
+        main {
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+            text-align: center;
+        }
+        .scroll-content {
+            height: 400vh; /* Make page very scrollable to see the effect */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        p {
+            max-width: 600px;
+            margin: 1rem auto;
+            line-height: 1.6;
+            color: #ccc;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+    <main>
+        <div class="scroll-content">
+            <h1>High-Performance Lensing</h1>
+            <p>This implementation uses WebGL and a custom GLSL shader for a smooth and realistic gravitational lensing effect, as described in the research document. Scroll to move the camera and the black hole.</p>
+        </div>
+    </main>
+
+    <!-- Import Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FIX: Import scripts for post-processing -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
+    <!-- FIX: Added missing CopyShader dependency -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+
+
+    <!-- Lensing Vertex Shader: Passes through geometry and UVs -->
+    <script type="x-shader/x-vertex" id="lensingVertexShader">
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+
+    <!-- Lensing Fragment Shader: The core lensing logic -->
+    <script type="x-shader/x-fragment" id="lensingFragmentShader">
+        // The input texture from the previous pass is now called 'tDiffuse'
+        uniform sampler2D tDiffuse; 
+        uniform vec2 u_resolution;
+        uniform vec2 u_blackHolePosition; // Position in screen pixels
+        uniform float u_mass;
+        uniform float u_eventHorizonRadius;
+        uniform float u_lensingRadiusMultiplier; 
+        uniform bool u_debug; // Uniform to toggle debug outlines
+
+        varying vec2 vUv;
+
+        void main() {
+            vec2 pixelCoords = vUv * u_resolution;
+            vec2 toBlackHole = u_blackHolePosition - pixelCoords;
+            float dist = length(toBlackHole);
+
+            vec2 displacement = normalize(toBlackHole) * u_mass / dist;
+
+            float falloff = 1.0 - smoothstep(u_eventHorizonRadius, u_eventHorizonRadius * u_lensingRadiusMultiplier, dist);
+            displacement *= falloff * falloff;
+
+            vec2 sourceUv = vUv + displacement / u_resolution;
+            // Sample from 'tDiffuse' instead of a custom texture uniform
+            vec4 finalColor = texture2D(tDiffuse, sourceUv);
+
+            if (u_debug) {
+                float lensingRadius = u_eventHorizonRadius * u_lensingRadiusMultiplier;
+                float lensingEdge = abs(dist - lensingRadius);
+                finalColor.rgb = mix(vec3(1.0, 0.0, 0.0), finalColor.rgb, smoothstep(0.0, 1.5, lensingEdge));
+
+                float horizonEdge = abs(dist - u_eventHorizonRadius);
+                finalColor.rgb = mix(vec3(0.0, 1.0, 0.0), finalColor.rgb, smoothstep(0.0, 1.5, horizonEdge));
+            }
+
+            if (dist < u_eventHorizonRadius) {
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            } else {
+                gl_FragColor = finalColor;
+            }
+        }
+    </script>
+    
+    <!-- Star Fragment Shader for circular stars -->
+    <script type="x-shader/x-fragment" id="starFragmentShader">
+        varying vec3 vColor;
+        void main() {
+            if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.48) discard;
+            gl_FragColor = vec4(vColor, 1.0);
+        }
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Basic Three.js Setup ---
+            const canvas = document.getElementById('webgl-canvas');
+            // The EffectComposer will use the default antialias, so we can disable it here.
+            const renderer = new THREE.WebGLRenderer({ canvas }); 
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.z = 10;
+
+            // --- Starfield Scene ---
+            const starfieldScene = new THREE.Scene();
+            
+            const starCount = 50000;
+            const starGeometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+
+            const starColorsConfig = {
+                hot: ['#9bb0ff', '#aabfff', '#cad7ff'],
+                white: ['#ffffff', '#f8f7ff', '#fffafa'],
+                yellow: ['#ffffc0', '#ffd700'],
+                orange: ['#ffcc99', '#ffa500'],
+                red: ['#ff9966', '#ff6347']
+            };
+            const allStarColorsHex = Object.values(starColorsConfig).flat();
+            const allStarColors = allStarColorsHex.map(c => new THREE.Color(c));
+
+            for (let i = 0; i < starCount; i++) {
+                positions.push(
+                    (Math.random() - 0.5) * 2000,
+                    (Math.random() - 0.5) * 2000,
+                    (Math.random() - 0.5) * 2000
+                );
+                const randomColor = allStarColors[Math.floor(Math.random() * allStarColors.length)];
+                colors.push(randomColor.r, randomColor.g, randomColor.b);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            const starMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    size: { value: 30.0 * renderer.getPixelRatio() }
+                },
+                vertexShader: `
+                    varying vec3 vColor;
+                    uniform float size;
+                    void main() {
+                        vColor = color;
+                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                        float pointSize = size * (10.0 / -mvPosition.z);
+                        gl_PointSize = max(pointSize, 1.5);
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `,
+                fragmentShader: document.getElementById('starFragmentShader').textContent,
+                blending: THREE.AdditiveBlending,
+                depthTest: false,
+                transparent: true,
+                vertexColors: true
+            });
+
+            const starPoints = new THREE.Points(starGeometry, starMaterial);
+            starfieldScene.add(starPoints);
+
+
+            // --- Setup Post-Processing with EffectComposer ---
+            const composer = new THREE.EffectComposer(renderer);
+
+            // Pass 1: Render the starfield
+            const renderPass = new THREE.RenderPass(starfieldScene, camera);
+            composer.addPass(renderPass);
+
+            // Pass 2: Apply the gravitational lensing shader
+            const lensingMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    tDiffuse: { value: null }, // This will be set automatically by the composer
+                    u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    u_blackHolePosition: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
+                    u_mass: { value: 2000.0 },
+                    u_eventHorizonRadius: { value: 10.0 },
+                    u_lensingRadiusMultiplier: { value: 700.0 },
+                    u_debug: { value: true }
+                },
+                vertexShader: document.getElementById('lensingVertexShader').textContent,
+                fragmentShader: document.getElementById('lensingFragmentShader').textContent
+            });
+            const lensingPass = new THREE.ShaderPass(lensingMaterial);
+            composer.addPass(lensingPass);
+
+            // Pass 3: Apply FXAA for anti-aliasing
+            const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+            fxaaPass.material.uniforms['resolution'].value.x = 0.5 / (window.innerWidth * renderer.getPixelRatio());
+            fxaaPass.material.uniforms['resolution'].value.y = 0.5 / (window.innerHeight * renderer.getPixelRatio());
+            composer.addPass(fxaaPass);
+
+
+            // --- Event Handling & Animation Loop ---
+            let scrollY = 0;
+            window.addEventListener('scroll', () => {
+                scrollY = window.pageYOffset;
+            });
+
+            function onResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                composer.setSize(window.innerWidth, window.innerHeight);
+                
+                lensingPass.uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+                fxaaPass.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * renderer.getPixelRatio());
+                fxaaPass.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * renderer.getPixelRatio());
+
+                starMaterial.uniforms.size.value = 15.0 * renderer.getPixelRatio();
+            }
+            window.addEventListener('resize', onResize);
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Update camera and uniforms
+                camera.position.y = -scrollY * 0.02;
+                lensingPass.uniforms.u_blackHolePosition.value.x = window.innerWidth / 2;
+                const blackHoleY = (window.innerHeight / 2) + scrollY;
+                lensingPass.uniforms.u_blackHolePosition.value.y = blackHoleY;
+
+                // Render the scene using the composer
+                composer.render();
+            }
+
+            animate();
+        });
+    </script>
+</body>
+</html>
