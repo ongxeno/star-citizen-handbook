@@ -39,10 +39,30 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentHeight = window.innerHeight;
     let resizeTimeout = null;
     
+    // Mobile detection and viewport utilities
+    function isMobileDevice() {
+        // Check user agent for mobile patterns
+        const mobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Check for touch-capable MacOS devices (iPad Pro running as desktop)
+        const touchMac = !!(navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+        
+        return mobileUserAgent || touchMac;
+    }
+    
+    function getStableViewportHeight() {
+        // Use Visual Viewport API if available (modern browsers)
+        if (window.visualViewport) {
+            return window.visualViewport.height;
+        }
+        // Fallback to window.innerHeight
+        return window.innerHeight;
+    }
+    
     // Create star layers using Canvas for better performance
     function createStarLayer(density, minSize, maxSize, colors, className, zIndex, targetWidth = null, targetHeight = null) {
         const width = targetWidth || window.innerWidth;
-        const height = targetHeight || window.innerHeight;
+        const height = targetHeight || getStableViewportHeight();
         
         // Create canvas element
         const canvas = document.createElement('canvas');
@@ -149,9 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create new star layers with optional fade-in
     function createNewStarLayers(fadeIn = false) {
-        // Update current dimensions
+        // Update current dimensions using stable viewport measurements
         currentWidth = window.innerWidth;
-        currentHeight = window.innerHeight;
+        currentHeight = getStableViewportHeight();
         
         // Get all star colors
         const allColors = [
@@ -242,20 +262,37 @@ document.addEventListener('DOMContentLoaded', function() {
         // Debounce the resize handling
         resizeTimeout = setTimeout(() => {
             const newWidth = window.innerWidth;
-            const newHeight = window.innerHeight;
+            const newHeight = getStableViewportHeight();
+            const isMobile = isMobileDevice();
             
-            // Check if there's a significant size change (5% threshold)
+            // Check if there's a significant size change
             const widthChange = Math.abs(newWidth - currentWidth) / currentWidth;
             const heightChange = Math.abs(newHeight - currentHeight) / currentHeight;
             
-            if (widthChange > 0.05 || heightChange > 0.05) {
-                // Significant change - use crossfade for smooth transition
-                console.log(`Screen resized from ${currentWidth}x${currentHeight} to ${newWidth}x${newHeight}, regenerating with crossfade`);
-                initStarField(true); // Always use crossfade for any significant resize
+            // Mobile-specific logic to prevent address bar triggered regeneration
+            if (isMobile) {
+                // On mobile, only regenerate for width changes or very large height changes
+                // Address bar changes are typically 50-100px, which on most phones is < 15% of viewport
+                const shouldRegenerate = widthChange > 0.05 || heightChange > 0.15;
+                
+                if (shouldRegenerate) {
+                    console.log(`Mobile screen resized from ${currentWidth}x${currentHeight} to ${newWidth}x${newHeight}, regenerating with crossfade`);
+                    initStarField(true);
+                } else {
+                    // Minor change (likely address bar) - just update tracking dimensions
+                    currentWidth = newWidth;
+                    currentHeight = newHeight;
+                }
             } else {
-                // Minor change - just update tracking dimensions
-                currentWidth = newWidth;
-                currentHeight = newHeight;
+                // Desktop: use original 5% threshold for both dimensions
+                if (widthChange > 0.05 || heightChange > 0.05) {
+                    console.log(`Desktop screen resized from ${currentWidth}x${currentHeight} to ${newWidth}x${newHeight}, regenerating with crossfade`);
+                    initStarField(true);
+                } else {
+                    // Minor change - just update tracking dimensions
+                    currentWidth = newWidth;
+                    currentHeight = newHeight;
+                }
             }
         }, 150); // Slightly longer debounce for smoother experience
     }
