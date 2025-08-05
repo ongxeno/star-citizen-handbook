@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set canvas properties
         canvas.className = className;
         canvas.width = width;
-        canvas.height = height * 1.2; // Extended height for parallax
+        canvas.height = height * 3; // Extended height for seamless parallax repeat
         
         canvas.style.cssText = `
             position: fixed;
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < starCount; i++) {
             const star = {
                 x: Math.random() * width,
-                y: Math.random() * (height * 1.2),
+                y: Math.random() * (height * 3), // Match extended canvas height
                 size: minSize + Math.random() * (maxSize - minSize),
                 color: colors[Math.floor(Math.random() * colors.length)],
                 opacity: 0.3 + Math.random() * 0.7
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 150); // Slightly longer debounce for smoother experience
     }
     
-    // Parallax update function
+    // Parallax update function with seamless repeat
     function updateParallax() {
         scrollY = window.pageYOffset || document.documentElement.scrollTop;
         
@@ -271,19 +271,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const closestCanvas = document.querySelector('.star-layer-closest');
         
         if (farthestCanvas) {
-            farthestCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.farthestSpeed}px)`;
+            const offset = (scrollY * starConfig.farthestSpeed) % (currentHeight * 2);
+            farthestCanvas.style.transform = `translateX(-50%) translateY(${offset}px)`;
         }
         if (distantCanvas) {
-            distantCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.distantSpeed}px)`;
+            const offset = (scrollY * starConfig.distantSpeed) % (currentHeight * 2);
+            distantCanvas.style.transform = `translateX(-50%) translateY(${offset}px)`;
         }
         if (midCanvas) {
-            midCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.midSpeed}px)`;
+            const offset = (scrollY * starConfig.midSpeed) % (currentHeight * 2);
+            midCanvas.style.transform = `translateX(-50%) translateY(${offset}px)`;
         }
         if (nearCanvas) {
-            nearCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.nearSpeed}px)`;
+            const offset = (scrollY * starConfig.nearSpeed) % (currentHeight * 2);
+            nearCanvas.style.transform = `translateX(-50%) translateY(${offset}px)`;
         }
         if (closestCanvas) {
-            closestCanvas.style.transform = `translateX(-50%) translateY(${scrollY * starConfig.closestSpeed}px)`;
+            const offset = (scrollY * starConfig.closestSpeed) % (currentHeight * 2);
+            closestCanvas.style.transform = `translateX(-50%) translateY(${offset}px)`;
         }
         
         ticking = false;
