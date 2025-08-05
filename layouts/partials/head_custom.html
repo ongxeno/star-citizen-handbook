@@ -11,3 +11,6 @@
   {{- $customCSS := $customCSS | resources.Minify -}}
   <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
 {{- end -}}
+
+{{- /* Add parallax stars JavaScript */ -}}
+<script src="{{ "js/parallax-stars.js" | relURL }}" defer></script>

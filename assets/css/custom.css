@@ -535,3 +535,22 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
 html {
   scroll-behavior: smooth;
 }
+
+/* JavaScript-generated star field - no CSS backgrounds needed */
+/* Stars are now dynamically created by parallax-stars.js */
+
+/* Ensure proper layering for JavaScript stars */
+.star-layer-distant {
+  z-index: -3;
+}
+
+.star-layer-mid {
+  z-index: -2;
+}
+
+.star-layer-close {
+  z-index: -1;
+}
+
+/* Enhanced star layers for larger screens - now handled by JavaScript */
+/* Configuration can be adjusted via window.starFieldConfig */
