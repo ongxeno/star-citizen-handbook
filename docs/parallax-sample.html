@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Gravitational Lensing</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
+        main {
+            position: relative;
+            z-index: 10;
+        }
+        .viewport-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .content-wrapper {
+            max-width: 800px;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        p {
+            max-width: 600px;
+            margin: 1rem auto;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        .scroll-indicator {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        .arrow {
+            display: block;
+            margin: 0.5rem auto;
+            width: 20px;
+            height: 20px;
+            border-left: 2px solid #888;
+            border-bottom: 2px solid #888;
+            transform: rotate(-45deg);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(-45deg); }
+            40% { transform: translateY(10px) rotate(-45deg); }
+            60% { transform: translateY(5px) rotate(-45deg); }
+        }
+        #config-panel {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(20, 20, 20, 0.85);
+            border: 1px solid #333;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem 2rem;
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+        .config-item label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        .config-item input[type="range"] {
+            width: 100%;
+        }
+        .config-item .value-display {
+            font-weight: bold;
+            color: #fff;
+        }
+        .config-item .label-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+        }
+        #regenerate-btn {
+            padding: 0.7rem 1.5rem;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <div class="viewport-section">
+            <div class="content-wrapper">
+                <h1>High-Performance Lensing</h1>
+                <p>This implementation uses WebGL and a custom GLSL shader for a smooth and realistic gravitational lensing effect. Adjust the settings below in real-time.</p>
+            </div>
+            <div id="config-panel">
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="mass">Black Hole Mass</label><span id="mass-value" class="value-display"></span></div>
+                    <input type="range" id="mass" min="50" max="5000" step="10">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="parallaxFactor">Parallax Factor</label><span id="parallaxFactor-value" class="value-display"></span></div>
+                    <input type="range" id="parallaxFactor" min="0" max="1" step="0.01">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="minBlackHoles">Min Black Holes</label><span id="minBlackHoles-value" class="value-display"></span></div>
+                    <input type="range" id="minBlackHoles" min="1" max="50" step="1">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="maxBlackHoles">Max Black Holes</label><span id="maxBlackHoles-value" class="value-display"></span></div>
+                    <input type="range" id="maxBlackHoles" min="1" max="50" step="1">
+                </div>
+                 <div class="config-item">
+                    <div class="label-wrapper"><label for="starCount">Star Count</label><span id="starCount-value" class="value-display"></span></div>
+                    <input type="range" id="starCount" min="1000" max="500000" step="1000">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="starBaseSize">Star Base Size</label><span id="starBaseSize-value" class="value-display"></span></div>
+                    <input type="range" id="starBaseSize" min="1" max="200" step="1">
+                </div>
+                <div class="config-item" style="flex-direction: row; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="orbitalMovement">
+                    <label for="orbitalMovement" style="margin: 0;">Orbital Movement</label>
+                </div>
+                <div class="config-item" style="flex-direction: row; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="debug">
+                    <label for="debug" style="margin: 0;">Debug Mode</label>
+                </div>
+                <div class="full-width">
+                    <button id="regenerate-btn">Apply & Regenerate</button>
+                </div>
+            </div>
+             <div class="scroll-indicator">
+                Scroll Down to See The Effect in Action
+                <span class="arrow"></span>
+            </div>
+        </div>
+        <div style="height: 300vh;"></div> <!-- Spacer for scrolling -->
+    </main>
+
+    <!-- Import Three.js and post-processing scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+
+    <!-- Import the Lensing Effect script -->
+    <script src="../static/js/lensing-effect.js"></script>
+
+    <!-- Initialize the effect -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let effect;
+
+            const initialConfig = {
+                starCount: 500000,
+                starBaseSize: 200.0,
+                starfieldMinZ: -1000,
+                starfieldMaxZ: 200,
+                starfieldMinBrightness: 0.8,
+                starfieldMaxBrightness: 1.0,
+                starBrightnessMultiplierMin: 0.3,
+                starBrightnessMultiplierMax: 1.0,
+                cameraZ: 10,
+                parallaxFactor: 0.1,
+                mass: 1000.0,
+                eventHorizonRadius: 5.0,
+                lensingRadiusMultiplier: 8.0,
+                minBlackHoles: 30,
+                maxBlackHoles: 50,
+                minBlackHolesMass: 500,
+                maxBlackHolesMass: 2000,
+                minEventHorizonRadius: 1,
+                maxEventHorizonRadius: 5,
+                minLensingRadiusMultiplier: 100,
+                maxLensingRadiusMultiplier: 100,
+                debug: false,
+                debugBlackHolePosition: false,
+                orbitalMovement: true,
+                minSpeedX: 0.0, maxSpeedX: 0.1,
+                minSpeedY: 0.0, maxSpeedY: 0.1,
+                minRadiusX: 20, maxRadiusX: 40,
+                minRadiusY: 15, maxRadiusY: 30,
+            };
+
+            const controls = {
+                mass: document.getElementById('mass'),
+                parallaxFactor: document.getElementById('parallaxFactor'),
+                minBlackHoles: document.getElementById('minBlackHoles'),
+                maxBlackHoles: document.getElementById('maxBlackHoles'),
+                starCount: document.getElementById('starCount'),
+                starBaseSize: document.getElementById('starBaseSize'),
+                orbitalMovement: document.getElementById('orbitalMovement'),
+                debug: document.getElementById('debug'),
+                regenerateBtn: document.getElementById('regenerate-btn')
+            };
+
+            const valueDisplays = {
+                mass: document.getElementById('mass-value'),
+                parallaxFactor: document.getElementById('parallaxFactor-value'),
+                minBlackHoles: document.getElementById('minBlackHoles-value'),
+                maxBlackHoles: document.getElementById('maxBlackHoles-value'),
+                starCount: document.getElementById('starCount-value'),
+                starBaseSize: document.getElementById('starBaseSize-value'),
+            };
+
+            function setupControls() {
+                // Set initial values
+                for (const key in valueDisplays) {
+                    controls[key].value = initialConfig[key];
+                    valueDisplays[key].textContent = initialConfig[key];
+                }
+                controls.orbitalMovement.checked = initialConfig.orbitalMovement;
+                controls.debug.checked = initialConfig.debug;
+
+                // Add event listeners
+                for (const key in valueDisplays) {
+                    controls[key].addEventListener('input', (e) => {
+                        valueDisplays[key].textContent = e.target.value;
+                    });
+                }
+            }
+
+            function applyLiveChanges() {
+                if (!effect) return;
+                
+                // These can be changed without regeneration
+                const newMass = parseFloat(controls.mass.value);
+                effect.gravitationalLens.blackHoles.forEach(bh => {
+                    bh.mass = newMass;
+                });
+                effect.gravitationalLens.updateUniforms();
+                
+                effect.config.parallaxFactor = parseFloat(controls.parallaxFactor.value);
+                effect.config.orbitalMovement = controls.orbitalMovement.checked;
+                effect.config.debug = controls.debug.checked;
+                effect.starField.material.uniforms.size.value = parseFloat(controls.starBaseSize.value) * window.devicePixelRatio;
+            }
+
+            function regenerateEffect() {
+                if (effect) {
+                    effect.clearBlackHoles();
+                    effect.container.removeChild(effect.canvas);
+                    window.removeEventListener('scroll', effect.onScroll);
+                    window.removeEventListener('resize', effect.onResize);
+                }
+
+                const newConfig = { ...initialConfig };
+                for (const key in valueDisplays) {
+                    newConfig[key] = parseFloat(controls[key].value);
+                }
+                newConfig.orbitalMovement = controls.orbitalMovement.checked;
+                newConfig.debug = controls.debug.checked;
+                
+                // Ensure min <= max
+                if (newConfig.minBlackHoles > newConfig.maxBlackHoles) {
+                    newConfig.minBlackHoles = newConfig.maxBlackHoles;
+                    controls.minBlackHoles.value = newConfig.minBlackHoles;
+                    valueDisplays.minBlackHoles.textContent = newConfig.minBlackHoles;
+                }
+
+                effect = new LensingEffect({
+                    container: document.body,
+                    config: newConfig
+                });
+                effect.init();
+            }
+            
+            setupControls();
+            regenerateEffect(); // Initial creation
+
+            // Add listeners for live updates
+            controls.mass.addEventListener('input', applyLiveChanges);
+            controls.parallaxFactor.addEventListener('input', applyLiveChanges);
+            controls.orbitalMovement.addEventListener('change', applyLiveChanges);
+            controls.debug.addEventListener('change', applyLiveChanges);
+            controls.starBaseSize.addEventListener('input', applyLiveChanges);
+
+            controls.regenerateBtn.addEventListener('click', regenerateEffect);
+        });
+    </script>
+</body>
+</html>

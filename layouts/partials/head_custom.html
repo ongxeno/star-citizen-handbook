@@ -12,5 +12,22 @@
   <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
 {{- end -}}
 
-{{- /* Add parallax stars JavaScript */ -}}
-<script src="{{ "js/parallax-stars.js" | relURL }}" defer></script>
+{{- /* Include Three.js Dependencies for Lensing Effect */ -}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
+
+{{- /* Include the Lensing Effect Script */ -}}
+<script src="{{ "js/lensing-effect.js" | relURL }}" defer></script>
+
+{{- /* Initialize the Lensing Effect */ -}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const effect = new LensingEffect({
+        container: document.body
+    });
+    effect.init();
+});
+</script>
