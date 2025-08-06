@@ -52,6 +52,14 @@ class StarField {
     }
 
     init() {
+        // Get document dimensions first
+        const getDocumentHeight = () => Math.max(
+            document.body.scrollHeight, document.body.offsetHeight,
+            document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight
+        );
+        const documentHeight = getDocumentHeight();
+        const viewportWidth = window.innerWidth;
+
         this.scene = new THREE.Scene();
         const starGeometry = new THREE.BufferGeometry();
         const positions = [];
@@ -73,10 +81,14 @@ class StarField {
         const allStarColorsHex = Object.values(starColorsConfig).flat();
         const allStarColors = allStarColorsHex.map(c => new THREE.Color(c));
 
+        // Generate stars across the entire document area
+        const generationWidth = viewportWidth * 1.5; // A bit wider than viewport
+        const generationHeight = documentHeight * 1.5; // A bit taller for parallax
+
         for (let i = 0; i < this.config.starCount; i++) {
             positions.push(
-                (Math.random() - 0.5) * 2000,
-                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * generationWidth,
+                (Math.random() - 0.5) * generationHeight,
                 this.config.starfieldMinZ + Math.random() * (this.config.starfieldMaxZ - this.config.starfieldMinZ)
             );
             const randomColor = allStarColors[Math.floor(Math.random() * allStarColors.length)];
@@ -447,9 +459,9 @@ class LensingEffect {
             // Starfield settings
             starCount: 100000,              // Total number of stars in the background
             starBaseSize: 80.0,             // Base size of stars, adjusted by distance
-            starfieldMinZ: -1500,           // The minimum z-position for a star (farthest)
-            starfieldMaxZ: -200,            // The maximum z-position for a star (closest)
-            starfieldMinBrightness: 0.00,    // Minimum brightness of the farthest star
+            starfieldMinZ: -1000,           // The minimum z-position for a star (farthest)
+            starfieldMaxZ: -70,            // The maximum z-position for a star (closest)
+            starfieldMinBrightness: 0.8,    // Minimum brightness of the farthest star
             starfieldMaxBrightness: 1.0,    // Maximum brightness of the closest star
             starBrightnessMultiplierMin: 0.3, // Minimum individual star brightness multiplier
             starBrightnessMultiplierMax: 0.8, // Maximum individual star brightness multiplier
