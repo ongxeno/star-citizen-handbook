@@ -437,20 +437,20 @@ class LensingEffect {
         // Since we can access the document height, we should convert the viewport positions 
         // to document positions to THREE positions here.
         const blackHoles = [
-            // 1) Top left of document (fixed to the top of the document)
+            // 1) Top left of document
             {
                 x: 100,
-                y: -200 + viewportHeight,
+                y: viewportHeight - 200,
                 documentY: 200,
                 label: "BH1: Top Left (Document)",
                 name: "BH1",
                 debugColor: "#FF5555"
             },
 
-            // 2) Top right of document (fixed to the top of the document)
+            // 2) Top right of document
             {
                 x: viewportWidth - 100,
-                y: -200 + viewportHeight,
+                y: viewportHeight - 200,
                 documentY: 200,
                 label: "BH2: Top Right (Document)",
                 name: "BH2",
@@ -460,8 +460,8 @@ class LensingEffect {
             // 3) Middle left of document
             {
                 x: 100,
-                y: -documentHeight/2 + viewportHeight,
-                documentY: documentHeight/2,
+                y: viewportHeight - (documentHeight / 2),
+                documentY: documentHeight / 2,
                 label: "BH3: Middle Left (Document)",
                 name: "BH3",
                 debugColor: "#5555FF"
@@ -470,8 +470,8 @@ class LensingEffect {
             // 4) Middle right of document
             {
                 x: viewportWidth - 100,
-                y: -documentHeight/2 + viewportHeight,
-                documentY: documentHeight/2,
+                y: viewportHeight - (documentHeight / 2),
+                documentY: documentHeight / 2,
                 label: "BH4: Middle Right (Document)",
                 name: "BH4",
                 debugColor: "#FFFF55"
@@ -480,7 +480,7 @@ class LensingEffect {
             // 5) Bottom left of document
             {
                 x: 100,
-                y: -documentHeight + viewportHeight + 200,
+                y: viewportHeight - (documentHeight - 200),
                 documentY: documentHeight - 200,
                 label: "BH5: Bottom Left (Document)",
                 name: "BH5",
@@ -490,7 +490,7 @@ class LensingEffect {
             // 6) Bottom right of document
             {
                 x: viewportWidth - 100,
-                y: -documentHeight + viewportHeight + 200,
+                y: viewportHeight - (documentHeight - 200),
                 documentY: documentHeight - 200,
                 label: "BH6: Bottom Right (Document)",
                 name: "BH6",
@@ -513,6 +513,7 @@ class LensingEffect {
             // Add name property to the black hole
             const addedBlackHole = this.gravitationalLens.blackHoles[this.gravitationalLens.blackHoles.length - 1];
             addedBlackHole.name = bh.name;
+            addedBlackHole.documentY = bh.documentY;
             
             console.log(`Black hole ${bh.name} - ${bh.label} - pos(${Math.round(bh.x)}, ${Math.round(bh.y)}), document Y: ${Math.round(bh.documentY)}, mass: ${mass}, radius: ${eventHorizonRadius}, debug color: ${bh.debugColor || 'default'}`);
         });
@@ -616,7 +617,8 @@ class LensingEffect {
             
             // The position is already properly calculated in the animate method
             // and stored in the blackHole.position object
-            const screenY = blackHole.position.y;
+            const shaderY = blackHole.position.y;
+            const screenY = window.innerHeight - shaderY;
             
             // Only show debug overlays for black holes that are currently visible on screen
             const isOnScreen = screenY >= 0 && screenY <= window.innerHeight && 
@@ -701,8 +703,9 @@ class LensingEffect {
         // Immediately update black hole positions on scroll
         this.gravitationalLens.blackHoles.forEach((blackHole, index) => {
             if (blackHole.documentY !== undefined) {
-                const newY = blackHole.documentY - this.scrollY;
-                this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX || blackHole.position.x, newY);
+                const screenY = blackHole.documentY - this.scrollY;
+                const shaderY = window.innerHeight - screenY;
+                this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX || blackHole.position.x, shaderY);
             }
         });
     }
