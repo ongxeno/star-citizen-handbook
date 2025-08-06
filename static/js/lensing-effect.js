@@ -81,8 +81,8 @@ class StarField {
         const allStarColors = allStarColorsHex.map(c => new THREE.Color(c));
 
         // Generate stars across the entire document area
-        const generationWidth = viewportWidth * 1.5; // A bit wider than viewport
-        const generationHeight = documentHeight * 1.5; // A bit taller for parallax
+        const generationWidth = viewportWidth;
+        const generationHeight = documentHeight;
 
         // Calculate number of stars based on density and total area
         const totalArea = generationWidth * generationHeight;
@@ -323,7 +323,7 @@ class GravitationalLens {
         this.material = new THREE.ShaderMaterial({
             uniforms: {
                 tDiffuse: { value: null },
-                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight * this.config.verticalOverRenderMultiplier) },
                 u_blackHoleCount: { value: 0 },
                 u_blackHolePositions: { value: new Float32Array(this.maxBlackHoles * 2) },
                 u_masses: { value: new Float32Array(this.maxBlackHoles) },
@@ -461,15 +461,18 @@ class LensingEffect {
     constructor(options = {}) {
         this.container = options.container || document.body;
         this.config = {
+            // Rendering settings
+            verticalOverRenderMultiplier: 1.5, // Multiplier for vertical over-rendering to accommodate mobile address bar resizing
+            
             // Starfield settings
-            starDensity: 0.02,              // Stars per square pixel (controls star density based on viewport and document size)
+            starDensity: 0.03,              // Stars per square pixel (controls star density based on viewport and document size)
             starBaseSize: 80.0,             // Base size of stars, adjusted by distance
-            starfieldMinZ: -1000,           // The minimum z-position for a star (farthest)
+            starfieldMinZ: -1500,           // The minimum z-position for a star (farthest)
             starfieldMaxZ: -70,            // The maximum z-position for a star (closest)
             starfieldMinBrightness: 0.8,    // Minimum brightness of the farthest star
             starfieldMaxBrightness: 1.0,    // Maximum brightness of the closest star
             starBrightnessMultiplierMin: 0.3, // Minimum individual star brightness multiplier
-            starBrightnessMultiplierMax: 0.8, // Maximum individual star brightness multiplier
+            starBrightnessMultiplierMax: 0.9, // Maximum individual star brightness multiplier
             cameraZ: 10,                    // Z-position of the camera
             parallaxFactor: 0.1,            // How much the starfield moves on scroll (higher is more)
 
@@ -479,7 +482,7 @@ class LensingEffect {
             lensingRadiusMultiplier: 8.0,   // Default multiplier for the size of the lensing effect ring
 
             // Random black hole generation
-            minBlackHoles: 1,              // Minimum number of black holes to generate randomly
+            minBlackHoles: 2,              // Minimum number of black holes to generate randomly
             maxBlackHoles: 5,              // Maximum number of black holes the system can handle
             minBlackHolesMass: 500,         // Minimum mass for randomly generated black holes
             maxBlackHolesMass: 2000,        // Maximum mass for randomly generated black holes
@@ -518,7 +521,6 @@ class LensingEffect {
 
         // Bind methods to the instance
         this.animate = this.animate.bind(this);
-        this.onResize = this.onResize.bind(this);
         this.onScroll = this.onScroll.bind(this);
     }
 
@@ -696,10 +698,6 @@ class LensingEffect {
             document.documentElement.offsetHeight
         );
         
-        const documentHeight = getDocumentHeight();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        
         // Create new overlays for each black hole
         this.gravitationalLens.blackHoles.forEach((blackHole, index) => {
             const x = blackHole.position.x;
@@ -735,19 +733,20 @@ class LensingEffect {
         this.canvas.style.cssText = `
             position: fixed;
             top: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
-            height: 100%;
+            height: 150%;
             z-index: -1;
             outline: none;
         `;
         this.container.appendChild(this.canvas);
 
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight * this.config.verticalOverRenderMultiplier);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * this.config.verticalOverRenderMultiplier), 0.1, 2000);
         this.camera.position.z = this.config.cameraZ;
     }
 
@@ -774,7 +773,7 @@ class LensingEffect {
         // Pass 3: Apply FXAA anti-aliasing
         this.fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
         this.fxaaPass.material.uniforms['resolution'].value.x = 0.5 / (window.innerWidth * this.renderer.getPixelRatio());
-        this.fxaaPass.material.uniforms['resolution'].value.y = 0.5 / (window.innerHeight * this.renderer.getPixelRatio());
+        this.fxaaPass.material.uniforms['resolution'].value.y = 0.5 / (window.innerHeight * this.config.verticalOverRenderMultiplier * this.renderer.getPixelRatio());
         this.composer.addPass(this.fxaaPass);
     }
     
@@ -785,26 +784,6 @@ class LensingEffect {
 
     onScroll() {
         this.scrollY = window.pageYOffset;
-    }
-
-    onResize() {
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-        
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        this.composer.setSize(window.innerWidth, window.innerHeight);
-        
-        // Update gravitational lens resolution
-        this.gravitationalLens.updateResolution(window.innerWidth, window.innerHeight);
-        
-        // Update FXAA resolution
-        this.fxaaPass.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * this.renderer.getPixelRatio());
-        this.fxaaPass.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * this.renderer.getPixelRatio());
-
-        // Update star field size
-        this.starField.updateSize();
     }
 
     animate() {
@@ -860,7 +839,7 @@ class LensingEffect {
                             Math.sin(time * blackHole.speedX + blackHole.phaseX) * blackHole.radiusX;
                 
                 // Limit vertical movement to stay relatively near original position
-                const maxYDeviation = Math.min(100, window.innerHeight * 0.2); // Maximum 20% of viewport or 100px
+                const maxYDeviation = Math.min(100, window.innerHeight * this.config.verticalOverRenderMultiplier * 0.2); // Maximum 20% of viewport or 100px
                 const yOffset = Math.cos(time * blackHole.speedY + blackHole.phaseY) * blackHole.radiusY;
                 const newDocumentY = blackHole.originalDocumentY + yOffset * (maxYDeviation / blackHole.radiusY);
                 
