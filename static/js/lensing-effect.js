@@ -134,12 +134,13 @@ class GravitationalLens {
     }
 
     // Add a black hole at specified position
-    addBlackHole(x, y, mass = null, eventHorizonRadius = null, lensingRadiusMultiplier = null) {
+    addBlackHole(x, y, mass = null, eventHorizonRadius = null, lensingRadiusMultiplier = null, debugColor = null) {
         const blackHole = {
             position: new THREE.Vector2(x, y),
             mass: mass || this.config.mass,
             eventHorizonRadius: eventHorizonRadius || this.config.eventHorizonRadius,
-            lensingRadiusMultiplier: lensingRadiusMultiplier || this.config.lensingRadiusMultiplier
+            lensingRadiusMultiplier: lensingRadiusMultiplier || this.config.lensingRadiusMultiplier,
+            debugColor: debugColor || null // Store custom debug color if provided
         };
         this.blackHoles.push(blackHole);
         this.updateUniforms();
@@ -183,6 +184,7 @@ class GravitationalLens {
         const masses = new Float32Array(this.maxBlackHoles);
         const eventHorizonRadii = new Float32Array(this.maxBlackHoles);
         const lensingRadiusMultipliers = new Float32Array(this.maxBlackHoles);
+        const debugColors = new Float32Array(this.maxBlackHoles * 3); // rgb triplets for each black hole
 
         // Fill arrays with black hole data
         for (let i = 0; i < this.maxBlackHoles; i++) {
@@ -193,6 +195,34 @@ class GravitationalLens {
                 masses[i] = bh.mass;
                 eventHorizonRadii[i] = bh.eventHorizonRadius;
                 lensingRadiusMultipliers[i] = bh.lensingRadiusMultiplier;
+                
+                // Set debug color if provided, otherwise set default color based on index
+                if (bh.debugColor) {
+                    // Convert hex color to RGB components if it's a string
+                    if (typeof bh.debugColor === 'string') {
+                        const color = new THREE.Color(bh.debugColor);
+                        debugColors[i * 3] = color.r;
+                        debugColors[i * 3 + 1] = color.g;
+                        debugColors[i * 3 + 2] = color.b;
+                    } 
+                    // If it's already a THREE.Color object
+                    else if (bh.debugColor instanceof THREE.Color) {
+                        debugColors[i * 3] = bh.debugColor.r;
+                        debugColors[i * 3 + 1] = bh.debugColor.g;
+                        debugColors[i * 3 + 2] = bh.debugColor.b;
+                    }
+                    // If it's a RGB array
+                    else if (Array.isArray(bh.debugColor) && bh.debugColor.length >= 3) {
+                        debugColors[i * 3] = bh.debugColor[0];
+                        debugColors[i * 3 + 1] = bh.debugColor[1];
+                        debugColors[i * 3 + 2] = bh.debugColor[2];
+                    }
+                } else {
+                    // Default color-coding based on index
+                    debugColors[i * 3] = (i % 3) / 2.0;
+                    debugColors[i * 3 + 1] = ((i + 1) % 3) / 2.0;
+                    debugColors[i * 3 + 2] = ((i + 2) % 3) / 2.0;
+                }
             } else {
                 // Fill remaining slots with inactive black holes (mass = 0)
                 positions[i * 2] = 0;
@@ -200,6 +230,9 @@ class GravitationalLens {
                 masses[i] = 0;
                 eventHorizonRadii[i] = 0;
                 lensingRadiusMultipliers[i] = 0;
+                debugColors[i * 3] = 0;
+                debugColors[i * 3 + 1] = 0;
+                debugColors[i * 3 + 2] = 0;
             }
         }
 
@@ -208,6 +241,7 @@ class GravitationalLens {
         this.material.uniforms.u_masses.value = masses;
         this.material.uniforms.u_eventHorizonRadii.value = eventHorizonRadii;
         this.material.uniforms.u_lensingRadiusMultipliers.value = lensingRadiusMultipliers;
+        this.material.uniforms.u_debugColors.value = debugColors;
 
         // Warn if we exceed the maximum
         if (this.blackHoles.length > this.maxBlackHoles) {
@@ -228,6 +262,7 @@ class GravitationalLens {
                 u_masses: { value: new Float32Array(this.maxBlackHoles) },
                 u_eventHorizonRadii: { value: new Float32Array(this.maxBlackHoles) },
                 u_lensingRadiusMultipliers: { value: new Float32Array(this.maxBlackHoles) },
+                u_debugColors: { value: new Float32Array(this.maxBlackHoles * 3) }, // RGB colors for each black hole
                 u_debug: { value: this.config.debug }
             },
             vertexShader: `
@@ -252,6 +287,7 @@ class GravitationalLens {
             uniform float u_masses[${this.maxBlackHoles}];
             uniform float u_eventHorizonRadii[${this.maxBlackHoles}];
             uniform float u_lensingRadiusMultipliers[${this.maxBlackHoles}];
+            uniform float u_debugColors[${this.maxBlackHoles * 3}]; // RGB colors for each black hole
             uniform bool u_debug;
 
             varying vec2 vUv;
@@ -295,11 +331,11 @@ class GravitationalLens {
                         vec2 blackHolePos = vec2(u_blackHolePositions[i * 2], u_blackHolePositions[i * 2 + 1]);
                         float dist = length(blackHolePos - pixelCoords);
                         
-                        // Color-code different black holes
+                        // Get custom debug color from uniform array
                         vec3 debugColor = vec3(
-                            float(i % 3) / 2.0,
-                            float((i + 1) % 3) / 2.0,
-                            float((i + 2) % 3) / 2.0
+                            u_debugColors[i * 3],
+                            u_debugColors[i * 3 + 1],
+                            u_debugColors[i * 3 + 2]
                         );
                         
                         float lensingRadius = u_eventHorizonRadii[i] * u_lensingRadiusMultipliers[i];
@@ -381,12 +417,7 @@ class LensingEffect {
     }
 
     setupDefaultBlackHoles() {
-        // Generate random number of black holes between minBlackHoles and maxBlackHoles
-        const range = this.config.maxBlackHoles - this.config.minBlackHoles;
-        const numBlackHoles = Math.floor(Math.random() * (range + 1)) + this.config.minBlackHoles;
-        
         // Get the full document height to distribute black holes across entire content
-        // We need to wait a bit for the document to be fully rendered
         const getDocumentHeight = () => Math.max(
             document.body.scrollHeight,
             document.body.offsetHeight,
@@ -396,39 +427,100 @@ class LensingEffect {
         );
         
         const documentHeight = getDocumentHeight();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
         
-        console.log(`Generating ${numBlackHoles} random black holes (range: ${this.config.minBlackHoles}-${this.config.maxBlackHoles})`);
         console.log(`Document height: ${documentHeight}px`);
+        console.log(`Viewport dimensions: ${viewportWidth}px × ${viewportHeight}px`);
         
-        for (let i = 0; i < numBlackHoles; i++) {
-            // Random position within the viewport width
-            const x = Math.random() * window.innerWidth;
+        // Define 6 specific black holes at strategic positions
+        // Since we can access the document height, we should convert the viewport positions 
+        // to document positions to THREE positions here.
+        const blackHoles = [
+            // 1) Top left of document (fixed to the top of the document)
+            {
+                x: 100,
+                y: -200 + viewportHeight,
+                documentY: 200,
+                label: "BH1: Top Left (Document)",
+                name: "BH1",
+                debugColor: "#FF5555"
+            },
+
+            // 2) Top right of document (fixed to the top of the document)
+            {
+                x: viewportWidth - 100,
+                y: -200 + viewportHeight,
+                documentY: 200,
+                label: "BH2: Top Right (Document)",
+                name: "BH2",
+                debugColor: "#55FF55"
+            },
+
+            // 3) Middle left of document
+            {
+                x: 100,
+                y: -documentHeight/2 + viewportHeight,
+                documentY: documentHeight/2,
+                label: "BH3: Middle Left (Document)",
+                name: "BH3",
+                debugColor: "#5555FF"
+            },
+
+            // 4) Middle right of document
+            {
+                x: viewportWidth - 100,
+                y: -documentHeight/2 + viewportHeight,
+                documentY: documentHeight/2,
+                label: "BH4: Middle Right (Document)",
+                name: "BH4",
+                debugColor: "#FFFF55"
+            },
+
+            // 5) Bottom left of document
+            {
+                x: 100,
+                y: -documentHeight + viewportHeight + 200,
+                documentY: documentHeight - 200,
+                label: "BH5: Bottom Left (Document)",
+                name: "BH5",
+                debugColor: "#FF55FF"
+            },
+
+            // 6) Bottom right of document
+            {
+                x: viewportWidth - 100,
+                y: -documentHeight + viewportHeight + 200,
+                documentY: documentHeight - 200,
+                label: "BH6: Bottom Right (Document)",
+                name: "BH6",
+                debugColor: "#55FFFF"
+            }
+        ];
+        
+        console.log(`Adding ${blackHoles.length} fixed position black holes:`);
+        
+        // Create each black hole with unique properties
+        blackHoles.forEach((bh, i) => {
+            // Vary the properties slightly for each black hole
+            const mass = 200 + (i * 50); // Range from 200-450
+            const eventHorizonRadius = 15 + (i * 3); // Range from 15-30
+            const lensingRadiusMultiplier = 5 + (i * 0.5); // Range from 5-7.5
             
-            // Random Y position throughout the entire document height
-            const documentY = Math.random() * documentHeight;
+            // Add the black hole
+            this.addBlackHole(bh.x, bh.y, mass, eventHorizonRadius, lensingRadiusMultiplier, bh.debugColor);
             
-            // Convert from DOM coordinates to Three.js coordinates:
-            // The key issue is how we apply scroll position and flip the y-axis
-            // THREE.js coordinates are from bottom-left, while DOM coordinates are from top-left
-            // For correct positioning regardless of scroll, we need:
-            const y = Math.max(0, documentY); // Ensure y is always positive
+            // Add name property to the black hole
+            const addedBlackHole = this.gravitationalLens.blackHoles[this.gravitationalLens.blackHoles.length - 1];
+            addedBlackHole.name = bh.name;
             
-            // Random properties for variety - using configurable mass range
-            const massRange = this.config.maxBlackHolesMass - this.config.minBlackHolesMass;
-            const mass = Math.floor(Math.random() * (massRange + 1)) + this.config.minBlackHolesMass;
-            const eventHorizonRadius = 10 + Math.random() * 25;  // Between 10-35
-            const lensingRadiusMultiplier = 5 + Math.random() * 10;  // Between 5-15
-            
-            // Add the black hole with random properties
-            this.addBlackHole(x, y, mass, eventHorizonRadius, lensingRadiusMultiplier);
-            
-            console.log(`Black hole ${i + 1}: pos(${Math.round(x)}, ${Math.round(y)}), document Y: ${Math.round(documentY)}, mass: ${Math.round(mass)}, horizon: ${Math.round(eventHorizonRadius)}, lensing: ${Math.round(lensingRadiusMultiplier * 10) / 10}`);
-        }
+            console.log(`Black hole ${bh.name} - ${bh.label} - pos(${Math.round(bh.x)}, ${Math.round(bh.y)}), document Y: ${Math.round(bh.documentY)}, mass: ${mass}, radius: ${eventHorizonRadius}, debug color: ${bh.debugColor || 'default'}`);
+        });
     }
 
     // Public API for managing black holes
-    addBlackHole(x, y, mass = null, eventHorizonRadius = null, lensingRadiusMultiplier = null) {
-        return this.gravitationalLens.addBlackHole(x, y, mass, eventHorizonRadius, lensingRadiusMultiplier);
+    addBlackHole(x, y, mass = null, eventHorizonRadius = null, lensingRadiusMultiplier = null, debugColor = null) {
+        return this.gravitationalLens.addBlackHole(x, y, mass, eventHorizonRadius, lensingRadiusMultiplier, debugColor);
     }
 
     removeBlackHole(index) {
@@ -468,6 +560,10 @@ class LensingEffect {
     createDebugOverlay(x, y, index) {
         if (!this.config.debug) return;
         
+        const blackHole = this.gravitationalLens.blackHoles[index];
+        const name = blackHole.name || `BH${index}`;
+        const debugColor = blackHole.debugColor || '#FFFFFF';
+        
         const overlay = document.createElement('div');
         overlay.style.cssText = `
             position: fixed;
@@ -481,9 +577,10 @@ class LensingEffect {
             white-space: nowrap;
             z-index: 1000;
             transform: translate(-50%, -50%);
+            border-left: 4px solid ${debugColor};
         `;
         
-        overlay.textContent = `(${x.toFixed(2)}, ${y.toFixed(2)})`;
+        overlay.textContent = `${name}: (${x.toFixed(2)}, ${y.toFixed(2)})`;
         overlay.style.left = x + 'px';
         overlay.style.top = y + 'px';
         
@@ -510,14 +607,16 @@ class LensingEffect {
         );
         
         const documentHeight = getDocumentHeight();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
         
         // Create new overlays for each black hole
         this.gravitationalLens.blackHoles.forEach((blackHole, index) => {
             const x = blackHole.position.x;
             
-            // Get the true screen position by applying scroll offset
-            // With our new coordinate system, just add the scroll offset for screen positioning
-            const screenY = blackHole.position.y + this.scrollY;
+            // The position is already properly calculated in the animate method
+            // and stored in the blackHole.position object
+            const screenY = blackHole.position.y;
             
             // Only show debug overlays for black holes that are currently visible on screen
             const isOnScreen = screenY >= 0 && screenY <= window.innerHeight && 
@@ -531,7 +630,7 @@ class LensingEffect {
                 this.createDebugOverlay(x, screenY, index);
                 
                 if (isOnScreen) {
-                    console.log(`Black hole ${index} visible on screen at (${Math.round(x)}, ${Math.round(screenY)})`);
+                    console.log(`Black hole ${index} (${blackHole.name || ''}) visible on screen at (${Math.round(x)}, ${Math.round(screenY)})`);
                 }
             }
         });
@@ -599,6 +698,13 @@ class LensingEffect {
 
     onScroll() {
         this.scrollY = window.pageYOffset;
+        // Immediately update black hole positions on scroll
+        this.gravitationalLens.blackHoles.forEach((blackHole, index) => {
+            if (blackHole.documentY !== undefined) {
+                const newY = blackHole.documentY - this.scrollY;
+                this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX || blackHole.position.x, newY);
+            }
+        });
     }
 
     onResize() {
@@ -646,10 +752,12 @@ class LensingEffect {
                 );
                 const documentHeight = getDocumentHeight();
                 
-                // Calculate the document position (where this black hole should be in document coordinates)
-                // With the new simplified coordinate system, we simply store the position directly
+                // Calculate and store document position
                 blackHole.documentX = blackHole.position.x; // X doesn't change with scroll
                 blackHole.documentY = blackHole.position.y;
+                
+                // Store the original document Y to keep blackholes within their section
+                blackHole.originalDocumentY = blackHole.documentY;
                 
                 // Store the original document Y to keep blackholes within their section
                 blackHole.originalDocumentY = blackHole.documentY;
@@ -663,9 +771,11 @@ class LensingEffect {
                 blackHole.phaseX = Math.random() * Math.PI * 2; // Random phase offset
                 blackHole.phaseY = Math.random() * Math.PI * 2;
                 
-                console.log(`Black hole ${index} original screen pos: (${blackHole.originalX}, ${blackHole.originalY}), document pos: (${blackHole.documentX}, ${blackHole.documentY})`);
+                console.log(`Black hole ${index} (${blackHole.name || ''}) original screen pos: (${blackHole.originalX}, ${blackHole.originalY}), document pos: (${blackHole.documentX}, ${blackHole.documentY})`);
             }
             
+            /* 
+            // ANIMATION COMMENTED OUT
             // Calculate new position with orbital movement relative to document position
             // Ensure the black hole stays close to its original section by limiting Y movement
             const newDocumentX = blackHole.documentX + 
@@ -680,9 +790,16 @@ class LensingEffect {
             // With our simplified approach, we can just use the coordinates directly
             // Just make sure to adjust for scroll position for Y coordinate
             const newX = newDocumentX; // X doesn't change with scroll
-            const newY = newDocumentY - this.scrollY; // Apply scroll offset
+            const newY = newDocumentY + this.scrollY; // Apply scroll offset
             
             this.gravitationalLens.updateBlackHolePosition(index, newX, newY);
+            */
+            
+            // Just update Y position for scroll without animation
+            // When scrolling down, document moves up, black holes should also move up (negative offset)
+            // Black hole Y position = original document position - scroll position
+            const newY = blackHole.documentY + this.scrollY;
+            this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX, newY);
         });
 
         // Update debug overlays if debug mode is enabled
