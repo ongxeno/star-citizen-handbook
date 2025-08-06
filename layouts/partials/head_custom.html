@@ -27,19 +27,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const effect = new LensingEffect({
-        container: document.body,
-        config: {
-            starCount: 60000,              // Reduced for better performance
-            starBaseSize: 80.0,            // Larger stars for better visibility (restored from optimization)
-            parallaxFactor: 1.0,           // Moderate parallax effect (0.0 = no movement, 1.0 = closest stars match content speed)
-            minBlackHolesMass: 100,    // Minimum mass for randomly generated black holes
-            maxBlackHolesMass: 1000,   // Maximum mass for randomly generated black holes
-            eventHorizonRadius: 5.0,      // Optimized radius
-            lensingRadiusMultiplier: 8.0,  // Optimized multiplier
-            minBlackHoles: 30,          // Minimum number of black holes to generate
-            maxBlackHoles: 30,        // Maximum number of black holes the system can handle
-            debug: true                   // Set to true to see debug circles
-        }
+        container: document.body
     });
     effect.init();
 });

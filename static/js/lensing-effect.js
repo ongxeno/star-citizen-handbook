@@ -56,6 +56,7 @@ class StarField {
         const starGeometry = new THREE.BufferGeometry();
         const positions = [];
         const colors = [];
+        const brightnessMultipliers = [];
 
         const starColorsConfig = {
             // Hot blue/white stars (O, B, A types)
@@ -76,39 +77,88 @@ class StarField {
             positions.push(
                 (Math.random() - 0.5) * 2000,
                 (Math.random() - 0.5) * 2000,
-                (Math.random() - 0.5) * 2000
+                this.config.starfieldMinZ + Math.random() * (this.config.starfieldMaxZ - this.config.starfieldMinZ)
             );
             const randomColor = allStarColors[Math.floor(Math.random() * allStarColors.length)];
             colors.push(randomColor.r, randomColor.g, randomColor.b);
+            
+            // Generate individual brightness multiplier for each star
+            const brightnessMultiplier = this.config.starBrightnessMultiplierMin + 
+                Math.random() * (this.config.starBrightnessMultiplierMax - this.config.starBrightnessMultiplierMin);
+            brightnessMultipliers.push(brightnessMultiplier);
         }
         starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
         starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        starGeometry.setAttribute('brightnessMultiplier', new THREE.Float32BufferAttribute(brightnessMultipliers, 1));
 
         this.material = new THREE.ShaderMaterial({
             uniforms: {
-                size: { value: this.config.starBaseSize * this.renderer.getPixelRatio() }
+                size: { value: this.config.starBaseSize * this.renderer.getPixelRatio() },
+                u_starfieldMinZ: { value: this.config.starfieldMinZ },
+                u_starfieldMaxZ: { value: this.config.starfieldMaxZ },
+                u_starfieldMinBrightness: { value: this.config.starfieldMinBrightness },
+                u_starfieldMaxBrightness: { value: this.config.starfieldMaxBrightness }
             },
             vertexShader: `
+                attribute float brightnessMultiplier;
                 varying vec3 vColor;
+                varying float vDepth;
+                varying float vBrightnessMultiplier;
                 uniform float size;
                 void main() {
                     vColor = color;
+                    vBrightnessMultiplier = brightnessMultiplier;
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    vDepth = -mvPosition.z;
                     float pointSize = size * (10.0 / -mvPosition.z);
-                    // Limit the maximum star size to prevent overly large stars
-                    gl_PointSize = clamp(pointSize, 1.6, 4.0);
+                    gl_PointSize = pointSize;
                     gl_Position = projectionMatrix * mvPosition;
                 }
             `,
             fragmentShader: `
                 varying vec3 vColor;
+                varying float vDepth;
+                varying float vBrightnessMultiplier;
+                uniform float u_starfieldMinZ;
+                uniform float u_starfieldMaxZ;
+                uniform float u_starfieldMinBrightness;
+                uniform float u_starfieldMaxBrightness;
+
                 void main() {
-                    if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.48) discard;
-                    gl_FragColor = vec4(vColor, 1.0);
+                    // Center of the star, offset to the "north" (smaller Y in gl_PointCoord)
+                    vec2 center = vec2(0.5, 0.5); 
+                    
+                    // Calculate distance from the fragment to the offset center
+                    float dist = length(gl_PointCoord - center);
+
+                    // Create a gradient that is 1.0 at the center and falls off to 0.0 at the edge
+                    // This creates a soft, spherical appearance.
+                    float gradient = 1.0 - smoothstep(0.2, 0.5, dist);
+
+                    // Discard pixels that are fully transparent
+                    if (gradient <= 0.0) discard;
+
+                    // --- Existing brightness calculation based on depth ---
+                    float minDepth = -u_starfieldMaxZ; 
+                    float maxDepth = -u_starfieldMinZ; 
+                    float depthRange = maxDepth - minDepth;
+                    float brightnessRange = u_starfieldMaxBrightness - u_starfieldMinBrightness;
+                    
+                    float normalizedDepth = (vDepth - minDepth) / depthRange;
+                    
+                    float baseBrightness = u_starfieldMaxBrightness - normalizedDepth * brightnessRange;
+                    baseBrightness = clamp(baseBrightness, u_starfieldMinBrightness, u_starfieldMaxBrightness);
+                    
+                    // Apply individual star brightness multiplier
+                    float finalBrightness = baseBrightness * vBrightnessMultiplier;
+
+                    // The gradient now controls the alpha, making the star opaque in the center
+                    // and transparent at the edges. The color is no longer multiplied by the gradient.
+                    gl_FragColor = vec4(vColor * finalBrightness, gradient);
                 }
             `,
-            blending: THREE.AdditiveBlending,
-            depthTest: false,
+            blending: THREE.NormalBlending,
+            depthTest: true,
             transparent: true,
             vertexColors: true
         });
@@ -314,7 +364,7 @@ class GravitationalLens {
                     // Calculate gravitational lensing displacement
                     vec2 displacement = normalize(toBlackHole) * u_masses[i] / dist;
                     float falloff = 1.0 - smoothstep(u_eventHorizonRadii[i], u_eventHorizonRadii[i] * u_lensingRadiusMultipliers[i], dist);
-                    displacement *= falloff * falloff;
+                    displacement *= falloff;
                     
                     totalDisplacement += displacement;
                 }
@@ -339,11 +389,30 @@ class GravitationalLens {
                         );
                         
                         float lensingRadius = u_eventHorizonRadii[i] * u_lensingRadiusMultipliers[i];
-                        float lensingEdge = abs(dist - lensingRadius);
-                        finalColor.rgb = mix(debugColor, finalColor.rgb, smoothstep(0.0, 2.0, lensingEdge));
                         
+                        // Show lensing radius boundary as a thin colored ring
+                        float lensingEdge = abs(dist - lensingRadius);
+                        finalColor.rgb = mix(debugColor, finalColor.rgb, smoothstep(0.0, 3.0, lensingEdge));
+                        
+                        // Show event horizon as white ring
                         float horizonEdge = abs(dist - u_eventHorizonRadii[i]);
                         finalColor.rgb = mix(vec3(1.0), finalColor.rgb, smoothstep(0.0, 2.0, horizonEdge));
+                        
+                        // Add numerical distance indicators at specific radii
+                        float quarterRadius = lensingRadius * 0.25;
+                        float halfRadius = lensingRadius * 0.5;
+                        float threeQuarterRadius = lensingRadius * 0.75;
+                        
+                        // Show quarter markers as faint lines
+                        if (abs(dist - quarterRadius) < 1.0) {
+                            finalColor.rgb = mix(vec3(0.8, 0.8, 0.0), finalColor.rgb, 0.7);
+                        }
+                        if (abs(dist - halfRadius) < 1.0) {
+                            finalColor.rgb = mix(vec3(0.0, 0.8, 0.8), finalColor.rgb, 0.7);
+                        }
+                        if (abs(dist - threeQuarterRadius) < 1.0) {
+                            finalColor.rgb = mix(vec3(0.8, 0.0, 0.8), finalColor.rgb, 0.7);
+                        }
                     }
                 }
 
@@ -375,18 +444,48 @@ class LensingEffect {
     constructor(options = {}) {
         this.container = options.container || document.body;
         this.config = {
-            starCount: 50000,
-            starBaseSize: 40.0,        // Increased from 15.0 for larger stars
-            cameraZ: 10,
-            parallaxFactor: 0.15,      // Increased from 0.02 for stronger parallax
-            mass: 250.0,
-            eventHorizonRadius: 25.0,
-            lensingRadiusMultiplier: 8.0,
-            minBlackHoles: 5,          // Minimum number of black holes to generate
-            maxBlackHoles: 100,        // Maximum number of black holes the system can handle
-            minBlackHolesMass: 100,    // Minimum mass for randomly generated black holes
-            maxBlackHolesMass: 1000,   // Maximum mass for randomly generated black holes
-            debug: true,
+            // Starfield settings
+            starCount: 100000,              // Total number of stars in the background
+            starBaseSize: 80.0,             // Base size of stars, adjusted by distance
+            starfieldMinZ: -1500,           // The minimum z-position for a star (farthest)
+            starfieldMaxZ: -200,            // The maximum z-position for a star (closest)
+            starfieldMinBrightness: 0.00,    // Minimum brightness of the farthest star
+            starfieldMaxBrightness: 1.0,    // Maximum brightness of the closest star
+            starBrightnessMultiplierMin: 0.3, // Minimum individual star brightness multiplier
+            starBrightnessMultiplierMax: 0.8, // Maximum individual star brightness multiplier
+            cameraZ: 10,                    // Z-position of the camera
+            parallaxFactor: 0.1,            // How much the starfield moves on scroll (higher is more)
+
+            // Default black hole physics
+            mass: 250.0,                    // Default gravitational mass (lensing strength)
+            eventHorizonRadius: 5.0,        // Default radius of the black hole's center
+            lensingRadiusMultiplier: 8.0,   // Default multiplier for the size of the lensing effect ring
+
+            // Random black hole generation
+            minBlackHoles: 1,              // Minimum number of black holes to generate randomly
+            maxBlackHoles: 5,              // Maximum number of black holes the system can handle
+            minBlackHolesMass: 500,         // Minimum mass for randomly generated black holes
+            maxBlackHolesMass: 2000,        // Maximum mass for randomly generated black holes
+            minEventHorizonRadius: 1,       // Minimum event horizon radius for random black holes
+            maxEventHorizonRadius: 5,       // Maximum event horizon radius for random black holes
+            minLensingRadiusMultiplier: 50,  // Minimum lensing radius multiplier for random black holes
+            maxLensingRadiusMultiplier: 50,  // Maximum lensing radius multiplier for random black holes
+
+            // Debugging
+            debug: false,                    // Enables debug mode (shows overlays and lensing rings)
+            debugBlackHolePosition: false,  // If true (and debug is true), uses fixed BH1-BH6 positions
+            
+            // Animation
+            orbitalMovement: true,          // Enable/disable orbital animation for black holes
+            minSpeedX: 0.0,                 // Min horizontal speed for orbital movement
+            maxSpeedX: 0.1,                 // Max horizontal speed for orbital movement
+            minSpeedY: 0.0,                 // Min vertical speed for orbital movement
+            maxSpeedY: 0.1,                 // Max vertical speed for orbital movement
+            minRadiusX: 20,                 // Min horizontal orbit radius
+            maxRadiusX: 40,                 // Max horizontal orbit radius
+            minRadiusY: 15,                 // Min vertical orbit radius
+            maxRadiusY: 30,                 // Max vertical orbit radius
+
             ...options.config,
         };
 
@@ -432,91 +531,64 @@ class LensingEffect {
         
         console.log(`Document height: ${documentHeight}px`);
         console.log(`Viewport dimensions: ${viewportWidth}px × ${viewportHeight}px`);
-        
-        // Define 6 specific black holes at strategic positions
-        // Since we can access the document height, we should convert the viewport positions 
-        // to document positions to THREE positions here.
-        const blackHoles = [
-            // 1) Top left of document
-            {
-                x: 100,
-                y: viewportHeight - 200,
-                documentY: 200,
-                label: "BH1: Top Left (Document)",
-                name: "BH1",
-                debugColor: "#FF5555"
-            },
 
-            // 2) Top right of document
-            {
-                x: viewportWidth - 100,
-                y: viewportHeight - 200,
-                documentY: 200,
-                label: "BH2: Top Right (Document)",
-                name: "BH2",
-                debugColor: "#55FF55"
-            },
+        if (this.config.debug && this.config.debugBlackHolePosition) {
+            // Define 6 specific black holes at strategic positions for debugging
+            const blackHoles = [
+                // 1) Top left of document
+                { x: 100, y: viewportHeight - 200, documentY: 200, label: "BH1: Top Left (Document)", name: "BH1", debugColor: "#FF5555" },
+                // 2) Top right of document
+                { x: viewportWidth - 100, y: viewportHeight - 200, documentY: 200, label: "BH2: Top Right (Document)", name: "BH2", debugColor: "#55FF55" },
+                // 3) Middle left of document
+                { x: 100, y: viewportHeight - (documentHeight / 2), documentY: documentHeight / 2, label: "BH3: Middle Left (Document)", name: "BH3", debugColor: "#5555FF" },
+                // 4) Middle right of document
+                { x: viewportWidth - 100, y: viewportHeight - (documentHeight / 2), documentY: documentHeight / 2, label: "BH4: Middle Right (Document)", name: "BH4", debugColor: "#FFFF55" },
+                // 5) Bottom left of document
+                { x: 100, y: viewportHeight - (documentHeight - 200), documentY: documentHeight - 200, label: "BH5: Bottom Left (Document)", name: "BH5", debugColor: "#FF55FF" },
+                // 6) Bottom right of document
+                { x: viewportWidth - 100, y: viewportHeight - (documentHeight - 200), documentY: documentHeight - 200, label: "BH6: Bottom Right (Document)", name: "BH6", debugColor: "#55FFFF" }
+            ];
+            
+            console.log(`Adding ${blackHoles.length} fixed position black holes for debugging:`);
+            
+            blackHoles.forEach((bh, i) => {
+                const mass = 200;
+                const eventHorizonRadius = 15;
+                const lensingRadiusMultiplier = 5;
+                
+                this.addBlackHole(bh.x, bh.y, mass, eventHorizonRadius, lensingRadiusMultiplier, bh.debugColor);
+                
+                const addedBlackHole = this.gravitationalLens.blackHoles[this.gravitationalLens.blackHoles.length - 1];
+                addedBlackHole.name = bh.name;
+                addedBlackHole.documentY = bh.documentY;
+                
+                console.log(`Black hole ${bh.name} - ${bh.label} - pos(${Math.round(bh.x)}, ${Math.round(bh.y)}), document Y: ${Math.round(bh.documentY)}, mass: ${mass}, radius: ${eventHorizonRadius}, debug color: ${bh.debugColor || 'default'}`);
+            });
 
-            // 3) Middle left of document
-            {
-                x: 100,
-                y: viewportHeight - (documentHeight / 2),
-                documentY: documentHeight / 2,
-                label: "BH3: Middle Left (Document)",
-                name: "BH3",
-                debugColor: "#5555FF"
-            },
+        } else {
+            // Generate a random number of black holes
+            const numBlackHoles = this.config.minBlackHoles + Math.floor(Math.random() * (this.config.maxBlackHoles - this.config.minBlackHoles + 1));
+            console.log(`Adding ${numBlackHoles} random black holes:`);
 
-            // 4) Middle right of document
-            {
-                x: viewportWidth - 100,
-                y: viewportHeight - (documentHeight / 2),
-                documentY: documentHeight / 2,
-                label: "BH4: Middle Right (Document)",
-                name: "BH4",
-                debugColor: "#FFFF55"
-            },
+            for (let i = 0; i < numBlackHoles; i++) {
+                const documentY = Math.random() * documentHeight;
+                const x = Math.random() * viewportWidth;
+                const y = viewportHeight - documentY; // Convert documentY to shader Y
 
-            // 5) Bottom left of document
-            {
-                x: 100,
-                y: viewportHeight - (documentHeight - 200),
-                documentY: documentHeight - 200,
-                label: "BH5: Bottom Left (Document)",
-                name: "BH5",
-                debugColor: "#FF55FF"
-            },
+                const mass = this.config.minBlackHolesMass + Math.random() * (this.config.maxBlackHolesMass - this.config.minBlackHolesMass);
+                const eventHorizonRadius = this.config.minEventHorizonRadius + Math.random() * (this.config.maxEventHorizonRadius - this.config.minEventHorizonRadius);
+                const lensingRadiusMultiplier = this.config.minLensingRadiusMultiplier + Math.random() * (this.config.maxLensingRadiusMultiplier - this.config.minLensingRadiusMultiplier);
+                const randomColor = '#' + new THREE.Color(0xffffff).setHSL(Math.random(), 1.0, 0.5).getHexString();
+                
+                this.addBlackHole(x, y, mass, eventHorizonRadius, lensingRadiusMultiplier, randomColor);
+                
+                const addedBlackHole = this.gravitationalLens.blackHoles[i];
+                addedBlackHole.name = `RBH${i}`;
+                addedBlackHole.documentY = documentY;
 
-            // 6) Bottom right of document
-            {
-                x: viewportWidth - 100,
-                y: viewportHeight - (documentHeight - 200),
-                documentY: documentHeight - 200,
-                label: "BH6: Bottom Right (Document)",
-                name: "BH6",
-                debugColor: "#55FFFF"
+                console.log(`Random Black hole ${i} - pos(${Math.round(x)}, ${Math.round(y)}), document Y: ${Math.round(documentY)}, mass: ${mass.toFixed(0)}, radius: ${eventHorizonRadius.toFixed(0)}, color: ${randomColor}`);
             }
-        ];
-        
-        console.log(`Adding ${blackHoles.length} fixed position black holes:`);
-        
-        // Create each black hole with unique properties
-        blackHoles.forEach((bh, i) => {
-            // Vary the properties slightly for each black hole
-            const mass = 200 + (i * 50); // Range from 200-450
-            const eventHorizonRadius = 15 + (i * 3); // Range from 15-30
-            const lensingRadiusMultiplier = 5 + (i * 0.5); // Range from 5-7.5
-            
-            // Add the black hole
-            this.addBlackHole(bh.x, bh.y, mass, eventHorizonRadius, lensingRadiusMultiplier, bh.debugColor);
-            
-            // Add name property to the black hole
-            const addedBlackHole = this.gravitationalLens.blackHoles[this.gravitationalLens.blackHoles.length - 1];
-            addedBlackHole.name = bh.name;
-            addedBlackHole.documentY = bh.documentY;
-            
-            console.log(`Black hole ${bh.name} - ${bh.label} - pos(${Math.round(bh.x)}, ${Math.round(bh.y)}), document Y: ${Math.round(bh.documentY)}, mass: ${mass}, radius: ${eventHorizonRadius}, debug color: ${bh.debugColor || 'default'}`);
-        });
+        }
     }
 
     // Public API for managing black holes
@@ -700,14 +772,6 @@ class LensingEffect {
 
     onScroll() {
         this.scrollY = window.pageYOffset;
-        // Immediately update black hole positions on scroll
-        this.gravitationalLens.blackHoles.forEach((blackHole, index) => {
-            if (blackHole.documentY !== undefined) {
-                const screenY = blackHole.documentY - this.scrollY;
-                const shaderY = window.innerHeight - screenY;
-                this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX || blackHole.position.x, shaderY);
-            }
-        });
     }
 
     onResize() {
@@ -734,7 +798,7 @@ class LensingEffect {
         requestAnimationFrame(this.animate);
 
         // Update camera for parallax effect
-        this.camera.position.y = -this.scrollY * 0.02;
+        this.camera.position.y = -this.scrollY * this.config.parallaxFactor;
         
         // Create dynamic movement for all black holes
         const time = Date.now() * 0.001; // Time in seconds
@@ -767,42 +831,36 @@ class LensingEffect {
                 
                 
                 // Give each black hole unique movement characteristics
-                blackHole.speedX = (Math.random() - 0.5) * 0.3; // Random speed multiplier
-                blackHole.speedY = (Math.random() - 0.5) * 0.2;
-                blackHole.radiusX = 20 + Math.random() * 40; // Random orbit radius
-                blackHole.radiusY = 15 + Math.random() * 30; // Limit vertical movement to stay in section
+                blackHole.speedX = this.config.minSpeedX + Math.random() * (this.config.maxSpeedX - this.config.minSpeedX);
+                blackHole.speedY = this.config.minSpeedY + Math.random() * (this.config.maxSpeedY - this.config.minSpeedY);
+                blackHole.radiusX = this.config.minRadiusX + Math.random() * (this.config.maxRadiusX - this.config.minRadiusX);
+                blackHole.radiusY = this.config.minRadiusY + Math.random() * (this.config.maxRadiusY - this.config.minRadiusY);
                 blackHole.phaseX = Math.random() * Math.PI * 2; // Random phase offset
                 blackHole.phaseY = Math.random() * Math.PI * 2;
                 
                 console.log(`Black hole ${index} (${blackHole.name || ''}) original screen pos: (${blackHole.originalX}, ${blackHole.originalY}), document pos: (${blackHole.documentX}, ${blackHole.documentY})`);
             }
             
-            /* 
-            // ANIMATION COMMENTED OUT
-            // Calculate new position with orbital movement relative to document position
-            // Ensure the black hole stays close to its original section by limiting Y movement
-            const newDocumentX = blackHole.documentX + 
-                        Math.sin(time * blackHole.speedX + blackHole.phaseX) * blackHole.radiusX;
-            
-            // Limit vertical movement to stay relatively near original position
-            const maxYDeviation = Math.min(100, window.innerHeight * 0.2); // Maximum 20% of viewport or 100px
-            const yOffset = Math.cos(time * blackHole.speedY + blackHole.phaseY) * blackHole.radiusY;
-            const newDocumentY = blackHole.originalDocumentY + yOffset * (maxYDeviation / blackHole.radiusY);
-            
-            // Convert document coordinates to screen coordinates
-            // With our simplified approach, we can just use the coordinates directly
-            // Just make sure to adjust for scroll position for Y coordinate
-            const newX = newDocumentX; // X doesn't change with scroll
-            const newY = newDocumentY + this.scrollY; // Apply scroll offset
-            
-            this.gravitationalLens.updateBlackHolePosition(index, newX, newY);
-            */
-            
-            // Just update Y position for scroll without animation
-            // When scrolling down, document moves up, black holes should also move up (negative offset)
-            // Black hole Y position = original document position - scroll position
-            const newY = blackHole.documentY + this.scrollY;
-            this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX, newY);
+            if (this.config.orbitalMovement) {
+                // Calculate new position with orbital movement relative to document position
+                const newDocumentX = blackHole.documentX + 
+                            Math.sin(time * blackHole.speedX + blackHole.phaseX) * blackHole.radiusX;
+                
+                // Limit vertical movement to stay relatively near original position
+                const maxYDeviation = Math.min(100, window.innerHeight * 0.2); // Maximum 20% of viewport or 100px
+                const yOffset = Math.cos(time * blackHole.speedY + blackHole.phaseY) * blackHole.radiusY;
+                const newDocumentY = blackHole.originalDocumentY + yOffset * (maxYDeviation / blackHole.radiusY);
+                
+                // Convert document coordinates to screen coordinates
+                const newX = newDocumentX; // X doesn't change with scroll
+                const newY = newDocumentY + this.scrollY; // Apply scroll offset
+                
+                this.gravitationalLens.updateBlackHolePosition(index, newX, newY);
+            } else {
+                // Just update Y position for scroll without animation
+                const newY = blackHole.documentY + this.scrollY;
+                this.gravitationalLens.updateBlackHolePosition(index, blackHole.originalX, newY);
+            }
         });
 
         // Update debug overlays if debug mode is enabled
