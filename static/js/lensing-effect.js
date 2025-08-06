@@ -84,7 +84,13 @@ class StarField {
         const generationWidth = viewportWidth * 1.5; // A bit wider than viewport
         const generationHeight = documentHeight * 1.5; // A bit taller for parallax
 
-        for (let i = 0; i < this.config.starCount; i++) {
+        // Calculate number of stars based on density and total area
+        const totalArea = generationWidth * generationHeight;
+        const calculatedStarCount = Math.floor(totalArea * this.config.starDensity);
+        
+        console.log(`Star generation: ${generationWidth}x${generationHeight} area = ${totalArea} pixels, density = ${this.config.starDensity}, stars = ${calculatedStarCount}`);
+
+        for (let i = 0; i < calculatedStarCount; i++) {
             positions.push(
                 (Math.random() - 0.5) * generationWidth,
                 (Math.random() - 0.5) * generationHeight,
@@ -456,7 +462,7 @@ class LensingEffect {
         this.container = options.container || document.body;
         this.config = {
             // Starfield settings
-            starCount: 100000,              // Total number of stars in the background
+            starDensity: 0.02,              // Stars per square pixel (controls star density based on viewport and document size)
             starBaseSize: 80.0,             // Base size of stars, adjusted by distance
             starfieldMinZ: -1000,           // The minimum z-position for a star (farthest)
             starfieldMaxZ: -70,            // The maximum z-position for a star (closest)
@@ -713,10 +719,6 @@ class LensingEffect {
             
             if (isOnScreen || isNearScreen) {
                 this.createDebugOverlay(x, screenY, index);
-                
-                if (isOnScreen) {
-                    console.log(`Black hole ${index} (${blackHole.name || ''}) visible on screen at (${Math.round(x)}, ${Math.round(screenY)})`);
-                }
             }
         });
     }
