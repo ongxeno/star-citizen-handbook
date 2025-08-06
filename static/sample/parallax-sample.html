@@ -99,6 +99,20 @@
         .config-item input[type="range"] {
             width: 100%;
         }
+        .config-item input[type="number"] {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #555;
+            background: #222;
+            color: #fff;
+            border-radius: 3px;
+            font-family: inherit;
+        }
+        .config-item input[type="number"]:focus {
+            outline: none;
+            border-color: #777;
+            background: #333;
+        }
         .config-item .value-display {
             font-weight: bold;
             color: #fff;
@@ -170,8 +184,11 @@
 
                 <!-- Black Hole Physics -->
                 <div class="config-item">
-                    <div class="label-wrapper"><label for="mass">Black Hole Mass</label><span id="mass-value" class="value-display"></span></div>
-                    <input type="range" id="mass" min="50" max="2000" step="25">
+                    <div class="label-wrapper"><label for="mass">Black Hole Mass Override</label></div>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="number" id="mass" min="50" max="5000" step="25" style="flex: 1; padding: 4px; border: 1px solid #555; background: #222; color: #fff; border-radius: 3px;">
+                        <button id="mass-apply-btn" style="padding: 4px 8px; border: 1px solid #555; background: #444; color: #fff; cursor: pointer; border-radius: 3px; white-space: nowrap;">Apply</button>
+                    </div>
                 </div>
                 <div class="config-item">
                     <div class="label-wrapper"><label for="eventHorizonRadius">Event Horizon Radius</label><span id="eventHorizonRadius-value" class="value-display"></span></div>
@@ -184,12 +201,8 @@
 
                 <!-- Black Hole Generation -->
                 <div class="config-item">
-                    <div class="label-wrapper"><label for="minBlackHoles">Min Black Holes</label><span id="minBlackHoles-value" class="value-display"></span></div>
-                    <input type="range" id="minBlackHoles" min="1" max="20" step="1">
-                </div>
-                <div class="config-item">
-                    <div class="label-wrapper"><label for="maxBlackHoles">Max Black Holes</label><span id="maxBlackHoles-value" class="value-display"></span></div>
-                    <input type="range" id="maxBlackHoles" min="1" max="20" step="1">
+                    <div class="label-wrapper"><label for="numberOfBlackHoles">Number of Black Holes</label><span id="numberOfBlackHoles-value" class="value-display"></span></div>
+                    <input type="range" id="numberOfBlackHoles" min="1" max="20" step="1">
                 </div>
                 <div class="config-item">
                     <div class="label-wrapper"><label for="minBlackHolesMass">Min BH Mass</label><span id="minBlackHolesMass-value" class="value-display"></span></div>
@@ -294,16 +307,16 @@
 
             const initialConfig = {
                 // Starfield settings
-                starDensity: 0.02,
-                starBaseSize: 80.0,
+                starDensity: 0.03,
+                starBaseSize: 85.0,
                 starfieldMinZ: -1000,
                 starfieldMaxZ: -70,
-                starfieldMinBrightness: 0.8,
-                starfieldMaxBrightness: 1.0,
+                starfieldMinBrightness: 0.7,
+                starfieldMaxBrightness: 2.0,
                 starBrightnessMultiplierMin: 0.3,
                 starBrightnessMultiplierMax: 0.8,
                 cameraZ: 10,
-                parallaxFactor: 0.1,
+                parallaxFactor: 0.01,
 
                 // Default black hole physics
                 mass: 250.0,
@@ -311,8 +324,7 @@
                 lensingRadiusMultiplier: 8.0,
 
                 // Random black hole generation
-                minBlackHoles: 1,
-                maxBlackHoles: 5,
+                numberOfBlackHoles: 10,
                 minBlackHolesMass: 500,
                 maxBlackHolesMass: 2000,
                 minEventHorizonRadius: 1,
@@ -321,7 +333,7 @@
                 maxLensingRadiusMultiplier: 50,
 
                 // Debugging
-                debug: true,
+                debug: false,
                 debugBlackHolePosition: false,
                 
                 // Animation
@@ -349,12 +361,12 @@
 
                 // Black hole physics
                 mass: document.getElementById('mass'),
+                massApplyBtn: document.getElementById('mass-apply-btn'),
                 eventHorizonRadius: document.getElementById('eventHorizonRadius'),
                 lensingRadiusMultiplier: document.getElementById('lensingRadiusMultiplier'),
 
                 // Black hole generation
-                minBlackHoles: document.getElementById('minBlackHoles'),
-                maxBlackHoles: document.getElementById('maxBlackHoles'),
+                numberOfBlackHoles: document.getElementById('numberOfBlackHoles'),
                 minBlackHolesMass: document.getElementById('minBlackHolesMass'),
                 maxBlackHolesMass: document.getElementById('maxBlackHolesMass'),
                 minEventHorizonRadius: document.getElementById('minEventHorizonRadius'),
@@ -389,11 +401,9 @@
                 starfieldMaxBrightness: document.getElementById('starfieldMaxBrightness-value'),
                 parallaxFactor: document.getElementById('parallaxFactor-value'),
                 cameraZ: document.getElementById('cameraZ-value'),
-                mass: document.getElementById('mass-value'),
                 eventHorizonRadius: document.getElementById('eventHorizonRadius-value'),
                 lensingRadiusMultiplier: document.getElementById('lensingRadiusMultiplier-value'),
-                minBlackHoles: document.getElementById('minBlackHoles-value'),
-                maxBlackHoles: document.getElementById('maxBlackHoles-value'),
+                numberOfBlackHoles: document.getElementById('numberOfBlackHoles-value'),
                 minBlackHolesMass: document.getElementById('minBlackHolesMass-value'),
                 maxBlackHolesMass: document.getElementById('maxBlackHolesMass-value'),
                 minEventHorizonRadius: document.getElementById('minEventHorizonRadius-value'),
@@ -419,6 +429,9 @@
                     }
                 }
                 
+                // Set initial value for mass text field
+                controls.mass.value = initialConfig.mass;
+                
                 // Set initial values for checkboxes
                 controls.orbitalMovement.checked = initialConfig.orbitalMovement;
                 controls.debug.checked = initialConfig.debug;
@@ -432,18 +445,39 @@
                         });
                     }
                 }
+                
+                // Add mass override functionality
+                function applyMassOverride() {
+                    const massValue = parseFloat(controls.mass.value);
+                    if (isNaN(massValue) || massValue < 50 || massValue > 5000) {
+                        alert('Please enter a valid mass value between 50 and 5000');
+                        return;
+                    }
+                    if (effect && effect.gravitationalLens) {
+                        effect.gravitationalLens.blackHoles.forEach(bh => {
+                            bh.mass = massValue;
+                        });
+                        effect.gravitationalLens.updateUniforms();
+                        console.log(`Updated all black hole masses to: ${massValue}`);
+                    }
+                }
+                
+                controls.massApplyBtn.addEventListener('click', applyMassOverride);
+                controls.mass.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        applyMassOverride();
+                    }
+                });
             }
 
             function applyLiveChanges() {
                 if (!effect) return;
                 
                 // These can be changed without regeneration
-                const newMass = parseFloat(controls.mass.value);
                 const newEventHorizonRadius = parseFloat(controls.eventHorizonRadius.value);
                 const newLensingRadiusMultiplier = parseFloat(controls.lensingRadiusMultiplier.value);
                 
                 effect.gravitationalLens.blackHoles.forEach(bh => {
-                    bh.mass = newMass;
                     bh.eventHorizonRadius = newEventHorizonRadius;
                     bh.lensingRadiusMultiplier = newLensingRadiusMultiplier;
                 });
@@ -490,7 +524,6 @@
                 
                 // Ensure min <= max for all min/max pairs
                 const minMaxPairs = [
-                    ['minBlackHoles', 'maxBlackHoles'],
                     ['minBlackHolesMass', 'maxBlackHolesMass'],
                     ['minEventHorizonRadius', 'maxEventHorizonRadius'],
                     ['minLensingRadiusMultiplier', 'maxLensingRadiusMultiplier'],
@@ -501,6 +534,10 @@
                     ['starfieldMinZ', 'starfieldMaxZ'],
                     ['starfieldMinBrightness', 'starfieldMaxBrightness']
                 ];
+                
+                // Set both min and max black holes to the same value
+                newConfig.minBlackHoles = newConfig.numberOfBlackHoles;
+                newConfig.maxBlackHoles = newConfig.numberOfBlackHoles;
                 
                 minMaxPairs.forEach(([minKey, maxKey]) => {
                     if (newConfig[minKey] > newConfig[maxKey]) {
@@ -520,19 +557,22 @@
             setupControls();
             regenerateEffect(); // Initial creation
 
-            // Add listeners for live updates
-            controls.mass.addEventListener('input', applyLiveChanges);
+            // Add listeners for live updates (no regeneration needed)
             controls.eventHorizonRadius.addEventListener('input', applyLiveChanges);
             controls.lensingRadiusMultiplier.addEventListener('input', applyLiveChanges);
             controls.parallaxFactor.addEventListener('input', applyLiveChanges);
             controls.cameraZ.addEventListener('input', applyLiveChanges);
             controls.starBaseSize.addEventListener('input', applyLiveChanges);
-            controls.starfieldMinZ.addEventListener('input', applyLiveChanges);
-            controls.starfieldMaxZ.addEventListener('input', applyLiveChanges);
             controls.starfieldMinBrightness.addEventListener('input', applyLiveChanges);
             controls.starfieldMaxBrightness.addEventListener('input', applyLiveChanges);
             controls.orbitalMovement.addEventListener('change', applyLiveChanges);
-            controls.debug.addEventListener('change', applyLiveChanges);
+
+            // Add listeners for auto-regeneration (trigger on slider release)
+            controls.starDensity.addEventListener('change', regenerateEffect);
+            controls.starfieldMinZ.addEventListener('change', regenerateEffect);
+            controls.starfieldMaxZ.addEventListener('change', regenerateEffect);
+            controls.numberOfBlackHoles.addEventListener('input', regenerateEffect);
+            controls.debug.addEventListener('change', regenerateEffect);
 
             controls.regenerateBtn.addEventListener('click', regenerateEffect);
         });
