@@ -13,7 +13,6 @@
  * - RenderPass.js
  * - ShaderPass.js
  * - FXAAShader.js
- * - CopyShader.js
  * 
  * Instructions:
  * 1. Include the required Three.js scripts in your HTML file before this one.

@@ -11,28 +11,22 @@
             color: #fff;
             font-family: 'Inter', sans-serif;
         }
-        /* The WebGL canvas will act as the background */
-        #webgl-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            outline: none;
-        }
         main {
             position: relative;
             z-index: 10;
-            padding: 2rem;
-            text-align: center;
         }
-        .scroll-content {
-            height: 400vh; /* Make page very scrollable to see the effect */
+        .viewport-section {
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
+            text-align: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .content-wrapper {
+            max-width: 800px;
         }
         h1 {
             font-size: 3rem;
@@ -46,230 +40,273 @@
             line-height: 1.6;
             color: #ccc;
         }
+        .scroll-indicator {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        .arrow {
+            display: block;
+            margin: 0.5rem auto;
+            width: 20px;
+            height: 20px;
+            border-left: 2px solid #888;
+            border-bottom: 2px solid #888;
+            transform: rotate(-45deg);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(-45deg); }
+            40% { transform: translateY(10px) rotate(-45deg); }
+            60% { transform: translateY(5px) rotate(-45deg); }
+        }
+        #config-panel {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(20, 20, 20, 0.85);
+            border: 1px solid #333;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem 2rem;
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+        .config-item label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        .config-item input[type="range"] {
+            width: 100%;
+        }
+        .config-item .value-display {
+            font-weight: bold;
+            color: #fff;
+        }
+        .config-item .label-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+        }
+        #regenerate-btn {
+            padding: 0.7rem 1.5rem;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="webgl-canvas"></canvas>
     <main>
-        <div class="scroll-content">
-            <h1>High-Performance Lensing</h1>
-            <p>This implementation uses WebGL and a custom GLSL shader for a smooth and realistic gravitational lensing effect, as described in the research document. Scroll to move the camera and the black hole.</p>
+        <div class="viewport-section">
+            <div class="content-wrapper">
+                <h1>High-Performance Lensing</h1>
+                <p>This implementation uses WebGL and a custom GLSL shader for a smooth and realistic gravitational lensing effect. Adjust the settings below in real-time.</p>
+            </div>
+            <div id="config-panel">
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="mass">Black Hole Mass</label><span id="mass-value" class="value-display"></span></div>
+                    <input type="range" id="mass" min="50" max="5000" step="10">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="parallaxFactor">Parallax Factor</label><span id="parallaxFactor-value" class="value-display"></span></div>
+                    <input type="range" id="parallaxFactor" min="0" max="1" step="0.01">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="minBlackHoles">Min Black Holes</label><span id="minBlackHoles-value" class="value-display"></span></div>
+                    <input type="range" id="minBlackHoles" min="1" max="50" step="1">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="maxBlackHoles">Max Black Holes</label><span id="maxBlackHoles-value" class="value-display"></span></div>
+                    <input type="range" id="maxBlackHoles" min="1" max="50" step="1">
+                </div>
+                 <div class="config-item">
+                    <div class="label-wrapper"><label for="starCount">Star Count</label><span id="starCount-value" class="value-display"></span></div>
+                    <input type="range" id="starCount" min="1000" max="500000" step="1000">
+                </div>
+                <div class="config-item">
+                    <div class="label-wrapper"><label for="starBaseSize">Star Base Size</label><span id="starBaseSize-value" class="value-display"></span></div>
+                    <input type="range" id="starBaseSize" min="1" max="200" step="1">
+                </div>
+                <div class="config-item" style="flex-direction: row; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="orbitalMovement">
+                    <label for="orbitalMovement" style="margin: 0;">Orbital Movement</label>
+                </div>
+                <div class="config-item" style="flex-direction: row; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="debug">
+                    <label for="debug" style="margin: 0;">Debug Mode</label>
+                </div>
+                <div class="full-width">
+                    <button id="regenerate-btn">Apply & Regenerate</button>
+                </div>
+            </div>
+             <div class="scroll-indicator">
+                Scroll Down to See The Effect in Action
+                <span class="arrow"></span>
+            </div>
         </div>
+        <div style="height: 300vh;"></div> <!-- Spacer for scrolling -->
     </main>
 
-    <!-- Import Three.js -->
+    <!-- Import Three.js and post-processing scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- FIX: Import scripts for post-processing -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
-    <!-- FIX: Added missing CopyShader dependency -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
 
+    <!-- Import the Lensing Effect script -->
+    <script src="../static/js/lensing-effect.js"></script>
 
-    <!-- Lensing Vertex Shader: Passes through geometry and UVs -->
-    <script type="x-shader/x-vertex" id="lensingVertexShader">
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    </script>
-
-    <!-- Lensing Fragment Shader: The core lensing logic -->
-    <script type="x-shader/x-fragment" id="lensingFragmentShader">
-        // The input texture from the previous pass is now called 'tDiffuse'
-        uniform sampler2D tDiffuse; 
-        uniform vec2 u_resolution;
-        uniform vec2 u_blackHolePosition; // Position in screen pixels
-        uniform float u_mass;
-        uniform float u_eventHorizonRadius;
-        uniform float u_lensingRadiusMultiplier; 
-        uniform bool u_debug; // Uniform to toggle debug outlines
-
-        varying vec2 vUv;
-
-        void main() {
-            vec2 pixelCoords = vUv * u_resolution;
-            vec2 toBlackHole = u_blackHolePosition - pixelCoords;
-            float dist = length(toBlackHole);
-
-            vec2 displacement = normalize(toBlackHole) * u_mass / dist;
-
-            float falloff = 1.0 - smoothstep(u_eventHorizonRadius, u_eventHorizonRadius * u_lensingRadiusMultiplier, dist);
-            displacement *= falloff * falloff;
-
-            vec2 sourceUv = vUv + displacement / u_resolution;
-            // Sample from 'tDiffuse' instead of a custom texture uniform
-            vec4 finalColor = texture2D(tDiffuse, sourceUv);
-
-            if (u_debug) {
-                float lensingRadius = u_eventHorizonRadius * u_lensingRadiusMultiplier;
-                float lensingEdge = abs(dist - lensingRadius);
-                finalColor.rgb = mix(vec3(1.0, 0.0, 0.0), finalColor.rgb, smoothstep(0.0, 1.5, lensingEdge));
-
-                float horizonEdge = abs(dist - u_eventHorizonRadius);
-                finalColor.rgb = mix(vec3(0.0, 1.0, 0.0), finalColor.rgb, smoothstep(0.0, 1.5, horizonEdge));
-            }
-
-            if (dist < u_eventHorizonRadius) {
-                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-            } else {
-                gl_FragColor = finalColor;
-            }
-        }
-    </script>
-    
-    <!-- Star Fragment Shader for circular stars -->
-    <script type="x-shader/x-fragment" id="starFragmentShader">
-        varying vec3 vColor;
-        void main() {
-            if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.48) discard;
-            gl_FragColor = vec4(vColor, 1.0);
-        }
-    </script>
-
-
+    <!-- Initialize the effect -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Basic Three.js Setup ---
-            const canvas = document.getElementById('webgl-canvas');
-            // The EffectComposer will use the default antialias, so we can disable it here.
-            const renderer = new THREE.WebGLRenderer({ canvas }); 
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            let effect;
 
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-            camera.position.z = 10;
-
-            // --- Starfield Scene ---
-            const starfieldScene = new THREE.Scene();
-            
-            const starCount = 50000;
-            const starGeometry = new THREE.BufferGeometry();
-            const positions = [];
-            const colors = [];
-
-            const starColorsConfig = {
-                hot: ['#9bb0ff', '#aabfff', '#cad7ff'],
-                white: ['#ffffff', '#f8f7ff', '#fffafa'],
-                yellow: ['#ffffc0', '#ffd700'],
-                orange: ['#ffcc99', '#ffa500'],
-                red: ['#ff9966', '#ff6347']
+            const initialConfig = {
+                starCount: 500000,
+                starBaseSize: 200.0,
+                starfieldMinZ: -1000,
+                starfieldMaxZ: 200,
+                starfieldMinBrightness: 0.8,
+                starfieldMaxBrightness: 1.0,
+                starBrightnessMultiplierMin: 0.3,
+                starBrightnessMultiplierMax: 1.0,
+                cameraZ: 10,
+                parallaxFactor: 0.1,
+                mass: 1000.0,
+                eventHorizonRadius: 5.0,
+                lensingRadiusMultiplier: 8.0,
+                minBlackHoles: 30,
+                maxBlackHoles: 50,
+                minBlackHolesMass: 500,
+                maxBlackHolesMass: 2000,
+                minEventHorizonRadius: 1,
+                maxEventHorizonRadius: 5,
+                minLensingRadiusMultiplier: 100,
+                maxLensingRadiusMultiplier: 100,
+                debug: false,
+                debugBlackHolePosition: false,
+                orbitalMovement: true,
+                minSpeedX: 0.0, maxSpeedX: 0.1,
+                minSpeedY: 0.0, maxSpeedY: 0.1,
+                minRadiusX: 20, maxRadiusX: 40,
+                minRadiusY: 15, maxRadiusY: 30,
             };
-            const allStarColorsHex = Object.values(starColorsConfig).flat();
-            const allStarColors = allStarColorsHex.map(c => new THREE.Color(c));
 
-            for (let i = 0; i < starCount; i++) {
-                positions.push(
-                    (Math.random() - 0.5) * 2000,
-                    (Math.random() - 0.5) * 2000,
-                    (Math.random() - 0.5) * 2000
-                );
-                const randomColor = allStarColors[Math.floor(Math.random() * allStarColors.length)];
-                colors.push(randomColor.r, randomColor.g, randomColor.b);
+            const controls = {
+                mass: document.getElementById('mass'),
+                parallaxFactor: document.getElementById('parallaxFactor'),
+                minBlackHoles: document.getElementById('minBlackHoles'),
+                maxBlackHoles: document.getElementById('maxBlackHoles'),
+                starCount: document.getElementById('starCount'),
+                starBaseSize: document.getElementById('starBaseSize'),
+                orbitalMovement: document.getElementById('orbitalMovement'),
+                debug: document.getElementById('debug'),
+                regenerateBtn: document.getElementById('regenerate-btn')
+            };
+
+            const valueDisplays = {
+                mass: document.getElementById('mass-value'),
+                parallaxFactor: document.getElementById('parallaxFactor-value'),
+                minBlackHoles: document.getElementById('minBlackHoles-value'),
+                maxBlackHoles: document.getElementById('maxBlackHoles-value'),
+                starCount: document.getElementById('starCount-value'),
+                starBaseSize: document.getElementById('starBaseSize-value'),
+            };
+
+            function setupControls() {
+                // Set initial values
+                for (const key in valueDisplays) {
+                    controls[key].value = initialConfig[key];
+                    valueDisplays[key].textContent = initialConfig[key];
+                }
+                controls.orbitalMovement.checked = initialConfig.orbitalMovement;
+                controls.debug.checked = initialConfig.debug;
+
+                // Add event listeners
+                for (const key in valueDisplays) {
+                    controls[key].addEventListener('input', (e) => {
+                        valueDisplays[key].textContent = e.target.value;
+                    });
+                }
             }
-            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-            const starMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    size: { value: 30.0 * renderer.getPixelRatio() }
-                },
-                vertexShader: `
-                    varying vec3 vColor;
-                    uniform float size;
-                    void main() {
-                        vColor = color;
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        float pointSize = size * (10.0 / -mvPosition.z);
-                        gl_PointSize = max(pointSize, 1.5);
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: document.getElementById('starFragmentShader').textContent,
-                blending: THREE.AdditiveBlending,
-                depthTest: false,
-                transparent: true,
-                vertexColors: true
-            });
-
-            const starPoints = new THREE.Points(starGeometry, starMaterial);
-            starfieldScene.add(starPoints);
-
-
-            // --- Setup Post-Processing with EffectComposer ---
-            const composer = new THREE.EffectComposer(renderer);
-
-            // Pass 1: Render the starfield
-            const renderPass = new THREE.RenderPass(starfieldScene, camera);
-            composer.addPass(renderPass);
-
-            // Pass 2: Apply the gravitational lensing shader
-            const lensingMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    tDiffuse: { value: null }, // This will be set automatically by the composer
-                    u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                    u_blackHolePosition: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
-                    u_mass: { value: 2000.0 },
-                    u_eventHorizonRadius: { value: 10.0 },
-                    u_lensingRadiusMultiplier: { value: 700.0 },
-                    u_debug: { value: true }
-                },
-                vertexShader: document.getElementById('lensingVertexShader').textContent,
-                fragmentShader: document.getElementById('lensingFragmentShader').textContent
-            });
-            const lensingPass = new THREE.ShaderPass(lensingMaterial);
-            composer.addPass(lensingPass);
-
-            // Pass 3: Apply FXAA for anti-aliasing
-            const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
-            fxaaPass.material.uniforms['resolution'].value.x = 0.5 / (window.innerWidth * renderer.getPixelRatio());
-            fxaaPass.material.uniforms['resolution'].value.y = 0.5 / (window.innerHeight * renderer.getPixelRatio());
-            composer.addPass(fxaaPass);
-
-
-            // --- Event Handling & Animation Loop ---
-            let scrollY = 0;
-            window.addEventListener('scroll', () => {
-                scrollY = window.pageYOffset;
-            });
-
-            function onResize() {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
+            function applyLiveChanges() {
+                if (!effect) return;
                 
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-                composer.setSize(window.innerWidth, window.innerHeight);
+                // These can be changed without regeneration
+                const newMass = parseFloat(controls.mass.value);
+                effect.gravitationalLens.blackHoles.forEach(bh => {
+                    bh.mass = newMass;
+                });
+                effect.gravitationalLens.updateUniforms();
                 
-                lensingPass.uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
-                fxaaPass.material.uniforms['resolution'].value.x = 1 / (window.innerWidth * renderer.getPixelRatio());
-                fxaaPass.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * renderer.getPixelRatio());
-
-                starMaterial.uniforms.size.value = 15.0 * renderer.getPixelRatio();
-            }
-            window.addEventListener('resize', onResize);
-
-            function animate() {
-                requestAnimationFrame(animate);
-
-                // Update camera and uniforms
-                camera.position.y = -scrollY * 0.02;
-                lensingPass.uniforms.u_blackHolePosition.value.x = window.innerWidth / 2;
-                const blackHoleY = (window.innerHeight / 2) + scrollY;
-                lensingPass.uniforms.u_blackHolePosition.value.y = blackHoleY;
-
-                // Render the scene using the composer
-                composer.render();
+                effect.config.parallaxFactor = parseFloat(controls.parallaxFactor.value);
+                effect.config.orbitalMovement = controls.orbitalMovement.checked;
+                effect.config.debug = controls.debug.checked;
+                effect.starField.material.uniforms.size.value = parseFloat(controls.starBaseSize.value) * window.devicePixelRatio;
             }
 
-            animate();
+            function regenerateEffect() {
+                if (effect) {
+                    effect.clearBlackHoles();
+                    effect.container.removeChild(effect.canvas);
+                    window.removeEventListener('scroll', effect.onScroll);
+                    window.removeEventListener('resize', effect.onResize);
+                }
+
+                const newConfig = { ...initialConfig };
+                for (const key in valueDisplays) {
+                    newConfig[key] = parseFloat(controls[key].value);
+                }
+                newConfig.orbitalMovement = controls.orbitalMovement.checked;
+                newConfig.debug = controls.debug.checked;
+                
+                // Ensure min <= max
+                if (newConfig.minBlackHoles > newConfig.maxBlackHoles) {
+                    newConfig.minBlackHoles = newConfig.maxBlackHoles;
+                    controls.minBlackHoles.value = newConfig.minBlackHoles;
+                    valueDisplays.minBlackHoles.textContent = newConfig.minBlackHoles;
+                }
+
+                effect = new LensingEffect({
+                    container: document.body,
+                    config: newConfig
+                });
+                effect.init();
+            }
+            
+            setupControls();
+            regenerateEffect(); // Initial creation
+
+            // Add listeners for live updates
+            controls.mass.addEventListener('input', applyLiveChanges);
+            controls.parallaxFactor.addEventListener('input', applyLiveChanges);
+            controls.orbitalMovement.addEventListener('change', applyLiveChanges);
+            controls.debug.addEventListener('change', applyLiveChanges);
+            controls.starBaseSize.addEventListener('input', applyLiveChanges);
+
+            controls.regenerateBtn.addEventListener('click', regenerateEffect);
         });
     </script>
 </body>
