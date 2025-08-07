@@ -1,47 +1,3 @@
-/**
- * Gravitational Lensing Background Effect with Multiple Black Holes
- * 
- * This script creates a high-performance, WebGL-based starfield with multiple 
- * gravitational lensing effects that can be easily integrated into any website.
- * 
- * Author: Gemini
- * Version: 2.0.0
- * 
- * Dependencies:
- * - three.js (r128)
- * - EffectComposer.js
- * - RenderPass.js
- * - ShaderPass.js
- * - FXAAShader.js
- * 
- * Instructions:
- * 1. Include the required Three.js scripts in your HTML file before this one.
- * 2. Create a new instance of the `LensingEffect` class.
- * 3. Call the `init()` method.
- * 4. Use the public API to add/remove/modify black holes.
- * 
- * Example:
- * const effect = new LensingEffect({
- *   container: document.body,
- *   config: {
- *     mass: 300.0,
- *     eventHorizonRadius: 20.0,
- *     lensingRadiusMultiplier: 10.0
- *   }
- * });
- * effect.init();
- * 
- * // Add additional black holes
- * effect.addBlackHole(100, 200, 250, 15, 8);
- * effect.addBlackHole(500, 300, 400, 25, 12);
- * 
- * // Remove a black hole
- * effect.removeBlackHole(1);
- * 
- * // Update black hole position
- * effect.updateBlackHolePosition(0, 250, 250);
- */
-
 class StarField {
     constructor(config, renderer) {
         this.config = config;
@@ -466,13 +422,13 @@ class LensingEffect {
             
             // Starfield settings
             starDensity: 0.03,              // Stars per square pixel (controls star density based on viewport and document size)
-            starBaseSize: 80.0,             // Base size of stars, adjusted by distance
+            starBaseSize: 100.0,             // Base size of stars, adjusted by distance
             starfieldMinZ: -1500,           // The minimum z-position for a star (farthest)
-            starfieldMaxZ: -70,            // The maximum z-position for a star (closest)
+            starfieldMaxZ: -150,            // The maximum z-position for a star (closest)
             starfieldMinBrightness: 0.8,    // Minimum brightness of the farthest star
             starfieldMaxBrightness: 1.0,    // Maximum brightness of the closest star
             starBrightnessMultiplierMin: 0.3, // Minimum individual star brightness multiplier
-            starBrightnessMultiplierMax: 0.9, // Maximum individual star brightness multiplier
+            starBrightnessMultiplierMax: 0.8, // Maximum individual star brightness multiplier
             cameraZ: 10,                    // Z-position of the camera
             parallaxFactor: 0.1,            // How much the starfield moves on scroll (higher is more)
 
