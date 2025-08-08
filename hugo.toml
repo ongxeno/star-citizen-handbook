@@ -40,6 +40,9 @@ pygmentsCodefencesGuessSyntax = true
   # Custom parameters for game version
   defaultGameVersion = "Alpha 4.2.1"
 
+  # Force dark theme always
+  themeStyle = "dark"
+
 [Params.author]
   name = "Star Citizen Handbook"
   # twitter = "your_twitter_handle"  # Remove # and add your Twitter handle if available

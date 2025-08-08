@@ -1,5 +1,85 @@
 /* Custom CSS for more minimalistic design */
 
+/* Override system color scheme preferences to always use dark theme */
+:root {
+  color-scheme: dark !important;
+}
+
+html {
+  background-color: #00000000 !important;
+  color: #e0e0e0 !important;
+}
+
+body {
+  background-color: #00000000 !important;
+  color: #e0e0e0 !important;
+}
+
+/* Force dark theme for all media queries */
+@media (prefers-color-scheme: light), (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #00000000 !important;
+    color: #e0e0e0 !important;
+  }
+
+  .navbar-custom, footer {
+    background: #2c2c2c !important
+  }
+  
+  .well, .card, .jumbotron, .panel {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+  }
+  
+  a {
+    color: #63c0f5 !important;
+  }
+  
+  a:hover {
+    color: #8bd0ff !important;
+  }
+  
+  /* Force dark theme for code blocks */
+  pre, code {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+  }
+  
+  /* Cleaner blockquotes */
+  blockquote {
+    border-left: 4px solid #007bff;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    background-color: #f8f9fa;
+    font-style: normal;
+    border-radius: 0 4px 4px 0;
+    color: #333;
+  }
+
+  blockquote a {
+    color: #006ce0 !important; 
+    text-decoration: none;
+  }
+
+  blockquote a:hover {
+    color: #006ce0 !important;
+    text-decoration: underline;
+  }
+  
+  table tr {
+        background-color: #181818;
+  }
+  
+  table tr:nth-child(2n) {
+    background-color: #303030;
+  }
+  
+  .pager li a {
+    background: #444;
+    color: white;
+  }
+}
+
 /* Image styling - curved corners for all images */
 img {
   border-radius: 20px;
@@ -339,27 +419,6 @@ h1:first-child, h2:first-child, h3:first-child {
 .post-heading .post-meta,
 .post-heading .post-subheading {
   display: none;
-}
-
-/* Cleaner blockquotes */
-blockquote {
-  border-left: 4px solid #007bff;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  background-color: #f8f9fa;
-  font-style: normal;
-  border-radius: 0 4px 4px 0;
-  color: #333;
-}
-
-blockquote a {
-  color: #006ce0;
-  text-decoration: none;
-}
-
-blockquote a:hover {
-  color: #006ce0;
-  text-decoration: underline;
 }
 
 /* Dark theme code blocks */
