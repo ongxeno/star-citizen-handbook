@@ -7,6 +7,13 @@ img {
   margin: 10px 0px;
 }
 
+/* YouTube embed styling - curved corners to match images */
+.youtube-embed-container {
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 10px 0px;
+}
+
 /* Custom Font Setup */
 :root {
   --font-family-base: 'Sarabun', 'Noto Serif Thai', 'Times New Roman', Georgia, serif;

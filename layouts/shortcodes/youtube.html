@@ -1,0 +1,88 @@
+{{ if .IsNamedParams }}
+{{ $startSeconds := 0 }}
+{{ $endSeconds := 0 }}
+
+{{/* Parse starttime */}}
+{{ if .Get "starttime" }}
+  {{ $startTime := .Get "starttime" }}
+  {{ $parts := slice }}
+  {{ if in $startTime "." }}
+    {{ $parts = split $startTime "." }}
+  {{ else if in $startTime ":" }}
+    {{ $parts = split $startTime ":" }}
+  {{ else }}
+    {{ $parts = slice $startTime }}
+  {{ end }}
+  {{ if eq (len $parts) 3 }}
+    {{ $h := strings.TrimLeft "0" (index $parts 0) }}
+    {{ if eq $h "" }}{{ $h = "0" }}{{ end }}
+    {{ $m := strings.TrimLeft "0" (index $parts 1) }}
+    {{ if eq $m "" }}{{ $m = "0" }}{{ end }}
+    {{ $s := strings.TrimLeft "0" (index $parts 2) }}
+    {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+    {{ $startSeconds = add (add (mul ($h | int) 3600) (mul ($m | int) 60)) ($s | int) }}
+  {{ else if eq (len $parts) 2 }}
+    {{ $m := strings.TrimLeft "0" (index $parts 0) }}
+    {{ if eq $m "" }}{{ $m = "0" }}{{ end }}
+    {{ $s := strings.TrimLeft "0" (index $parts 1) }}
+    {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+    {{ $startSeconds = add (mul ($m | int) 60) ($s | int) }}
+  {{ else }}
+    {{ $s := strings.TrimLeft "0" (index $parts 0) }}
+    {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+    {{ $startSeconds = $s | int }}
+  {{ end }}
+{{ else if .Get "start" }}
+  {{ $s := strings.TrimLeft "0" (.Get "start") }}
+  {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+  {{ $startSeconds = $s | int }}
+{{ end }}
+
+{{/* Parse endtime */}}
+{{ if .Get "endtime" }}
+  {{ $endTime := .Get "endtime" }}
+  {{ $parts := slice }}
+  {{ if in $endTime "." }}
+    {{ $parts = split $endTime "." }}
+  {{ else if in $endTime ":" }}
+    {{ $parts = split $endTime ":" }}
+  {{ else }}
+    {{ $parts = slice $endTime }}
+  {{ end }}
+  {{ if eq (len $parts) 3 }}
+    {{ $h := strings.TrimLeft "0" (index $parts 0) }}
+    {{ if eq $h "" }}{{ $h = "0" }}{{ end }}
+    {{ $m := strings.TrimLeft "0" (index $parts 1) }}
+    {{ if eq $m "" }}{{ $m = "0" }}{{ end }}
+    {{ $s := strings.TrimLeft "0" (index $parts 2) }}
+    {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+    {{ $endSeconds = add (add (mul ($h | int) 3600) (mul ($m | int) 60)) ($s | int) }}
+  {{ else if eq (len $parts) 2 }}
+    {{ $m := strings.TrimLeft "0" (index $parts 0) }}
+    {{ if eq $m "" }}{{ $m = "0" }}{{ end }}
+    {{ $s := strings.TrimLeft "0" (index $parts 1) }}
+    {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+    {{ $endSeconds = add (mul ($m | int) 60) ($s | int) }}
+  {{ else }}
+    {{ $s := strings.TrimLeft "0" (index $parts 0) }}
+    {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+    {{ $endSeconds = $s | int }}
+  {{ end }}
+{{ else if .Get "end" }}
+  {{ $s := strings.TrimLeft "0" (.Get "end") }}
+  {{ if eq $s "" }}{{ $s = "0" }}{{ end }}
+  {{ $endSeconds = $s | int }}
+{{ end }}
+
+<div class="youtube-embed-wrapper {{ .Get "class" }}" {{ if .Get "id" }}id="{{ .Get "id" }}"{{ end }}>
+  <div class="youtube-embed-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+    <iframe src="https://www.youtube.com/embed/{{ .Get "id" }}?start={{ $startSeconds }}{{ if gt $endSeconds 0 }}&end={{ $endSeconds }}{{ end }}&autoplay=0&controls=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="{{ .Get "title" | default "YouTube Video" }}"></iframe>
+  </div>
+</div>
+{{ else }}
+<div class="youtube-embed-wrapper">
+  <div class="youtube-embed-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+    <iframe src="https://www.youtube.com/embed/{{ .Get 0 }}?start={{ .Get 1 }}{{ if and (isset . 2) (gt (.Get 2) 0) }}&end={{ .Get 2 }}{{ end }}&autoplay=0&controls=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="YouTube Video"></iframe>
+  </div>
+</div>
+{{ end }}
