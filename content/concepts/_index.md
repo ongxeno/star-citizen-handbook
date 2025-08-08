@@ -80,7 +80,7 @@ lastmod: 2025-07-18
 รวมบทความเกี่ยวกับกิจกรรมสำคัญและการรวมตัวของผู้เล่น Star Citizen
 
 - [Citizen Con: อีเวนต์ใหญ่ประจำปีที่ชาว Star Citizen ห้ามพลาด!](what-is-citizencon/)
-- [Citizen Con 2954: Brave New Worlds และเทคโนโลยี Genesis ที่จะกำหนดอนาคตของ Star Citizen](citizencon-2954-brave-new-worlds/)
+- [Citizen Con 2954: Brave New Worlds](citizencon-2954-brave-new-worlds/) - เทคโนโลยี Genesis ที่จะกำหนดอนาคตของ Star Citizen
 ---
 
 *ข้อมูลระบบเกมอัปเดตสำหรับ Star Citizen Alpha 4.2.1*
