@@ -9,9 +9,11 @@ tags: ["citizencon", "brave-new-worlds", "genesis", "technology", "panel", "proc
 categories: ["concepts"]
 author: "Star Citizen Handbook Team"
 weight: 6
-image: "img/concepts/citizencon-2954-brave-new-worlds/hero.jpg"
+image: "img/concepts/citizencon-2954-brave-new-worlds/cover.jpg"
 description: "บทวิเคราะห์ Panel Brave New Worlds และเทคโนโลยี Genesis ที่จะปฏิวัติการสร้างโลกและระบบ AI ใน Star Citizen จากงาน CitizenCon 2954"
 ---
+
+![cover](../../img/concepts/citizencon-2954-brave-new-worlds/cover.jpg)
 
 ## บทวิเคราะห์: "Brave New Worlds" และเทคโนโลยี Genesis ที่จะกำหนดอนาคตของ Star Citizen
 
