@@ -22,21 +22,17 @@ import argparse
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 # Import the shared genai utilities
-from genai_utils import configure_genai, get_project_paths
+from genai_utils import generate_text, get_project_paths
+from blog_image_generator import BlogImageGenerator
 
 class HugoBlogGenerator:
     """AI-powered Hugo blog post generator for Star Citizen Handbook"""
     
     def __init__(self):
-        """Initialize the generator with API configuration"""
-        # Configure AI models
-        self.models = configure_genai()
-        self.cost_effective_model = self.models["cost_effective"]
-        self.deep_research_model = self.models["deep_research"]
-        
+
         # Project paths
         paths = get_project_paths()
         self.script_dir = paths["script_dir"]
@@ -73,17 +69,16 @@ class HugoBlogGenerator:
             
             prompt = prompt_template.replace("{{TOPIC}}", topic)
 
-            response = self.cost_effective_model.generate_content(prompt)
-            
+            response_text = generate_text(prompt=prompt, model_key="cost_effective")
+
             # Debug: Print raw response
-            print(f"🔍 Raw response: {response.text[:200]}...")
+            print(f"🔍 Raw response: {response_text[:200]}...")
             
             # Check if response is empty
-            if not response.text or not response.text.strip():
+            if not response_text or not response_text.strip():
                 raise ValueError("Empty response from AI model")
             
             # Try to clean the response text (remove code block markers if present)
-            response_text = response.text.strip()
             if response_text.startswith('```json'):
                 response_text = response_text[7:]
             if response_text.endswith('```'):
@@ -95,7 +90,7 @@ class HugoBlogGenerator:
             return structure_data
         except json.JSONDecodeError as e:
             print(f"❌ JSON parsing error in Step 1: {e}")
-            print(f"🔍 Response text: {response.text}")
+            print(f"🔍 Response text: {response_text}")
             raise
         except Exception as e:
             print(f"❌ Error in Step 1: {e}")
@@ -115,8 +110,8 @@ class HugoBlogGenerator:
             prompt = prompt_template.replace("{{TOPIC}}", topic)
             prompt = prompt.replace("{{STRUCTURE}}", json.dumps(structure, indent=2, ensure_ascii=False))
 
-            response = self.cost_effective_model.generate_content(prompt)
-            research_prompt = response.text.strip()
+            response_text = generate_text(prompt = prompt, model_key = "cost_effective")
+            research_prompt = response_text.strip()
             print("✅ Research prompt created")
             return research_prompt
         except Exception as e:
@@ -149,8 +144,8 @@ class HugoBlogGenerator:
             prompt = prompt.replace("{{STRUCTURE}}", json.dumps(structure, indent=2, ensure_ascii=False))
             prompt = prompt.replace("{{RESEARCH_DATA}}", research_data)
 
-            response = self.cost_effective_model.generate_content(prompt)
-            formatted_content = response.text.strip()
+            response_text = generate_text(prompt = prompt, model_key = "cost_effective")
+            formatted_content = response_text.strip()
             
             # Clean up potential code block wrappers from the response
             if formatted_content.startswith("```markdown"):
@@ -291,10 +286,9 @@ class HugoBlogGenerator:
             # Replace placeholder
             prompt = prompt_template.replace("{{SHIP_NAME}}", ship_name)
 
-            response = self.cost_effective_model.generate_content(prompt)
+            response_text = generate_text(prompt = prompt, model_key = "cost_effective")
             
             # Clean JSON response
-            response_text = response.text.strip()
             if response_text.startswith('```json'):
                 response_text = response_text[7:]
             if response_text.endswith('```'):
@@ -374,8 +368,8 @@ class HugoBlogGenerator:
                 section_prompt = section_prompt.replace("{{MANUFACTURER}}", ship_data.get('manufacturer', ''))
                 
                 # Generate content for this section
-                response = self.deep_research_model.generate_content(section_prompt)
-                section_content = response.text.strip()
+                response_text = generate_text(prompt = section_prompt, model_key = "deep_research")
+                section_content = response_text.strip()
                 
                 # Clean up potential code block wrappers
                 if section_content.startswith("```markdown"):
@@ -462,8 +456,8 @@ class HugoBlogGenerator:
             # Replace placeholder with actual content
             prompt = prompt_template.replace("{{CONTENT}}", content)
 
-            response = self.deep_research_model.generate_content(prompt)
-            polished_content = response.text.strip()
+            response_text = generate_text(prompt = prompt, model_key = "deep_research")
+            polished_content = response_text.strip()
             
             # Clean up potential code block wrappers
             if polished_content.startswith("```markdown"):
@@ -599,10 +593,9 @@ class HugoBlogGenerator:
             
             # Step 3: Generate content and structure from AI
             print("🤖 Calling AI to generate the article...")
-            response = self.deep_research_model.generate_content(prompt)
+            response_text = generate_text(prompt = prompt, model_key = "deep_research")
             
             # Clean and parse JSON response
-            response_text = response.text.strip()
             if response_text.startswith('```json'):
                 response_text = response_text[7:]
             if response_text.endswith('```'):
@@ -626,49 +619,55 @@ class HugoBlogGenerator:
                 category = structure['category']
                 slug = structure['slug']
                 img_output_dir = self.img_dir / category / slug
+                img_output_dir.mkdir(parents=True, exist_ok=True)
                     
-                # Call the blog image generator script
+                # Call the blog image generator directly
                 print(f"🚀 Launching image generator...")
                 
-                # Get the full content for context
                 try:
-                    # Run the image generator as a subprocess
-                    cmd = [
-                        sys.executable,
-                        str(self.script_dir / "blog_image_generator.py"),
-                        "--content", content,
-                        "--output", str(img_output_dir)
-                    ]
+                    # Initialize the BlogImageGenerator
+                    image_generator = BlogImageGenerator()
                     
-                    # Run the image generator and wait for it to complete
-                    image_process = subprocess.run(
-                        cmd,
-                        text=True,
-                        capture_output=True
-                    )
+                    # Prepare the combined content for image generation
+                    combined_content = f"""
+Title: {structure['front_matter'].get('title', '')}
+
+Description: {structure['front_matter'].get('description', '')}
+
+Content:
+{content}
+
+Note: This content may be in a language other than English. Please generate image prompts in English, focusing on the main themes of Star Citizen.
+"""
+                    
+                    # Run the interactive workflow to generate the image
+                    print("🚀 Starting interactive image generation workflow...")
+                    print(f"📂 Output directory: {img_output_dir}")
+                    print("⏳ This interactive process requires your input to select and refine image prompts.")
+                    
+                    # Set default aspect ratio
+                    image_generator.aspect_ratio = "16:9"
+                    
+                    # Run the interactive workflow
+                    generated_image_path = image_generator.interactive_workflow(combined_content, img_output_dir)
                     
                     # Check if the image generation was successful
-                    if image_process.returncode == 0:
+                    if generated_image_path:
                         print(f"✅ Image generation completed successfully")
                         
-                        # Update the image path in the front matter if needed
-                        if "Image generated successfully:" in image_process.stdout:
-                            # Extract the image path
-                            import re
-                            image_path_match = re.search(r'Image generated successfully: (.+)', image_process.stdout)
-                            if image_path_match:
-                                generated_image_path = image_path_match.group(1).strip()
-                                
-                                # Convert to relative path for Hugo
-                                rel_path = Path(generated_image_path).relative_to(self.static_dir)
-                                hugo_path = f"/{rel_path}"
-                                
-                                # Update the front matter in the saved file
-                                self.update_front_matter_image(file_path, hugo_path)
+                        # Convert to relative path for Hugo
+                        rel_path = Path(generated_image_path).relative_to(self.static_dir)
+                        # Use forward slashes for Hugo paths but no leading slash
+                        hugo_path = f"{str(rel_path).replace('\\', '/')}"
+                        
+                        # Update the front matter in the article file
+                        self.update_front_matter_image(file_path, hugo_path)
                     else:
-                        print(f"⚠️ Image generation failed: {image_process.stderr}")
+                        print(f"⚠️ Image generation was cancelled or failed")
                 except Exception as e:
                     print(f"⚠️ Error running image generator: {e}")
+                    import traceback
+                    traceback.print_exc()
             
             print("=" * 60)
             print(f"🎉 Short article generation completed successfully!")
@@ -683,7 +682,7 @@ class HugoBlogGenerator:
             raise
         except json.JSONDecodeError as e:
             print(f"❌ JSON parsing error in Short Article generation: {e}")
-            print(f"🔍 Response text: {response.text}")
+            print(f"🔍 Response text: {response_text}")
             raise
         except Exception as e:
             print(f"💥 Short Article generation failed: {e}")
@@ -696,12 +695,37 @@ class HugoBlogGenerator:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Update the image path using regex
-            updated_content = re.sub(
-                r'(image: ")([^"]+)(")', 
-                f'\\1{image_path}\\3', 
-                content
-            )
+            # Remove leading slash from image path if it exists
+            if image_path.startswith('/'):
+                image_path = image_path[1:]
+                
+            # Check if the image tag already exists
+            image_match = re.search(r'image: "([^"]+)"', content)
+            
+            if image_match:
+                # Update existing image path
+                updated_content = content.replace(image_match.group(0), f'image: "{image_path}"')
+            else:
+                # Add image path at the end of front matter
+                updated_content = content.replace('---\n\n', f'---\nimage: "{image_path}"\n\n', 1)
+            
+            # Add the cover image markdown right after frontmatter
+            # First, check if there's already a cover image line after frontmatter using a more robust pattern
+            # This will match the frontmatter closing and the cover image line with various whitespace patterns
+            cover_image_pattern = r'---\s*\n+\s*!\[cover\]\([^)]+\)'
+            cover_image_match = re.search(cover_image_pattern, updated_content)
+            
+            if cover_image_match:
+                # Replace the existing cover image with the new one
+                cover_markdown = f"![cover](../../{image_path})"
+                # Use the original pattern to replace exactly what was matched
+                updated_content = re.sub(cover_image_pattern, f"---\n\n{cover_markdown}", updated_content)
+                print(f"✅ Replaced existing cover image markdown with new image")
+            else:
+                # Add new cover image markdown after frontmatter
+                cover_markdown = f"\n![cover](../../{image_path})\n"
+                updated_content = updated_content.replace('---\n\n', f'---\n{cover_markdown}\n', 1)
+                print(f"✅ Added new cover image markdown after frontmatter")
             
             # Write the updated content back to the file
             with open(file_path, 'w', encoding='utf-8') as f:
@@ -710,6 +734,8 @@ class HugoBlogGenerator:
             print(f"✅ Updated front matter image path to: {image_path}")
         except Exception as e:
             print(f"⚠️ Error updating front matter image path: {e}")
+            import traceback
+            traceback.print_exc()
 
 def main():
     """Main entry point"""

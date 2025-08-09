@@ -57,3 +57,4 @@ generator/.env
 generator/__pycache__/
 generator/*.pyc
 generator/test_output/
+generator/build/

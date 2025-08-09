@@ -1,27 +1,34 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Blog Cover Image Generator for Star Citizen Handbook
 
-This script generates cover images for blog posts using the Gemini API.
+This script generates cover images for blog posts using the Google Generative AI API.
 It takes blog content as input, suggests image prompts, and generates images.
 
-Usage:
+This module can be used both as a standalone script and as an imported library.
+
+Usage as script:
     python blog_image_generator.py --content "path/to/content.md" --output "path/to/output/directory"
+
+Usage as library:
+    from blog_image_generator import BlogImageGenerator
+    generator = BlogImageGenerator()
+    result = generator.auto_generate_cover_for_article(content, title, description, headings, output_path)
 """
 
 import os
 import sys
 import json
 import argparse
-import shutil
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 import time
-from PIL import Image
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple, Union
+from PIL import Image, ImageDraw
 from io import BytesIO
 
 # Import the genai utilities
-from genai_utils import configure_genai, generate_image, get_project_paths
+from genai_utils import configure_genai, generate_text, generate_image, get_project_paths
 
 class BlogImageGenerator:
     """Generate cover images for Star Citizen Handbook blog posts"""
@@ -29,31 +36,13 @@ class BlogImageGenerator:
     def __init__(self):
         """Initialize the generator with API configuration"""
         try:
-            # Get AI models
-            self.models = configure_genai()
+            # Configure the API
+            configure_genai()
             
             # Project paths
             self.paths = get_project_paths()
             
-            # Default image generation config
-            self.image_configs = {
-                "standard": {
-                    "model_name": self.models["imagen_standard"]["model_name"],
-                    "description": self.models["imagen_standard"]["description"]
-                },
-                "ultra": {
-                    "model_name": self.models["imagen_ultra"]["model_name"],
-                    "description": self.models["imagen_ultra"]["description"]
-                },
-                "legacy": {
-                    "model_name": self.models["imagen_legacy"]["model_name"],
-                    "description": self.models["imagen_legacy"]["description"]
-                }
-            }
-            
             # Default settings
-            self.current_model = "standard"
-            self.number_of_images = 1
             self.aspect_ratio = "16:9"
             
             print("✅ Image generator initialized")
@@ -61,6 +50,68 @@ class BlogImageGenerator:
         except Exception as e:
             print(f"❌ Error initializing image generator: {e}")
             raise
+    
+    def generate_image(self, prompt: str, output_path: Path) -> Dict:
+        """
+        Generate an image based on a prompt and save it to a file
+        
+        Args:
+            prompt (str): The image prompt
+            output_path (Path): The path to save the image to
+            
+        Returns:
+            Dict: Response containing success status and image information
+        """
+        print(f"🖼️ Generating image with prompt: {prompt}")
+        
+        try:
+            # Generate the image using the utility function from genai_utils.py
+            response = generate_image(
+                prompt=prompt,
+                aspect_ratio=self.aspect_ratio,
+                output_path=output_path
+            )
+            
+            # Check for success
+            if not response.get("success", False):
+                print(f"⚠️ Image generation failed: {response.get('error', 'Unknown error')}")
+            else:
+                print(f"✅ Image generated successfully: {response.get('output_path', '')}")
+                
+            return response
+            
+        except Exception as e:
+            print(f"❌ Error generating image: {e}")
+            
+            # Create a simple error image with PIL
+            try:
+                img = Image.new('RGB', (1280, 720), color=(30, 30, 30))
+                d = ImageDraw.Draw(img)
+                
+                # Add error text
+                error_text = f"Error generating image: {str(e)[:100]}"
+                prompt_text = f"Prompt: {prompt[:100]}"
+                
+                # Simple text
+                d.text((40, 40), "IMAGE GENERATION ERROR", fill=(255, 50, 50))
+                d.text((40, 80), error_text, fill=(255, 255, 255))
+                d.text((40, 120), prompt_text, fill=(200, 200, 200))
+                
+                # Save the error image
+                img.save(output_path)
+                print(f"⚠️ Saved error placeholder image to: {output_path}")
+                
+                return {
+                    "success": False,
+                    "error": str(e),
+                    "output_path": str(output_path)
+                }
+            except Exception as inner_e:
+                print(f"❌ Failed to create error image: {inner_e}")
+                return {
+                    "success": False,
+                    "error": f"{str(e)} (Failed to create error image: {str(inner_e)})"
+                }
     
     def generate_prompt_suggestions(self, content: str, num_suggestions: int = 3) -> List[str]:
         """
@@ -77,7 +128,7 @@ class BlogImageGenerator:
         
         try:
             # Create prompt for the AI
-            system_prompt = """
+            prompt = f"""
             You are an expert image prompt creator for a blog about Star Citizen, a space simulation game.
             Given the content of a blog post, create compelling, detailed prompts for cover images.
             
@@ -92,181 +143,184 @@ class BlogImageGenerator:
             Return EXACTLY {num_suggestions} distinct prompts as a JSON array of strings.
             Each prompt should be 1-3 sentences long and highly descriptive.
             DO NOT include any explanation or commentary - just the JSON array.
+            
+            Here is the blog content:
+            ---
+            {content[:8000]}  # Limit content to 8000 chars to avoid token limits
+            ---
             """
             
-            # Summarize content if it's very long
-            content_summary = content
-            if len(content) > 5000:
-                # Create a summary first
-                summary_prompt = f"Summarize this blog content in 500 words or less, focusing on the main topic and key points:\n\n{content[:5000]}..."
-                summary_response = self.models["cost_effective"].generate_content(summary_prompt)
-                content_summary = summary_response.text
+            # Generate suggestions using the text model
+            response = generate_text(prompt, "deep_research")
             
-            # Build the final prompt
-            user_prompt = f"""
-            Here's the blog content:
-            
-            {content_summary}
-            
-            Create {num_suggestions} distinct, detailed image prompts for a cover image that would work well with this blog post.
-            """
-            
-            # Generate prompts using the deep research model
-            response = self.models["deep_research"].generate_content([
-                {"role": "system", "parts": [system_prompt]},
-                {"role": "user", "parts": [user_prompt]}
-            ])
-            
-            # Parse the response
-            response_text = response.text.strip()
-            
-            # Clean the response if it's wrapped in code blocks
-            if response_text.startswith('```json'):
-                response_text = response_text[7:]
-            if response_text.endswith('```'):
-                response_text = response_text[:-3]
-            
-            # Parse the JSON array
-            prompt_suggestions = json.loads(response_text)
-            
-            print(f"✅ Generated {len(prompt_suggestions)} prompt suggestions")
-            return prompt_suggestions
-            
+            # Try to parse the response as JSON
+            try:
+                # Clean up the response to ensure it's valid JSON
+                # Find the first [ and last ] to extract just the JSON array
+                start_idx = response.find('[')
+                end_idx = response.rfind(']') + 1
+                
+                if start_idx >= 0 and end_idx > start_idx:
+                    json_str = response[start_idx:end_idx]
+                    suggestions = json.loads(json_str)
+                    
+                    # Ensure we have the right number of suggestions
+                    if len(suggestions) == num_suggestions:
+                        print(f"✅ Generated {len(suggestions)} prompt suggestions")
+                        return suggestions
+                    else:
+                        print(f"⚠️ Expected {num_suggestions} suggestions but got {len(suggestions)}")
+                        # Return whatever we got if not exactly the right number
+                        return suggestions[:num_suggestions]
+                else:
+                    # If we can't find JSON array delimiters, try parsing the whole thing
+                    suggestions = json.loads(response)
+                    return suggestions[:num_suggestions]
+                    
+            except json.JSONDecodeError:
+                # If JSON parsing fails, just split by newlines and clean up
+                print("⚠️ Could not parse response as JSON, falling back to text parsing")
+                
+                # Clean up the response and split by newlines
+                clean_response = response.strip()
+                
+                # Split by numbered items (1., 2., etc.)
+                import re
+                suggestions = re.split(r'\d+\.', clean_response)
+                
+                # Remove empty strings and strip whitespace
+                suggestions = [s.strip() for s in suggestions if s.strip()]
+                
+                # Ensure we have the right number
+                if len(suggestions) >= num_suggestions:
+                    return suggestions[:num_suggestions]
+                
+                # If we still don't have enough, just split by double newlines
+                if len(suggestions) < num_suggestions:
+                    suggestions = clean_response.split('\n\n')
+                    suggestions = [s.strip() for s in suggestions if s.strip()]
+                
+                return suggestions[:num_suggestions]
+                
         except Exception as e:
             print(f"❌ Error generating prompt suggestions: {e}")
-            print(f"Response text: {response.text if 'response' in locals() else 'N/A'}")
-            # Return some fallback suggestions
+            import traceback
+            traceback.print_exc()
+            
+            # Return some default suggestions in case of error
             return [
-                "A spaceship from Star Citizen hovering over a planet, dramatic lighting, professional photography style.",
-                "A detailed Star Citizen character in space suit standing on a landing pad with ships in the background.",
-                "An epic space battle scene from Star Citizen with lasers and explosions, cinematic style."
+                "A Star Citizen spaceship in orbit around a vibrant planet, with dramatic lighting and stars in the background.",
+                "An immersive Star Citizen gameplay scene showing player interaction with game mechanics, with a futuristic UI overlay.",
+                "A cinematic Star Citizen scene with detailed characters and environment, showcasing the game's high-fidelity graphics."
             ]
     
-    def improve_prompt(self, base_prompt: str, feedback: str, num_suggestions: int = 3) -> List[str]:
+    def improve_prompt(self, base_prompt: str, feedback: str, num_variations: int = 3) -> List[str]:
         """
-        Improve an image prompt based on feedback
+        Generate improved variations of a prompt based on user feedback
         
         Args:
             base_prompt (str): The original prompt to improve
-            feedback (str): User feedback/comments for improvement
-            num_suggestions (int): Number of improved prompts to generate
+            feedback (str): User feedback for improvement
+            num_variations (int): Number of variations to generate
             
         Returns:
-            List[str]: List of improved prompts
+            List[str]: List of improved prompt variations
         """
-        print(f"🔄 Improving prompt based on feedback...")
+        print(f"🔄 Generating {num_variations} improved variations based on feedback...")
         
         try:
             # Create prompt for the AI
-            system_prompt = """
-            You are an expert image prompt creator specializing in improving existing prompts based on feedback.
-            Given an original prompt and feedback, create several improved versions that address the feedback.
+            prompt = f"""
+            You are an expert image prompt creator for a blog about Star Citizen, a space simulation game.
             
-            Return EXACTLY {num_suggestions} distinct improved prompts as a JSON array of strings.
-            Each prompt should be 1-3 sentences long and highly descriptive.
+            Original prompt: {base_prompt}
+            
+            User feedback: {feedback}
+            
+            Based on this feedback, create {num_variations} improved variations of the original prompt.
+            Each variation should:
+            1. Address the user's feedback
+            2. Be detailed and specific
+            3. Be visually interesting
+            4. Include artistic style suggestions
+            5. Be 1-3 sentences long and highly descriptive
+            
+            Return EXACTLY {num_variations} distinct prompt variations as a JSON array of strings.
             DO NOT include any explanation or commentary - just the JSON array.
             """
             
-            # Build the user prompt
-            user_prompt = f"""
-            Original prompt: "{base_prompt}"
+            # Generate improved variations using the text model
+            response = generate_text(prompt, "cost_effective")
             
-            Feedback: "{feedback}"
-            
-            Create {num_suggestions} distinct, improved versions of this prompt that address the feedback.
-            """
-            
-            # Generate improved prompts
-            response = self.models["deep_research"].generate_content([
-                {"role": "system", "parts": [system_prompt]},
-                {"role": "user", "parts": [user_prompt]}
-            ])
-            
-            # Parse the response
-            response_text = response.text.strip()
-            
-            # Clean the response if it's wrapped in code blocks
-            if response_text.startswith('```json'):
-                response_text = response_text[7:]
-            if response_text.endswith('```'):
-                response_text = response_text[:-3]
-            
-            # Parse the JSON array
-            improved_prompts = json.loads(response_text)
-            
-            print(f"✅ Generated {len(improved_prompts)} improved prompts")
-            return improved_prompts
-            
+            # Try to parse the response as JSON
+            try:
+                # Clean up the response to ensure it's valid JSON
+                # Find the first [ and last ] to extract just the JSON array
+                start_idx = response.find('[')
+                end_idx = response.rfind(']') + 1
+                
+                if start_idx >= 0 and end_idx > start_idx:
+                    json_str = response[start_idx:end_idx]
+                    variations = json.loads(json_str)
+                    
+                    # Ensure we have the right number of variations
+                    if len(variations) == num_variations:
+                        print(f"✅ Generated {len(variations)} improved variations")
+                        return variations
+                    else:
+                        print(f"⚠️ Expected {num_variations} variations but got {len(variations)}")
+                        # Fill missing variations if needed
+                        while len(variations) < num_variations:
+                            variations.append(f"{base_prompt} (variation {len(variations)+1})")
+                        # Return whatever we got if not exactly the right number
+                        return variations[:num_variations]
+                else:
+                    # If we can't find JSON array delimiters, try parsing the whole thing
+                    variations = json.loads(response)
+                    return variations[:num_variations]
+                    
+            except json.JSONDecodeError:
+                # If JSON parsing fails, just split by newlines and clean up
+                print("⚠️ Could not parse response as JSON, falling back to text parsing")
+                
+                # Clean up the response and split by newlines
+                clean_response = response.strip()
+                
+                # Split by numbered items (1., 2., etc.)
+                import re
+                variations = re.split(r'\d+\.', clean_response)
+                
+                # Remove empty strings and strip whitespace
+                variations = [s.strip() for s in variations if s.strip()]
+                
+                # Ensure we have the right number
+                if len(variations) >= num_variations:
+                    return variations[:num_variations]
+                
+                # If we still don't have enough, just split by double newlines
+                if len(variations) < num_variations:
+                    variations = clean_response.split('\n\n')
+                    variations = [s.strip() for s in variations if s.strip()]
+                
+                # If we still don't have enough, add the original with slight variations
+                while len(variations) < num_variations:
+                    variations.append(f"{base_prompt} (variation {len(variations)+1})")
+                
+                return variations[:num_variations]
+                
         except Exception as e:
-            print(f"❌ Error improving prompt: {e}")
-            print(f"Response text: {response.text if 'response' in locals() else 'N/A'}")
-            # Return the original prompt with some variations
+            print(f"❌ Error generating improved prompt variations: {e}")
+            import traceback
+            traceback.print_exc()
+            
+            # Return the original prompt and two simple variations
             return [
-                f"{base_prompt} With improved lighting.",
-                f"{base_prompt} With more dramatic composition.",
-                f"{base_prompt} With enhanced details."
+                base_prompt,
+                f"{base_prompt} (with {feedback.split()[0] if feedback else 'improved'} style)",
+                f"{base_prompt} (enhanced with {feedback.split()[-1] if feedback else 'better'} details)"
             ]
     
-    def generate_and_save_image(self, prompt: str, output_path: Path) -> str:
-        """
-        Generate an image from a prompt and save it to the specified location
-        
-        Args:
-            prompt (str): The prompt to generate the image from
-            output_path (Path): The directory to save the image to
-            
-        Returns:
-            str: The path to the saved image
-        """
-        print(f"🖼️ Generating image using {self.current_model} model...")
-        print(f"📝 Prompt: {prompt}")
-        
-        try:
-            # Ensure output directory exists
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            
-            # Get the model configuration
-            model_config = self.image_configs[self.current_model]
-            model_name = model_config["model_name"]
-            
-            # Generate the image
-            generated_images = generate_image(
-                prompt=prompt,
-                model_name=model_name,
-                number_of_images=self.number_of_images,
-                aspect_ratio=self.aspect_ratio
-            )
-            
-            if not generated_images:
-                raise ValueError("No images were generated")
-            
-            # Save the first image
-            image_data = generated_images[0].image.data
-            
-            # Convert to JPG if needed
-            if output_path.suffix.lower() == '.jpg':
-                # Convert PNG to JPG
-                image = Image.open(BytesIO(image_data))
-                # If the image has an alpha channel, create a white background
-                if image.mode == 'RGBA':
-                    background = Image.new('RGB', image.size, (255, 255, 255))
-                    background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
-                    image = background
-                # Save as JPG
-                image.save(output_path, 'JPEG', quality=95)
-            else:
-                # Save as PNG (original format)
-                with open(output_path, 'wb') as f:
-                    f.write(image_data)
-            
-            print(f"✅ Image saved to: {output_path}")
-            return str(output_path)
-            
-        except Exception as e:
-            print(f"❌ Error generating image: {e}")
-            raise
-    
-    def interactive_workflow(self, content: str, output_dir: Path) -> str:
+    def interactive_workflow(self, content: str, output_dir: Path) -> Union[str, Dict, None]:
         """
         Run the interactive workflow to generate a blog cover image
         
@@ -275,7 +329,7 @@ class BlogImageGenerator:
             output_dir (Path): The directory to save the image to
             
         Returns:
-            str: The path to the saved image
+            Union[str, Dict, None]: The path to the saved image, response dict, or None if cancelled
         """
         # Step 1: Generate prompt suggestions
         prompts = self.generate_prompt_suggestions(content)
@@ -322,11 +376,11 @@ class BlogImageGenerator:
                     print("⚠️ No feedback provided, keeping current prompts")
                     continue
                 
-                # Generate improved prompts
+                # Improve the prompt based on feedback
                 improved_prompts = self.improve_prompt(base_prompt, feedback)
                 
-                # Add the improved prompts to the current pool
-                current_prompts = improved_prompts
+                # Update current prompts with the improved variations
+                current_prompts += improved_prompts
             
             elif choice.isdigit() and 1 <= int(choice) <= len(current_prompts):
                 # User selected a prompt
@@ -340,32 +394,14 @@ class BlogImageGenerator:
                 if confirm != 'y':
                     continue
                 
-                # Configure image generation
-                print("\n⚙️ Image Generation Settings:")
-                
-                # Select model
-                print(f"Current model: {self.current_model} ({self.image_configs[self.current_model]['description']})")
-                print("Available models:")
-                print(f"1) standard - {self.image_configs['standard']['description']}")
-                print(f"2) ultra - {self.image_configs['ultra']['description']}")
-                print(f"3) legacy - {self.image_configs['legacy']['description']}")
-                
-                model_choice = input("👉 Choose model (1-3) or press Enter to keep current: ").strip()
-                if model_choice == '1':
-                    self.current_model = 'standard'
-                elif model_choice == '2':
-                    self.current_model = 'ultra'
-                elif model_choice == '3':
-                    self.current_model = 'legacy'
-                
-                # Select aspect ratio
+                # Select aspect ratio if needed
                 print(f"Current aspect ratio: {self.aspect_ratio}")
                 print("Available aspect ratios:")
                 print("1) 1:1 - Square")
                 print("2) 3:4 - Portrait")
                 print("3) 4:3 - Landscape")
                 print("4) 9:16 - Vertical")
-                print("5) 16:9 - Widescreen")
+                print("5) 16:9 - Widescreen (default)")
                 
                 ratio_choice = input("👉 Choose aspect ratio (1-5) or press Enter to keep current: ").strip()
                 if ratio_choice == '1':
@@ -387,9 +423,16 @@ class BlogImageGenerator:
                 
                 # Generate the image
                 try:
-                    image_path = self.generate_and_save_image(selected_prompt, output_path)
-                    print(f"🎉 Image generation complete!")
-                    return image_path
+                    result = self.generate_image(selected_prompt, output_path)
+                    if result.get("success", False):
+                        print(f"🎉 Image generation complete!")
+                        return result.get("output_path")
+                    else:
+                        print(f"⚠️ Image generation failed: {result.get('error', 'Unknown error')}")
+                        retry = input("👉 Would you like to try again with a different prompt? (y/n): ").strip().lower()
+                        if retry != 'y':
+                            return None
+                        return None
                 except Exception as e:
                     print(f"❌ Error during image generation: {e}")
                     retry = input("👉 Would you like to try again with a different prompt? (y/n): ").strip().lower()
@@ -398,6 +441,9 @@ class BlogImageGenerator:
             
             else:
                 print("❌ Invalid choice")
+    
+    # The auto_generate_cover_for_article method has been removed 
+    # since we now use the interactive_workflow method instead
 
 def main():
     """Main entry point for the script"""
@@ -430,6 +476,12 @@ Examples:
         help='Aspect ratio for the generated image'
     )
     
+    parser.add_argument(
+        '--non-interactive', '-n',
+        action='store_true',
+        help='Run in non-interactive mode (auto-selects first prompt)'
+    )
+    
     args = parser.parse_args()
     
     # Initialize the generator
@@ -451,15 +503,45 @@ Examples:
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Run the interactive workflow
-    image_path = generator.interactive_workflow(content, output_dir)
+    # Generate timestamp for unique filename
+    timestamp = int(time.time())
+    output_path = output_dir / f"cover-image-{timestamp}.jpg"
     
-    if image_path:
-        print(f"✅ Image generated successfully: {image_path}")
-        return 0
+    if args.non_interactive:
+        # Run the non-interactive workflow
+        result = generator.generate_prompt_suggestions(content, 1)
+        if result and len(result) > 0:
+            selected_prompt = result[0]
+            print(f"🔍 Automatically selected prompt: \"{selected_prompt}\"")
+            result = generator.generate_image(selected_prompt, output_path)
+        else:
+            print("❌ Failed to generate prompt suggestions")
+            return 1
+        
+        if result and result.get("success", False):
+            print(f"✅ Image generated successfully: {result.get('output_path', '')}")
+            return 0
+        else:
+            print(f"❌ Image generation failed: {result.get('error', 'Unknown error')}")
+            return 1
     else:
-        print("❌ Image generation failed or was cancelled")
-        return 1
+        # Run the interactive workflow
+        result = generator.interactive_workflow(content, output_dir)
+        if result:
+            if isinstance(result, dict):
+                output_path = result.get("output_path", "")
+                if result.get("success", False):
+                    print(f"✅ Image generated successfully: {output_path}")
+                    return 0
+                else:
+                    print(f"❌ Image generation failed: {result.get('error', 'Unknown error')}")
+                    return 1
+            else:
+                print(f"✅ Image generated successfully: {result}")
+                return 0
+        else:
+            print("❌ Image generation was cancelled or failed")
+            return 1
 
 if __name__ == "__main__":
     sys.exit(main())
