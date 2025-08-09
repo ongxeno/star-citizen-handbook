@@ -9,22 +9,11 @@ tags: ["Star Citizen", "CitizenCon", "MMORPG", "Social Features", "Gaming"]
 categories: ["Game Updates"]
 author: "Gemini"
 weight: 1
-image: "img/sc-social-cover.jpg"
+image: "https://i.ytimg.com/vi_webp/AwFZb3EcA5I/maxresdefault.webp"
 description: "บทวิเคราะห์เจาะลึกการอัปเกรดระบบโซเชียลของ Star Citizen ที่ประกาศในงาน CitizenCon 2954 ตั้งแต่ระบบเพื่อน, ปาร์ตี้, ไปจนถึง Orgs และพันธมิตร"
 ---
 
-![cover](../../img/sc-social-cover.jpg)
-
-<!-- Cover image prompts (16:9)
-Option 1:
-"Cinematic sci‑fi cover depicting a bustling spaceport social hub in the Star Citizen universe; diverse players gathered in squads, holographic UI overlays for Friends, Party Finder, voice chat waveforms, and org emblems; sleek dark UI with cyan/teal accents; depth of field, volumetric lighting, highly detailed, 16:9 ratio"
-
-Option 2:
-"Futuristic HUD collage of the Social App: friends list, party roster with roles, real‑time status icons, chat tabs, FoIP/VoIP waveform, and alliance/rivalry badges connected by neon lines over a starmap; clean minimal composition on dark background; premium game key art vibe, 16:9 ratio"
-
-Option 3:
-"Team briefing scene aboard a spacecraft: crew viewing a holographic panel showing Party Finder cards, guide beacons, and org alliance network; cinematic rim lighting, moody color grade, crisp typography for title area, 16:9 ratio"
--->
+![cover](https://i.ytimg.com/vi_webp/AwFZb3EcA5I/maxresdefault.webp)
 
 > **หมายเหตุ:** บทความนี้เป็นการสรุป Developer Roadmap & Showcase จากงานนำเสนอ ไม่ได้สะท้อนสถานะปัจจุบันของเกม Star Citizen
 
@@ -54,6 +43,8 @@ Option 3:
   - **ระบบปาร์ตี้สำหรับกองทัพ:** [[09:47](http://www.youtube.com/watch?v=AwFZb3EcA5I&t=587)] ปาร์ตี้จะรองรับผู้เล่นได้มากขึ้นเป็นหลักร้อยคนเพื่อรองรับ Server Meshing พร้อมฟีเจอร์ใหม่ๆ เช่น การค้นหาสมาชิกในปาร์ตี้, ข้อมูลสถานะแบบเรียลไทม์ (ใครบาดเจ็บ, ใครตาย), และหน้าจอแสดงรายละเอียดของยานและตำแหน่งที่นั่งในกองยาน (Fleet) ทั้งหมด
   - **Ready Check:** ฟีเจอร์ที่หลายคนรอคอย สำหรับการเช็คความพร้อมของทุกคนในปาร์ตี้ก่อนเริ่มภารกิจที่ท้าทาย
 
+{{< youtube id="AwFZb3EcA5I" starttime="331" endtime="750" title="Friends & Party System" >}}
+
 ---
 
 ### Party Finder: หาเพื่อนร่วมทางได้ง่ายกว่าที่เคย
@@ -66,7 +57,7 @@ Option 3:
 
 **ระบบ Party Finder จะช่วยให้การหาเพื่อนร่วมทีมง่ายขึ้นมาก**
 
-{{< youtube id="AwFZb3EcA5I" starttime="779" endtime="805" title="Star Citizen: Party Finder System" >}}
+{{< youtube id="AwFZb3EcA5I" starttime="787" endtime="928" title="Party Finder" >}}
 
 ---
 
@@ -79,6 +70,8 @@ Option 3:
   - **Slash Commands ที่ทรงพลัง:** คำสั่ง Slash command จะมีประโยชน์มากขึ้น สามารถใช้ส่งข้อความหาปาร์ตี้, คนในระยะใกล้ หรือส่งข้อความส่วนตัวได้โดยตรง
   - **ระบบ Link:** สามารถแชร์ลิงก์ของสัญญา (Contract), ตำแหน่งบน Starmap, หรือแม้แต่ลิงก์ของไอเทมและผู้เล่นได้ในแชทโดยตรง!
 
+{{< youtube id="AwFZb3EcA5I" starttime="928" endtime="1085" title="Customizable Chat System" >}}
+
 ---
 
 ### FoIP & VoIP: การสื่อสารที่สมจริงยิ่งขึ้น
@@ -89,6 +82,8 @@ Option 3:
   - **ปรับปรุงคุณภาพเสียง:** โครงสร้างพื้นฐานของระบบเสียงถูกยกเครื่องใหม่ทั้งหมดเพื่อความเสถียรและคุณภาพเสียงที่ดีขึ้น โดยเฉพาะเมื่อมีผู้เล่นจำนวนมาก
   - **ทดสอบใน Character Customizer:** สามารถทดสอบ FoIP ได้ทันทีในหน้าจอสร้างตัวละคร เพื่อดูว่าใบหน้าของเราจะแสดงผลบนตัวละครอย่างไร
 
+{{< youtube id="AwFZb3EcA5I" starttime="22:51" endtime="27:24" title="FoIP & VoIP" >}}
+
 ---
 
 ### ระบบไกด์และ Beacon (Guide System & Beacons)
@@ -97,6 +92,8 @@ Option 3:
 
   - **Guide Beacons:** ผู้เล่นใหม่สามารถส่ง "Guide Beacon" เพื่อขอความช่วยเหลือในหัวข้อต่างๆ (เช่น การต่อสู้ด้วยยาน, การเทรด, การขุดเหมือง) และไกด์ที่มีประสบการณ์สามารถเข้ามารับงานเพื่อช่วยเหลือได้
   - **ระบบความน่าเชื่อถือ (Trust Rating):** เพื่อป้องกันการหลอกลวง ทั้งผู้ส่ง Beacon และผู้รับงาน (Responders) จะมีค่า Trust Rating ผู้รับงานที่มีคะแนนดีจะได้รับความน่าเชื่อถือสูงขึ้น ในขณะที่คนที่ทำงานพลาดบ่อยๆ อาจจะติดสถานะ "Red Zone" ได้
+
+{{< youtube id="AwFZb3EcA5I" starttime="29:37" endtime="35:30" title="Guide System & Beacons" >}}
 
 ---
 
@@ -108,6 +105,8 @@ Option 3:
   - **เข้าร่วมได้หลาย Org:** ผู้เล่นสามารถเข้าร่วมได้สูงสุด 6 Orgs ในเกม เพื่อเข้าร่วมกิจกรรมที่หลากหลาย
   - **ระบบพันธมิตรและคู่แข่ง (Alliances and Rivalry):** [[51:27](http://www.youtube.com/watch?v=AwFZb3EcA5I&t=3087)] Org สามารถสร้างพันธมิตรเพื่อแชร์ช่องทางการสื่อสารและปฏิทินกิจกรรมร่วมกันได้ ในทางกลับกัน ก็สามารถประกาศตัวเป็นศัตรูกับ Org อื่นได้ ซึ่งจะส่งผลโดยตรงต่อการแสดงผลในเกม (พันธมิตรจะเห็นเป็นสีเขียว, ศัตรูจะเป็นสีแดง)
   - **ความภักดีส่วนบุคคล (Personal Loyalty):** การทำกิจกรรมเพื่อช่วย Org จะเพิ่มค่าความภักดีส่วนตัว ซึ่งจะส่งผลต่อสิทธิประโยชน์ที่ผู้เล่นจะได้รับ ยิ่งภักดีมาก ยิ่งได้ประโยชน์มาก และค่านี้จะรีเซ็ตเมื่อออกจาก Org
+
+{{< youtube id="AwFZb3EcA5I" starttime="36:39" endtime="52:33" title="Orgs" >}}
 
 ---
 
