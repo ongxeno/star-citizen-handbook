@@ -5,7 +5,10 @@ date: 2025-07-29
 lastmod: 2025-07-29
 tags: ["Glossary", "Pledge Store", "CCU", "Warbond", "LTI", "Store Credit"]
 categories: ["Concepts", "แนวคิดและระบบเกม"]
+image: "img/concepts/basic-pledge-store-glossary/cover-image-1754735437.jpg"
 ---
+
+![cover](../../img/concepts/basic-pledge-store-glossary/cover-image-1754735437.jpg)
 
 **สารบัญ**
 - [Pledge (การสนับสนุน)](#pledge)
@@ -16,7 +19,6 @@ categories: ["Concepts", "แนวคิดและระบบเกม"]
 - [ตารางสรุป](#summary-table)
 
 ---
-
 ก่อนจะไปดูเทคนิคประหยัดเงินใน [คู่มือ CCU Chain]({{< ref "/concepts/ccu-guide" >}}) เรามาทำความเข้าใจคำศัพท์พื้นฐานที่ใช้ใน Pledge Store ของ RSI กันก่อนดีกว่าครับ ผมจะอธิบายด้วยภาษาที่ง่ายที่สุด พร้อมคำเปรียบเทียบให้เห็นภาพชัดๆ
 
 ### **Pledge (การสนับสนุน)** {#pledge}
