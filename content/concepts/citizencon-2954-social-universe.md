@@ -9,11 +9,10 @@ tags: ["Star Citizen", "CitizenCon", "MMORPG", "Social Features", "Gaming"]
 categories: ["Game Updates"]
 author: "Gemini"
 weight: 1
-image: "https://i.ytimg.com/vi_webp/AwFZb3EcA5I/maxresdefault.webp"
+image: "img/concepts/citizencon-2954-social-universe/cover.webp"
 description: "บทวิเคราะห์เจาะลึกการอัปเกรดระบบโซเชียลของ Star Citizen ที่ประกาศในงาน CitizenCon 2954 ตั้งแต่ระบบเพื่อน, ปาร์ตี้, ไปจนถึง Orgs และพันธมิตร"
 ---
-
-![cover](https://i.ytimg.com/vi_webp/AwFZb3EcA5I/maxresdefault.webp)
+![alt text](../../img/concepts/citizencon-2954-social-universe/cover.webp)
 
 > **หมายเหตุ:** บทความนี้เป็นการสรุป Developer Roadmap & Showcase จากงานนำเสนอ ไม่ได้สะท้อนสถานะปัจจุบันของเกม Star Citizen
 
