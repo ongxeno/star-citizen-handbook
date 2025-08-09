@@ -19,61 +19,31 @@ import sys
 import json
 import re
 import argparse
+import subprocess
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
-import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Import the shared genai utilities
+from genai_utils import configure_genai, get_project_paths
 
 class HugoBlogGenerator:
     """AI-powered Hugo blog post generator for Star Citizen Handbook"""
     
     def __init__(self):
         """Initialize the generator with API configuration"""
-        self.api_key = os.getenv('GEMINI_API_KEY')
-        if not self.api_key:
-            raise ValueError("GEMINI_API_KEY not found in .env file")
-        
-        genai.configure(api_key=self.api_key)
-        
-        # Safety settings to prevent over-filtering
-        safety_settings = [
-            {
-                "category": HarmCategory.HARM_CATEGORY_HARASSMENT,
-                "threshold": HarmBlockThreshold.BLOCK_NONE
-            },
-            {
-                "category": HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                "threshold": HarmBlockThreshold.BLOCK_NONE
-            },
-            {
-                "category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                "threshold": HarmBlockThreshold.BLOCK_NONE
-            },
-            {
-                "category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                "threshold": HarmBlockThreshold.BLOCK_NONE
-            }
-        ]
-        
-        # Models configuration
-        self.cost_effective_model = genai.GenerativeModel(
-            'gemini-2.5-flash',
-            safety_settings=safety_settings
-        )
-        self.deep_research_model = genai.GenerativeModel(
-            'gemini-2.5-pro',
-            safety_settings=safety_settings
-        )
+        # Configure AI models
+        self.models = configure_genai()
+        self.cost_effective_model = self.models["cost_effective"]
+        self.deep_research_model = self.models["deep_research"]
         
         # Project paths
-        self.script_dir = Path(__file__).parent
-        self.project_root = self.script_dir.parent
-        self.content_dir = self.project_root / "content"
+        paths = get_project_paths()
+        self.script_dir = paths["script_dir"]
+        self.project_root = paths["project_root"]
+        self.content_dir = paths["content_dir"]
+        self.static_dir = paths["static_dir"]
+        self.img_dir = paths["img_dir"]
         
         # Categories mapping
         self.categories = {
@@ -643,9 +613,62 @@ class HugoBlogGenerator:
             structure = result_data['structure']
             content = result_data['content']
             print("✅ AI generation complete.")
-
+            
             # Step 4: Integrate into Hugo project
             file_path = self.step5_integrate_content(structure, content)
+            
+            # Step 5: Generate cover image
+            print("🖼️ Would you like to generate a cover image for this article?")
+            generate_image = input("Generate image? (y/n): ").strip().lower() == 'y'
+            
+            if generate_image:
+                # Determine the image directory path based on category and slug
+                category = structure['category']
+                slug = structure['slug']
+                img_output_dir = self.img_dir / category / slug
+                    
+                # Call the blog image generator script
+                print(f"🚀 Launching image generator...")
+                
+                # Get the full content for context
+                try:
+                    # Run the image generator as a subprocess
+                    cmd = [
+                        sys.executable,
+                        str(self.script_dir / "blog_image_generator.py"),
+                        "--content", content,
+                        "--output", str(img_output_dir)
+                    ]
+                    
+                    # Run the image generator and wait for it to complete
+                    image_process = subprocess.run(
+                        cmd,
+                        text=True,
+                        capture_output=True
+                    )
+                    
+                    # Check if the image generation was successful
+                    if image_process.returncode == 0:
+                        print(f"✅ Image generation completed successfully")
+                        
+                        # Update the image path in the front matter if needed
+                        if "Image generated successfully:" in image_process.stdout:
+                            # Extract the image path
+                            import re
+                            image_path_match = re.search(r'Image generated successfully: (.+)', image_process.stdout)
+                            if image_path_match:
+                                generated_image_path = image_path_match.group(1).strip()
+                                
+                                # Convert to relative path for Hugo
+                                rel_path = Path(generated_image_path).relative_to(self.static_dir)
+                                hugo_path = f"/{rel_path}"
+                                
+                                # Update the front matter in the saved file
+                                self.update_front_matter_image(file_path, hugo_path)
+                    else:
+                        print(f"⚠️ Image generation failed: {image_process.stderr}")
+                except Exception as e:
+                    print(f"⚠️ Error running image generator: {e}")
             
             print("=" * 60)
             print(f"🎉 Short article generation completed successfully!")
@@ -665,6 +688,28 @@ class HugoBlogGenerator:
         except Exception as e:
             print(f"💥 Short Article generation failed: {e}")
             raise
+    
+    def update_front_matter_image(self, file_path: str, image_path: str):
+        """Update the image path in the front matter of a Hugo content file"""
+        try:
+            # Read the file
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Update the image path using regex
+            updated_content = re.sub(
+                r'(image: ")([^"]+)(")', 
+                f'\\1{image_path}\\3', 
+                content
+            )
+            
+            # Write the updated content back to the file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(updated_content)
+            
+            print(f"✅ Updated front matter image path to: {image_path}")
+        except Exception as e:
+            print(f"⚠️ Error updating front matter image path: {e}")
 
 def main():
     """Main entry point"""
