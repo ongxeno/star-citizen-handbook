@@ -622,7 +622,8 @@ class HugoBlogGenerator:
                 # Determine the image directory path based on category and slug
                 category = structure['category']
                 slug = structure['slug']
-                img_output_dir = self.img_dir / category / slug
+                # Set image output directory to the article's parent directory
+                img_output_dir = Path(file_path).parent
                 img_output_dir.mkdir(parents=True, exist_ok=True)
                     
                 # Call the blog image generator directly
