@@ -9,20 +9,22 @@ USAGE:
    - Use: {{< carousel >}}
    - Use: {{< carousel height="500px" interval="3000" >}}
 
-2. **Static Directory Approach (Limited):**
-   - Put images in: static/img/my-carousel/
-   - Use: {{< carousel path="img/my-carousel" >}}
-   - Note: Requires manual specification of images or theme customization
+2. **Page Bundle Subdirectory Approach:**
+   - Create a page bundle: content/my-page/my-page.md
+   - Put images in a subdirectory: content/my-page/images/image1.jpg, etc.
+   - Use: {{< carousel path="images/" >}}
+   - Path is relative to the page bundle directory
 
 PARAMETERS:
-- path: Optional. For static directory approach only.
+- path: Optional. Subdirectory within the page bundle where images are stored.
 - height: Optional. Default "400px". Height of carousel images.
 - interval: Optional. Default "5000". Auto-advance interval in milliseconds.
 
 EXAMPLES:
 {{< carousel >}}                                    // Uses all images in page bundle
 {{< carousel height="300px" >}}                     // Custom height
-{{< carousel height="500px" interval="8000" >}}     // Custom height and timing
+{{< carousel path="event-preview-image/" >}}        // Images from a subdirectory
+{{< carousel path="slides/" height="500px" interval="8000" >}}     // All options
 */}}
 
 {{ $path := .Get "path" }}
@@ -31,13 +33,17 @@ EXAMPLES:
 
 {{ $images := slice }}
 
-{{/* If path is specified, try to get images from static directory */}}
+{{/* Handle both path-specified and default page bundle approaches */}}
 {{ if $path }}
-  {{/* For static files, we can't dynamically read directory, so this requires manual specification */}}
-  {{/* This is a limitation - static directories can't be scanned dynamically in Hugo */}}
-  <div class="alert alert-warning">
-    <p><strong>Note:</strong> Static directory scanning not implemented. Please use page bundle approach by putting images directly in the page bundle folder and omit the path parameter.</p>
-  </div>
+  {{/* If path is specified, look for images in the specified subdirectory of the page bundle */}}
+  {{ if .Page.Resources }}
+    {{ $dir := $path }}
+    {{ range .Page.Resources }}
+      {{ if and (findRE "(?i)\\.(jpe?g|png|gif|webp)$" .Name) (hasPrefix .Name $dir) }}
+        {{ $images = $images | append (dict "Name" .Name "RelPermalink" .RelPermalink) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
 {{ else }}
   {{/* Use page bundle resources - this is the recommended approach */}}
   {{ if .Page.Resources }}
@@ -253,7 +259,7 @@ EXAMPLES:
     <p>To use this carousel:</p>
     <ul>
       <li><strong>Page Bundle approach:</strong> Put images directly in the same folder as your .md file</li>
-      <li><strong>Static folder approach:</strong> Specify path parameter like <code>{{ printf "{{< carousel path=\"img/my-folder\" >}}" }}</code></li>
+      <li><strong>Subdirectory approach:</strong> Specify path parameter like <code>{{ printf "{{< carousel path=\"event-preview-image/\" >}}" }}</code></li>
     </ul>
   </div>
 {{ end }}

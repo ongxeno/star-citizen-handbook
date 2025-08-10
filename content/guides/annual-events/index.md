@@ -28,7 +28,7 @@ image: "guides/annual-events/Screenshot2025-07-30095735.jpg"
 
 ---
 
-{{< carousel height="400px" interval="5000" >}}
+{{< carousel path="event-preview-image/" height="400px" interval="5000" >}}
 
 ## **บทนำ: ทำไมต้องรู้จักอีเวนต์ประจำปี?** {#introduction}
 
