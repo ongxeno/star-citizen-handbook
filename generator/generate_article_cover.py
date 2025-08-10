@@ -24,8 +24,10 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple
 
 # Import the shared genai utilities and the BlogImageGenerator
+
 from genai_utils import get_project_paths
 from blog_image_generator import BlogImageGenerator
+from util import ensure_new_article_structure
 
 # Global configuration
 timeout = 300  # Default timeout in seconds
@@ -151,7 +153,7 @@ def update_front_matter_image(file_path: str, image_path: str) -> bool:
         cover_image_pattern = r'^(\s*!\[cover\]\([^)]+\)\s*)'
         after_fm_stripped = after_fm.lstrip('\n')
         after_fm_new = re.sub(cover_image_pattern, '', after_fm_stripped, count=1, flags=re.MULTILINE)
-        cover_markdown = f"\n![cover](../../{image_path})\n\n"
+        cover_markdown = f"\n![cover](cover.jpg)\n\n"
         updated_content = f"---\n{new_front_matter}\n---\n{cover_markdown}{after_fm_new}"
 
         # Write the updated content back to the file
@@ -199,19 +201,10 @@ def generate_cover_image(article_path: str, update_front_matter: bool = True) ->
         # Extract structure for better prompt generation
         structure = extract_markdown_structure(main_content)
         
-        # Determine the category and slug
-        if 'slug' in front_matter:
-            slug = front_matter['slug']
-        else:
-            # Try to derive slug from filename
-            slug = article_path.stem
-        
-        # Determine category from path
-        category = article_path.parent.name
-        
-        # Set output directory for the image
-        img_output_dir = static_dir / "img" / category / slug
+        # Move/rename article if needed and get output dir
+        article_path, img_output_dir = ensure_new_article_structure(article_path)
         img_output_dir.mkdir(parents=True, exist_ok=True)
+        cover_image_path = img_output_dir / "cover.jpg"
         
         # Prepare for image generation
         # Extract the title and description
@@ -248,28 +241,29 @@ Note: This content may be in a language other than English. Please generate imag
         print("🚀 Starting interactive image generation workflow...")
         print(f"📂 Output directory: {img_output_dir}")
         print("⏳ This interactive process requires your input to select and refine image prompts.")
-        
+
         # Set default aspect ratio
         image_generator.aspect_ratio = "16:9"
-        
-        # Run the interactive workflow
+
+        # Run the interactive workflow, save as cover.jpg
         generated_image_path = image_generator.interactive_workflow(combined_content, img_output_dir)
-        
-        # Check if the image generation was successful
+
+        # If the generated image is not already cover.jpg, move/rename it
+        if generated_image_path and Path(generated_image_path) != cover_image_path:
+            try:
+                Path(generated_image_path).replace(cover_image_path)
+                generated_image_path = str(cover_image_path)
+            except Exception as e:
+                print(f"⚠️ Could not rename image to cover.jpg: {e}")
+                # fallback: use the generated path
+
         if generated_image_path:
             print(f"✅ Image generation completed successfully")
-            
-            # Convert to relative path for Hugo
-            rel_path = Path(generated_image_path).relative_to(static_dir)
-            # Use forward slashes for Hugo paths but remove leading slash
-            hugo_path = f"{str(rel_path).replace('\\', '/')}"
-            
-            # Update the front matter in the article file
+            # Update the front matter in the article file to use 'cover.jpg'
             if update_front_matter:
-                update_front_matter_image(article_path, hugo_path)
+                update_front_matter_image(str(article_path), "cover.jpg")
             else:
-                print(f"ℹ️ Front matter update skipped. New image path: {hugo_path}")
-            
+                print(f"ℹ️ Front matter update skipped. New image path: cover.jpg")
             return generated_image_path
         else:
             print(f"⚠️ Image generation was cancelled or failed")
@@ -277,9 +271,18 @@ Note: This content may be in a language other than English. Please generate imag
             if retry == 'y':
                 print("🔄 Restarting image generation workflow...")
                 generated_image_path = image_generator.interactive_workflow(combined_content, img_output_dir)
+                if generated_image_path and Path(generated_image_path) != cover_image_path:
+                    try:
+                        Path(generated_image_path).replace(cover_image_path)
+                        generated_image_path = str(cover_image_path)
+                    except Exception as e:
+                        print(f"⚠️ Could not rename image to cover.jpg: {e}")
                 if not generated_image_path:
                     print("❌ Image generation failed again")
                     return None
+                if update_front_matter:
+                    update_front_matter_image(str(article_path), "cover.jpg")
+                return generated_image_path
             else:
                 return None
         

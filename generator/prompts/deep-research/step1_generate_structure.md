@@ -7,14 +7,7 @@ Generate a complete blog structure with:
 2. A content outline with main sections.
 3. The appropriate category.
 
-**CRITICAL RULES:**
-- **English-only for Metadata:** `slug`, `category`, `tags`, and `categories` (in front_matter) MUST be in English.
-- **Thai for User Content:** `title`, `subtitle`, `description`, and the `outline` MUST be in natural, conversational Thai. The writing style should be like a gamer talking to a friend, not a formal translation.
-
-**DETAILED REQUIREMENTS:**
-- **`slug`**: URL-friendly, English, based on the topic.
-- **`category`**: Must be one of: "ships", "concepts", "guides".
-- **`tags`**: A list of relevant English tags.
+**`category`**: Must be one of: {{MAIN_CATEGORIES}}.
 - **`categories` (in front_matter)**: A list containing the single English category from above.
 - **`title` / `subtitle`**: Catchy and informative in Thai, with appropriate emoji.
 - **`description`**: SEO-friendly and written in natural Thai.
@@ -39,7 +32,7 @@ Return ONLY a valid JSON object with this structure:
         "image": "img/category/slug/hero_image.jpg",
         "description": "Thai description"
     }},
-    "category": "ships|concepts|guides",
+    "category": "{{MAIN_CATEGORIES}}",
     "slug": "english-url-friendly-slug",
     "outline": [
         {{

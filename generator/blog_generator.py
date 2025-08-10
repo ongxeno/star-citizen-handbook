@@ -63,10 +63,14 @@ class HugoBlogGenerator:
         print("🏗️  Step 1: Generating blog structure and outline...")
         
         try:
+            from constants import MAIN_CATEGORIES
             prompt_path = self.script_dir / "prompts" / "deep-research" / "step1_generate_structure.md"
             with open(prompt_path, 'r', encoding='utf-8') as f:
                 prompt_template = f.read()
             
+            # Inject MAIN_CATEGORIES as a pipe-separated string
+            main_categories_str = "|".join(MAIN_CATEGORIES)
+            prompt = prompt_template.replace("{{MAIN_CATEGORIES}}", main_categories_str)
             prompt = prompt_template.replace("{{TOPIC}}", topic)
 
             response_text = generate_text(prompt=prompt, model_key="cost_effective")
@@ -182,10 +186,10 @@ class HugoBlogGenerator:
         # Combine front matter and content
         complete_content = yaml_front_matter + content
         
-        # Create file path
+        # Create file path in folder/index.md format
         category = structure['category']
         slug = structure['slug']
-        file_path = self.content_dir / category / f"{slug}.md"
+        file_path = self.content_dir / category / slug / "index.md"
         
         # Ensure directory exists
         file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -480,9 +484,9 @@ class HugoBlogGenerator:
         """Save the ship handbook to a file"""
         print("💾 Step 4: Saving ship handbook...")
         
-        # Create file path
+        # Create file path in folder/index.md format
         ship_slug = ship_data.get('ship_name_slug', 'unknown-ship')
-        file_path = self.content_dir / "ships" / f"{ship_slug}.md"
+        file_path = self.content_dir / "ships" / ship_slug / "index.md"
         
         # Ensure directory exists
         file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -629,16 +633,14 @@ class HugoBlogGenerator:
                     image_generator = BlogImageGenerator()
                     
                     # Prepare the combined content for image generation
-                    combined_content = f"""
-Title: {structure['front_matter'].get('title', '')}
-
-Description: {structure['front_matter'].get('description', '')}
-
-Content:
-{content}
-
-Note: This content may be in a language other than English. Please generate image prompts in English, focusing on the main themes of Star Citizen.
-"""
+                    # Read image prompt template and fill in values
+                    image_prompt_path = self.script_dir / "prompts" / "short-article" / "image_prompt.md"
+                    with open(image_prompt_path, 'r', encoding='utf-8') as imgf:
+                        image_prompt_template = imgf.read()
+                    combined_content = image_prompt_template \
+                        .replace("{{TITLE}}", structure['front_matter'].get('title', '')) \
+                        .replace("{{DESCRIPTION}}", structure['front_matter'].get('description', '')) \
+                        .replace("{{CONTENT}}", content)
                     
                     # Run the interactive workflow to generate the image
                     print("🚀 Starting interactive image generation workflow...")

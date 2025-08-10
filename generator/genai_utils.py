@@ -216,24 +216,19 @@ def generate_image(prompt: str, aspect_ratio: str = "16:9", output_path: Optiona
                 print(part.text)
                 text_response = part.text
             elif part.inline_data is not None:
-                # Save the image
+                # Save the image directly to output_path if provided
                 image = Image.open(BytesIO(part.inline_data.data))
-                temp_path = Path('temp_gemini_image.png')
-                image.save(temp_path)
-                
-                # Save to output_path if provided
+                image_bytes = BytesIO()
+                image.save(image_bytes, format="PNG")
+                image_bytes.seek(0)
+
                 if output_path:
-                    # Ensure parent directory exists
                     output_path.parent.mkdir(parents=True, exist_ok=True)
-                    # Save the image
                     image.save(output_path)
                     print(f"✅ Image saved to: {output_path.absolute()}")
-                
-                # Read back the binary data
-                with open(temp_path, 'rb') as f:
-                    image_data = f.read()
-                
-                # Return success with image data
+
+                image_data = image_bytes.getvalue()
+
                 return {
                     "success": True,
                     "model": "gemini",

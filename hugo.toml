@@ -69,6 +69,11 @@ pygmentsCodefencesGuessSyntax = true
     weight = 4
 
 [[menu.main]]
+    name = "การพัฒนาเกม"
+    url = "development/"
+    weight = 5
+
+[[menu.main]]
     name = "เกี่ยวกับ"
     url = "about/"
-    weight = 5
+    weight = 6
