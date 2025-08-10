@@ -9,7 +9,7 @@ tags: ["jumptown", "pvp", "event", "making-money", "gameplay"]
 categories: ["concepts"]
 author: "Star Citizen Handbook Team"
 weight: 5
-image: "3q34564257456.jpg"
+image: "concepts/star-citizen-gameplay-jumptown/3q34564257456.jpg"
 description: "คู่มือสำหรับมือใหม่และมือเก๋าเกี่ยวกับ Jump Town ใน Star Citizen เรียนรู้วิธีการเล่น ความเสี่ยง และผลตอบแทนมหาศาลจากอีเวนต์ PvP สุดเดือดนี้"
 ---
 

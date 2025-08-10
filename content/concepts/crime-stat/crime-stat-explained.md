@@ -9,7 +9,7 @@ tags: ["crime-stat", "bounty-hunting", "game-mechanics", "law-system", "prison"]
 categories: ["concepts"]
 author: "Star Citizen Handbook Team"
 weight: 5
-image: "cover.jpg"
+image: "concepts/crime-stat/cover.jpg"
 description: "คู่มือฉบับสมบูรณ์สำหรับระบบ Crime Stat ใน Star Citizen อธิบายระดับค่าหัว ผลกระทบที่ตามมา และวิธีล้างค่าสถานะอาชญากรสำหรับผู้เล่นใหม่และเก่า"
 ---
 

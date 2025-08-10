@@ -4,7 +4,7 @@ date: 2025-07-31
 lastmod: 2025-08-10
 categories: ["Development", "Monthly Report"]
 description: "สรุปอัปเดตประจำเดือนกรกฎาคม 2025 เกี่ยวกับ AI, ยาน, ระบบการเล่น, เศรษฐกิจ, และข่าวสารสำคัญใน Star Citizen"
-image: "banner-july-2025.webp"
+image: "development/monthly-report-2025-07/banner-july-2025.webp"
 ---
 
 ![cover](banner-july-2025.webp)
