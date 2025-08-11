@@ -657,12 +657,11 @@ class HugoBlogGenerator:
                     # Check if the image generation was successful
                     if generated_image_path:
                         print(f"✅ Image generation completed successfully")
-                        
-                        # Convert to relative path for Hugo
-                        rel_path = Path(generated_image_path).relative_to(self.static_dir)
+                        # Convert generated_image_path to absolute path before calculating relative path
+                        abs_image_path = Path(generated_image_path).resolve()
+                        rel_path = abs_image_path.relative_to(self.content_dir.resolve())
                         # Use forward slashes for Hugo paths but no leading slash
                         hugo_path = f"{str(rel_path).replace('\\', '/')}"
-                        
                         # Update the front matter in the article file
                         self.update_front_matter_image(file_path, hugo_path)
                     else:
