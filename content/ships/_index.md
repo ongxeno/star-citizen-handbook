@@ -31,10 +31,13 @@ lastmod: 2025-07-18
 - [MISC Prospector](misc-prospector) - ยานขุดแร่ขนาดเดี่ยว 
 - MOLE - ยานขุดแร่แบบทีม (เร็วๆ นี้)
 
+
 ### ⚔️ยานรบ
 
+- [Kruger L-21 Wolf](preview-kruger-l21-wolf/) - ยานขับไล่เบารุ่นใหม่ล่าสุดจาก Kruger Intergalactic โดดเด่นด้วยดีไซน์และอาวุธ S4 Ballistic Gatling คู่
 - Gladius - ยานขับไล่เบา (เร็วๆ นี้)
 - Hornet F7C - ยานรบอเนกประสงค์ (เร็วๆ นี้)
+
 
 ---
 
