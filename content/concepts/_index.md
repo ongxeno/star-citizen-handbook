@@ -13,6 +13,7 @@ lastmod: 2025-07-18
 
 * [รหัสแนะนำ (Referral Code)](referral-code/) - ระบบแนะนำเพื่อนและผลตอบแทนที่ได้รับในเกม
 * การเดินทางของผู้เล่น (Player Progression) - (เร็วๆ นี้)  
+* [วิกฤตการณ์ Regen Crisis](regen-crisis-lore/) - เมื่อเทคโนโลยีอมตะล่มสลายและนำไปสู่ Death of a Spaceman
 * [ความตายของนักบินอวกาศ (Death of a Spaceman)](death-of-a-spaceman/)
 * ระบบชื่อเสียงและสถานะพลเมือง (Reputation & Citizenship) - (เร็วๆ นี้)
 
