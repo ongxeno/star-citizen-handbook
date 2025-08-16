@@ -1,116 +1,191 @@
 
 # Star Citizen Handbook
 
-An open-source, AI-powered Thai-language guide for new and returning Star Citizen players, covering ships, missions, and core gameplay mechanics. Includes automated content and image generation, and native Thai writing style.
-
+A comprehensive Thai-language guide for Star Citizen players, covering ships, gameplay mechanics, guides, and concepts. Built with Hugo and enhanced with AI-powered content generation and modern web features.
 
 ## Overview
 
-**Star Citizen Handbook** is a community-driven, automation-enhanced resource for Star Citizen, focused on Thai-language content. The handbook provides:
-- Detailed guides, ship overviews, gameplay tips, and more
-- Automated article and cover image generation using Python scripts and Google Generative AI
-- Consistent, friendly Thai writing style with summaries and appropriate emoji
+**Star Citizen Handbook** is a modern, feature-rich resource for Star Citizen players, focused on Thai-language content. The handbook provides:
+
+- **Comprehensive Content:** Detailed guides, ship reviews, gameplay mechanics, and concepts
+- **AI-Powered Generation:** Automated content and cover image generation using Google Generative AI
+- **Enhanced User Experience:** Responsive tables, image carousels, and modern web features
+- **Thai Language Focus:** Native Thai content with consistent, friendly writing style
 
 
 ## Features
 
-- **Automated Content Generation:**
-   - Python scripts (`generator/blog_generator.py`, `generator/generate_article_cover.py`) automate article structure, front matter, and cover image creation.
-   - Uses Google Generative AI for Thai-language content and image prompt generation.
-- **Template-Driven Workflow:**
-   - Markdown templates for article structure and image prompts (see `generator/prompts/`).
-- **Consistent Thai Writing Style:**
-   - Friendly, conversational tone with summaries and appropriate emoji.
-   - All content is written and maintained in Thai.
-- **Modern Hugo Site Structure:**
-   - Each article in its own folder with `index.md` and a generated cover image.
-   - Dynamic navigation using `_index.md` files.
-- **Community Contributions:**
-   - Open to pull requests and suggestions from the community.
+### Content & Automation
+- **AI-Powered Content Generation:** Python scripts with Google Generative AI for automated article creation
+- **Cover Image Generation:** Automated cover images for articles and guides
+- **Template-Driven Workflow:** Markdown templates for consistent content structure
+- **Thai Language Excellence:** Native Thai content with conversational tone and appropriate context
 
-archetypes/         # Hugo archetypes for new content
+### Enhanced User Experience  
+- **Responsive Tables:** Intelligent table breakout system for mobile devices
+- **Image Carousels:** Dynamic image galleries for ship showcases and guides
+- **Modern Hugo Architecture:** Page bundles, shortcodes, and optimized performance
+- **Custom Styling:** Dark theme with responsive design and custom CSS
+
+### Technical Features
+- **Hugo v0.148+:** Modern static site generation with extended features
+- **Beautiful Hugo Theme:** Professional theme with customizations
+- **Responsive Design:** Mobile-first approach with CSS Grid and Flexbox
+- **Performance Optimized:** Fast loading with optimized assets and images
 
 ## Project Structure
 
 ```
-archetypes/         # Hugo archetypes for new content
-assets/css/         # Custom CSS for site styling
-content/            # Main content directory (Thai, organized by category)
-   guides/           # Step-by-step guides for gameplay and mechanics
-   ships/            # Ship overviews, stats, and tips
-   concepts/         # Explanations of game concepts and systems
-   development/      # Monthly reports, dev notes, and project updates
-   _index.md         # Section index and landing page
-generator/          # Python automation scripts and templates
-   blog_generator.py         # Main article/content generator
-   generate_article_cover.py # Cover image and structure generator
-   blog_image_generator.py   # Image generation utility
-   constants.py              # Centralized category config
-   prompts/                  # Markdown templates for AI prompts
-layouts/            # Hugo templates and partials
-static/             # Static files (images, etc.)
-themes/             # Hugo themes (Beautiful Hugo)
-raw/                # Source material and drafts
-hugo.toml           # Hugo configuration
+├── content/                    # Main content directory (Thai language)
+│   ├── guides/                # Step-by-step gameplay guides
+│   ├── ships/                 # Ship reviews, stats, and showcases
+│   ├── concepts/              # Game mechanics and system explanations
+│   ├── development/           # Monthly reports and project updates
+│   └── _index.md             # Homepage content
+├── generator/                 # AI-powered content generation tools
+│   ├── blog_generator.py     # Main article generator with AI
+│   ├── generate_article_cover.py  # Cover image generator
+│   ├── blog_image_generator.py    # Image generation utilities
+│   ├── constants.py          # Category and configuration constants
+│   ├── prompts/             # Markdown templates for AI prompts
+│   └── requirements.txt     # Python dependencies
+├── layouts/                  # Hugo templates and customizations
+│   ├── shortcodes/          # Custom shortcodes (carousel, tables, etc.)
+│   ├── partials/            # Reusable template components
+│   └── _default/            # Default page layouts
+├── assets/css/              # Custom CSS and styling
+├── static/                  # Static files (images, JavaScript)
+│   ├── js/                  # Custom JavaScript (tables, effects)
+│   └── img/                 # Site images and assets
+├── wiki/                    # Development documentation
+├── themes/beautifulhugo/    # Hugo theme
+└── hugo.toml               # Hugo configuration
 ```
 
 
 ## Getting Started
 
-This project uses [Hugo](https://gohugo.io/) for static site generation, and Python for content automation.
-
 ### Prerequisites
 
-- [Hugo](https://gohugo.io/getting-started/installing/) (extended version recommended)
-- Python 3.10+
-- [Google Generative AI API key](https://ai.google.dev/)
-- `pip install -r generator/requirements.txt`
+- **Hugo v0.148+ (Extended):** [Download from Hugo website](https://gohugo.io/getting-started/installing/)
+- **Python 3.10+:** For content generation scripts
+- **Google Generative AI API Key:** [Get your API key](https://ai.google.dev/)
 
-### Running Locally
+### Installation & Setup
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/star-citizen-handbook.git
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ongxeno/star-citizen-handbook.git
    cd star-citizen-handbook
    ```
-2. Install Python dependencies:
-   ```sh
+
+2. **Install Python dependencies:**
+   ```bash
    pip install -r generator/requirements.txt
    ```
-3. Add your `GEMINI_API_KEY` to a `.env` file in the `generator/` directory.
-4. Start the Hugo server:
-   ```sh
-   hugo server -D
+
+3. **Configure API key:**
+   Create a `.env` file in the `generator/` directory:
    ```
-5. Open your browser and go to `http://localhost:1313/` to view the site.
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+4. **Start the development server:**
+   ```bash
+   hugo server --buildDrafts
+   ```
+
+5. **Open your browser:**
+   Navigate to `http://localhost:1313/star-citizen-handbook/`
 
 
-## Content & Automation Workflow
+## Content Creation Workflow
 
-### Article Generation
-- Use `python generator/blog_generator.py "<topic>"` to generate a new article structure and content outline in Thai, with Hugo front matter and dynamic category selection.
-- The script uses markdown prompt templates in `generator/prompts/` and category config in `generator/constants.py`.
+### 1. Generate New Articles
+```bash
+# Generate a new article with AI assistance
+python generator/blog_generator.py "Your Article Topic"
 
-### Cover Image Generation
-- Use `python generator/generate_article_cover.py path/to/article/index.md` to generate a cover image and update the article front matter.
-- Image prompts are generated using the template in `generator/prompts/short-article/image_prompt.md`.
+# Example: Generate a mining guide
+python generator/blog_generator.py "Mining Guide for Beginners"
+```
 
-### Templates & Localization
-- All prompt templates are markdown files in `generator/prompts/`.
-- All content is written in Thai, with a friendly, conversational style and appropriate emoji.
-- Summaries and references are included at the end of each article.
+### 2. Create Cover Images  
+```bash
+# Generate cover image for existing article
+python generator/generate_article_cover.py content/guides/your-article/index.md
+```
+
+### 3. Enhanced Content Features
+
+#### Image Carousels (Page Bundles Only)
+```markdown
+<!-- Basic carousel -->
+{{< carousel >}}
+
+<!-- Carousel with custom settings -->
+{{< carousel height="500px" interval="8000" >}}
+
+<!-- Carousel from subdirectory -->
+{{< carousel path="gallery/" >}}
+```
+
+#### Responsive Tables
+```markdown
+<!-- Tables automatically become responsive on mobile -->
+{{< table-responsive >}}
+| Ship | Price | Role |
+|------|--------|------|
+| Gladius | 90,000 aUEC | Light Fighter |
+{{< /table-responsive >}}
+```
+
+### 4. Writing Guidelines
+- **Language:** All content in Thai with friendly, conversational tone
+- **Structure:** Use clear headings, bullet points, and summaries
+- **Versioning:** Include `game_version` in front matter
+- **Images:** Use page bundles for better organization
 
 
 ## Contributing
 
-Contributions are welcome! To contribute:
+We welcome contributions from the Star Citizen community! Here's how you can help:
 
-1. Fork the repository.
-2. Create a new branch for your feature or fix.
-3. Commit your changes with clear messages.
-4. Open a pull request describing your changes.
+### Ways to Contribute
+- **Content Updates:** Keep guides current with latest game versions
+- **New Guides:** Write guides for new game mechanics or ships
+- **Bug Reports:** Report issues with the website or content
+- **Feature Requests:** Suggest new features or improvements
 
-See `DEVELOPMENT_NOTES.md` for more details on content structure, automation, and style guidelines.
+### Contribution Process
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-guide`
+3. Make your changes following our style guidelines
+4. Test locally with `hugo server --buildDrafts`
+5. Commit with clear messages: `git commit -m "Add mining guide for Alpha 4.2"`
+6. Push and create a Pull Request
+
+### Documentation
+See `wiki/` directory for detailed documentation:
+- `manual-page-creation-guide.md` - Content creation guidelines
+- `carousel-guide.md` - Image carousel usage
+- `responsive-tables-guide.md` - Table enhancement guide
+
+## Development Status
+
+### Current Features ✅
+- **Content Generation:** AI-powered article creation with Thai language
+- **Enhanced Tables:** Responsive table system with intelligent breakout
+- **Image Carousels:** Dynamic galleries for page bundles  
+- **Modern Styling:** Custom CSS with dark theme
+- **Performance:** Optimized Hugo build and asset loading
+
+### Roadmap 🚧
+- Search functionality (Algolia integration)
+- Advanced image processing and optimization
+- Community features and user interaction
+- Multi-language support expansion
+- Enhanced mobile experience
 
 
 ## License

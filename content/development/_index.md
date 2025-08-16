@@ -24,4 +24,7 @@ lastmod: 2025-08-10
 
 ---
 
+## Test
+[responsive-tables-demo](responsive-tables-demo/)
+
 *ข้อมูลในหน้านี้จะอัปเดตตามการประกาศและการพัฒนา Star Citizen เวอร์ชันล่าสุด*

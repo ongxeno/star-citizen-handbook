@@ -1,8 +1,50 @@
 /* Custom CSS for more minimalistic design */
 
+/* Fix responsive grid inconsistency - maintain consistent content width */
+.col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1 {
+  /* Use consistent width across all screen sizes to prevent jarring resize */
+  width: 83.33333333% !important; /* Same as col-md-10 */
+  margin-left: 8.33333333% !important; /* Same as col-md-offset-1 */
+}
+
+@media (min-width: 1200px) {
+  .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1 {
+    /* Maintain the same width on large screens instead of Bootstrap's default 8 columns */
+    width: 83.33333333% !important; /* Keep col-md-10 width */
+    margin-left: 8.33333333% !important; /* Keep col-md-offset-1 */
+  }
+}
+
+/* Full width content on mobile and tablet - space is precious */
+@media (max-width: 991px) {
+  .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1 {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+  
+  /* Ensure container uses full width on smaller screens */
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
 /* Override system color scheme preferences to always use dark theme */
 :root {
   color-scheme: dark !important;
+}
+
+/* Prevent horizontal overflow from viewport calculations, but allow breakout tables */
+html {
+  overflow-x: auto; /* Allow horizontal scroll when needed for breakout tables */
+}
+
+body {
+  overflow-x: auto; /* Allow horizontal scroll when needed for breakout tables */
 }
 
 html {
@@ -139,6 +181,177 @@ table td {
 
 table tbody tr:last-child {
   border-bottom: none !important;
+}
+
+/* Responsive table solutions for mobile */
+/* Solution 1: Breakout tables - wider than content container */
+.table-responsive {
+  /* Break out of parent container on desktop */
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 1.5em 0;
+}
+
+/* Desktop breakout behavior - only when table content is wide */
+@media (min-width: 992px) {
+  .table-responsive {
+    /* Default: stay within content area */
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+  
+  /* Break out only for wide tables (5+ columns) */
+  .table-responsive.wide-table {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    /* Constrain to 90vw for better visual balance and prevent overflow */
+    max-width: 90vw;
+    margin-left: -45vw;
+    margin-right: -45vw;
+    width: 90vw;
+  }
+  
+  .table-responsive table {
+    width: auto;
+    min-width: 100%;
+  }
+  
+  /* Wide tables get full width */
+  .table-responsive.wide-table table {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
+.table-responsive table {
+  margin: 0;
+  border: none !important;
+  border-radius: 0 !important;
+  width: 100% !important;
+  min-width: 600px; /* Ensure minimum width for proper table display */
+}
+
+/* Desktop: wider tables for better data presentation */
+@media (min-width: 992px) {
+  .table-responsive table {
+    min-width: 100% !important; /* Use full container width on desktop */
+  }
+  
+  /* Add breathing room to edge columns only for wide breakout tables */
+  .table-responsive.wide-table table th:first-child,
+  .table-responsive.wide-table table td:first-child {
+    padding-left: 20px !important;
+  }
+  
+  .table-responsive.wide-table table th:last-child,
+  .table-responsive.wide-table table td:last-child {
+    padding-right: 20px !important;
+  }
+}
+
+/* Scroll indicator removed - users are smart enough to figure out scrolling */
+
+/* All tables use horizontal scroll on smaller screens */
+
+/* Tablet responsive styling (768px and below) */
+@media (max-width: 991px) {
+  /* Reset breakout behavior on tablet and mobile */
+  .table-responsive {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Method 1: Horizontal scroll with minimum width */
+  table {
+    min-width: 600px !important;
+    font-size: 0.85em !important;
+  }
+  
+  table th,
+  table td {
+    padding: 8px 12px !important;
+    font-size: 0.9em !important;
+    white-space: nowrap;
+  }
+  
+  /* Improve readability on small screens */
+  table th {
+    font-size: 0.8em !important;
+    padding: 6px 10px !important;
+  }
+}
+
+/* Mobile responsive styling (480px and below) */
+@media (max-width: 480px) {
+  /* Use horizontal scroll for all tables on mobile */
+  table {
+    min-width: 500px !important;
+    font-size: 0.8em !important;
+  }
+  
+  table th,
+  table td {
+    padding: 6px 8px !important;
+    font-size: 0.85em !important;
+    white-space: nowrap;
+  }
+  
+  /* Improve readability on small screens */
+  table th {
+    font-size: 0.75em !important;
+    padding: 5px 7px !important;
+  }
+}
+
+/* Light theme overrides for responsive tables */
+@media (prefers-color-scheme: light) {
+  .table-responsive {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 480px) {
+    .table-card-mobile tr {
+      background: rgba(0, 0, 0, 0.03) !important;
+      border: 1px solid rgba(0, 0, 0, 0.12) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table-card-mobile tr:hover {
+      background: rgba(0, 0, 0, 0.05) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table-card-mobile td:before {
+      color: rgba(0, 0, 0, 0.8) !important;
+    }
+    
+    .table-card-mobile tr td:first-child:before {
+      color: rgba(0, 0, 0, 0.9) !important;
+    }
+  }
 }
 
 /* Clean table for light backgrounds */

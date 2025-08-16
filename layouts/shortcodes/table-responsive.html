@@ -1,0 +1,23 @@
+{{/*
+Responsive Table Shortcode
+Usage: 
+{{< table-responsive >}}
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Data 1   | Data 2   | Data 3   |
+{{< /table-responsive >}}
+
+Parameters:
+- class: additional CSS classes
+- wide: set to "true" to force breakout layout for wide tables
+- longcontent: set to "true" to force breakout layout for tables with long content
+*/}}
+
+{{- $class := .Get "class" | default "" -}}
+{{- $wide := .Get "wide" | default "false" -}}
+{{- $longContent := .Get "longcontent" | default "false" -}}
+{{- $wideClass := cond (or (eq $wide "true") (eq $longContent "true")) "wide-table" "" -}}
+
+<div class="table-responsive {{ $class }} {{ $wideClass }}">
+  {{ .Inner | markdownify }}
+</div>
