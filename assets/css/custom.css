@@ -626,3 +626,41 @@ html {
 
 /* Enhanced star layers for larger screens - now handled by JavaScript */
 /* Configuration can be adjusted via window.starFieldConfig */
+
+/* Carousel image overrides */
+.carousel-inner > .item > img {
+  margin: 0 !important;
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.carousel-inner {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  margin: 10px 0;
+}
+
+/* Override Bootstrap carousel indicator margins to prevent movement */
+.carousel-indicators li {
+  margin: 0 !important;
+}
+
+.carousel-indicators .active {
+  margin: 0 !important;
+}
+
+/* Simple carousel controls hover effects */
+.carousel .carousel-control:hover {
+  color: rgba(255,255,255,1.0) !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+/* More specific selector to override Bootstrap */
+.carousel-control.left:hover,
+.carousel-control.right:hover {
+  color: rgba(255,255,255,1.0) !important;
+  background: none !important;
+  background-image: none !important;
+}

@@ -59,16 +59,16 @@ EXAMPLES:
   {{/* Create unique carousel ID */}}
   {{ $carouselID := printf "carousel-%d" .Ordinal }}
   
-  <div id="{{ $carouselID }}" class="carousel slide">
-    {{/* Indicators (Bootstrap 3 style) */}}
-    <ol class="carousel-indicators" style="bottom: -20px; opacity: 0.7; z-index: 10; position: absolute;">
+  <div id="{{ $carouselID }}" class="carousel slide" style="margin-bottom: 20px; position: relative;">
+    {{/* Indicators (Bootstrap 3 style) - positioned to overlay bottom of images */}}
+    <ol class="carousel-indicators" style="bottom: 15px; opacity: 1; z-index: 15; position: absolute; left: 0; right: 0; margin: 0 auto; padding: 0; list-style: none; display: flex; justify-content: center; gap: 4px; width: fit-content;">
       {{ range $index, $image := $images }}
-      <li data-slide-to="{{ $index }}" {{ if eq $index 0 }}class="active"{{ end }}></li>
+      <li data-slide-to="{{ $index }}" {{ if eq $index 0 }}class="active"{{ end }} style="width: 20px; height: 6px; border-radius: 3px; background-color: {{ if eq $index 0 }}rgba(255,255,255,0.5){{ else }}rgba(255,255,255,0.2){{ end }}; border: none; outline: none; cursor: pointer; transition: background-color 0.2s ease;"></li>
       {{ end }}
     </ol>
     
     {{/* Carousel inner content */}}
-    <div class="carousel-inner" role="listbox" style="position: relative; overflow: hidden; height: {{ $height }};">
+    <div class="carousel-inner" role="listbox" style="position: relative; overflow: hidden; height: {{ $height }}; border-radius: 4px;">
       {{ range $index, $image := $images }}
       <div class="item {{ if eq $index 0 }}active{{ end }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block !important; z-index: {{ if eq $index 0 }}2{{ else }}1{{ end }};">
         <img src="{{ $image.RelPermalink }}" alt="Carousel Image {{ add $index 1 }}" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 500ms ease-in-out; opacity: {{ if eq $index 0 }}1{{ else }}0{{ end }};">
@@ -76,13 +76,13 @@ EXAMPLES:
       {{ end }}
     </div>
     
-    {{/* Controls (Bootstrap 3 style) */}}
-    <a class="left carousel-control" href="javascript:void(0)" role="button" style="background: transparent; color: white; text-decoration: none; z-index: 10; position: absolute;">
-      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    {{/* Controls - Simple white arrows with flexible click area */}}
+    <a class="left carousel-control" href="javascript:void(0)" role="button" style="background: none !important; color: rgba(255,255,255,0.5) !important; text-decoration: none !important; z-index: 20; position: absolute; left: 0px; top: 0; bottom: 0; width: 33%; font-size: 40px; font-weight: 300; transition: color 0.3s ease; text-align: left; display: flex; align-items: center; justify-content: flex-start; padding-left: 15px; background-image: none !important; text-shadow: none !important; filter: none !important; opacity: 1 !important;" onmouseover="this.style.setProperty('color', 'rgba(255,255,255,1.0)', 'important')" onmouseout="this.style.setProperty('color', 'rgba(255,255,255,0.5)', 'important')">
+      &#8249;
       <span class="sr-only">Previous</span>
     </a>
-    <a class="right carousel-control" href="javascript:void(0)" role="button" style="background: transparent; color: white; text-decoration: none; z-index: 10; position: absolute;">
-      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <a class="right carousel-control" href="javascript:void(0)" role="button" style="background: none !important; color: rgba(255,255,255,0.5) !important; text-decoration: none !important; z-index: 20; position: absolute; right: 0px; top: 0; bottom: 0; width: 33%; font-size: 40px; font-weight: 300; transition: color 0.3s ease; text-align: right; display: flex; align-items: center; justify-content: flex-end; padding-right: 15px; background-image: none !important; text-shadow: none !important; filter: none !important; opacity: 1 !important;" onmouseover="this.style.setProperty('color', 'rgba(255,255,255,1.0)', 'important')" onmouseout="this.style.setProperty('color', 'rgba(255,255,255,0.5)', 'important')">
+      &#8250;
       <span class="sr-only">Next</span>
     </a>
   </div>
@@ -133,9 +133,11 @@ EXAMPLES:
       // Update indicators
       for (var i = 0; i < indicators.length; i++) {
         indicators[i].classList.remove('active');
+        indicators[i].style.backgroundColor = 'rgba(255,255,255,0.5)';
       }
       if (indicators[index]) {
         indicators[index].classList.add('active');
+        indicators[index].style.backgroundColor = 'rgba(255,255,255,1)';
       }
       
       currentSlide = index;
