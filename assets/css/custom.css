@@ -27,24 +27,15 @@
   /* Ensure container uses full width on smaller screens */
   .container {
     width: 100% !important;
-    max-width: none !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    max-width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
   }
 }
 
 /* Override system color scheme preferences to always use dark theme */
 :root {
   color-scheme: dark !important;
-}
-
-/* Prevent horizontal overflow from viewport calculations, but allow breakout tables */
-html {
-  overflow-x: auto; /* Allow horizontal scroll when needed for breakout tables */
-}
-
-body {
-  overflow-x: auto; /* Allow horizontal scroll when needed for breakout tables */
 }
 
 html {
@@ -201,7 +192,7 @@ table tbody tr:last-child {
   .table-responsive {
     /* Default: stay within content area */
     position: relative;
-    width: 100%;
+    width: 190%;
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
@@ -214,16 +205,11 @@ table tbody tr:last-child {
   /* Break out only for wide tables (5+ columns) */
   .table-responsive.wide-table {
     position: relative;
-    width: 100vw;
+    width: 90vw;
     left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    /* Constrain to 90vw for better visual balance and prevent overflow */
-    max-width: 90vw;
     margin-left: -45vw;
     margin-right: -45vw;
-    width: 90vw;
+    max-width: 90vw;
   }
   
   .table-responsive table {
@@ -284,21 +270,21 @@ table tbody tr:last-child {
 }
 
 @media (max-width: 768px) {
-  /* Method 1: Horizontal scroll with minimum width */
-  table {
+  /* Method 1: Horizontal scroll with minimum width - only apply to tables inside table-responsive containers */
+  .table-responsive table {
     min-width: 600px !important;
     font-size: 0.85em !important;
   }
   
-  table th,
-  table td {
+  .table-responsive table th,
+  .table-responsive table td {
     padding: 8px 12px !important;
     font-size: 0.9em !important;
     white-space: nowrap;
   }
   
   /* Improve readability on small screens */
-  table th {
+  .table-responsive table th {
     font-size: 0.8em !important;
     padding: 6px 10px !important;
   }
@@ -306,14 +292,14 @@ table tbody tr:last-child {
 
 /* Mobile responsive styling (480px and below) */
 @media (max-width: 480px) {
-  /* Use horizontal scroll for all tables on mobile */
-  table {
+  /* Use horizontal scroll for tables inside table-responsive containers on mobile */
+  .table-responsive table {
     min-width: 500px !important;
     font-size: 0.8em !important;
   }
   
-  table th,
-  table td {
+  .table-responsive table th,
+  .table-responsive table td {
     padding: 6px 8px !important;
     font-size: 0.85em !important;
     white-space: nowrap;
