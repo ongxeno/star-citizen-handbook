@@ -176,12 +176,20 @@ table tbody tr:last-child {
 
 /* Responsive table solutions for mobile */
 /* Solution: JavaScript-enhanced table breakout that works in Facebook's WebView */
+/* Enhanced based on research: https://blog.tomayac.com/2019/12/09/inspecting-facebooks-webview/ */
 
 /* CSS Custom Properties for viewport-based calculations */
 :root {
   --viewport-width: 100vw; /* Fallback - will be updated by JavaScript */
   --breakout-width: 90vw; /* Fallback - will be updated by JavaScript */
   --breakout-offset: -45vw; /* Fallback - will be updated by JavaScript */
+}
+
+/* WebView-specific optimizations based on detected environment */
+html[data-viewport-method*="webview"] {
+  /* More conservative breakout for WebView environments */
+  --breakout-width: 85vw;
+  --breakout-offset: -42.5vw;
 }
 
 .table-responsive {
@@ -192,6 +200,10 @@ table tbody tr:last-child {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin: 1.5em 0;
+  
+  /* Enhanced WebView compatibility */
+  transform: translateZ(0); /* Force hardware acceleration - helps WebViews */
+  will-change: transform; /* Hint for optimization */
 }
 
 .table-responsive table {
@@ -224,6 +236,10 @@ table tbody tr:last-child {
     margin-left: var(--breakout-offset);
     margin-right: var(--breakout-offset);
     max-width: var(--breakout-width);
+    
+    /* WebView-specific enhancements */
+    transform: translateX(0); /* Explicit transform for WebView compatibility */
+    backface-visibility: hidden; /* Prevent rendering glitches in WebViews */
   }
   
   .table-responsive table {
@@ -249,7 +265,7 @@ table tbody tr:last-child {
   }
 }
 
-/* Fallback for environments where JavaScript fails or is disabled */
+/* Enhanced fallback system for environments where JavaScript fails or is disabled */
 @supports not (width: var(--breakout-width)) {
   @media (min-width: 992px) {
     .table-responsive.wide-table {
@@ -264,6 +280,23 @@ table tbody tr:last-child {
   }
 }
 
+/* Additional fallback for very limited WebView environments */
+@supports not (position: relative) {
+  .table-responsive.wide-table {
+    /* Emergency fallback - just use horizontal scroll */
+    width: 100% !important;
+    left: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* WebView-specific adjustments for tables marked as WebView environment */
+.table-responsive[data-environment="webview"].wide-table {
+  /* Slightly more conservative breakout for WebViews */
+  transform: translateX(0) translateZ(0); /* Enhanced hardware acceleration */
+}
+
 /* Tablet responsive styling (768px and below) */
 @media (max-width: 991px) {
   /* Reset breakout behavior on tablet and mobile */
@@ -276,6 +309,7 @@ table tbody tr:last-child {
     width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    transform: none !important; /* Reset transforms on mobile */
   }
 }
 
