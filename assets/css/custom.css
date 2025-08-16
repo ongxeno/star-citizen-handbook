@@ -175,41 +175,55 @@ table tbody tr:last-child {
 }
 
 /* Responsive table solutions for mobile */
-/* Solution 1: Breakout tables - wider than content container */
+/* Solution: JavaScript-enhanced table breakout that works in Facebook's WebView */
+
+/* CSS Custom Properties for viewport-based calculations */
+:root {
+  --viewport-width: 100vw; /* Fallback - will be updated by JavaScript */
+  --breakout-width: 90vw; /* Fallback - will be updated by JavaScript */
+  --breakout-offset: -45vw; /* Fallback - will be updated by JavaScript */
+}
+
 .table-responsive {
-  /* Break out of parent container on desktop */
   position: relative;
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin: 1.5em 0;
 }
 
-/* Desktop breakout behavior - only when table content is wide */
+.table-responsive table {
+  margin: 0;
+  border: none !important;
+  border-radius: 0 !important;
+  width: 100% !important;
+  min-width: 600px; /* Ensure minimum width for proper table display */
+}
+
+/* Desktop breakout behavior - enhanced for WebView compatibility */
 @media (min-width: 992px) {
   .table-responsive {
     /* Default: stay within content area */
     position: relative;
-    width: 190%;
+    width: 100%;
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
     margin-top: 1.5em;
     margin-bottom: 1.5em;
   }
   
-  /* Break out only for wide tables (5+ columns) */
+  /* Break out only for wide tables (5+ columns) - JavaScript will add this class */
   .table-responsive.wide-table {
     position: relative;
-    width: 90vw;
+    /* Use CSS custom properties set by JavaScript instead of direct vw units */
+    width: var(--breakout-width);
     left: 50%;
-    margin-left: -45vw;
-    margin-right: -45vw;
-    max-width: 90vw;
+    margin-left: var(--breakout-offset);
+    margin-right: var(--breakout-offset);
+    max-width: var(--breakout-width);
   }
   
   .table-responsive table {
@@ -221,21 +235,6 @@ table tbody tr:last-child {
   .table-responsive.wide-table table {
     width: 100% !important;
     min-width: 100% !important;
-  }
-}
-
-.table-responsive table {
-  margin: 0;
-  border: none !important;
-  border-radius: 0 !important;
-  width: 100% !important;
-  min-width: 600px; /* Ensure minimum width for proper table display */
-}
-
-/* Desktop: wider tables for better data presentation */
-@media (min-width: 992px) {
-  .table-responsive table {
-    min-width: 100% !important; /* Use full container width on desktop */
   }
   
   /* Add breathing room to edge columns only for wide breakout tables */
@@ -250,9 +249,20 @@ table tbody tr:last-child {
   }
 }
 
-/* Scroll indicator removed - users are smart enough to figure out scrolling */
-
-/* All tables use horizontal scroll on smaller screens */
+/* Fallback for environments where JavaScript fails or is disabled */
+@supports not (width: var(--breakout-width)) {
+  @media (min-width: 992px) {
+    .table-responsive.wide-table {
+      /* Fallback to fixed percentage instead of viewport units */
+      position: relative;
+      width: 120%;
+      left: 50%;
+      margin-left: -60%;
+      margin-right: -60%;
+      max-width: 120%;
+    }
+  }
+}
 
 /* Tablet responsive styling (768px and below) */
 @media (max-width: 991px) {
