@@ -80,6 +80,103 @@ body {
   }
 }
 
+/* Modern minimal table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.95em;
+  background: transparent !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+table thead tr {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: none !important;
+}
+
+table th {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 12px 16px !important;
+  text-align: left !important;
+  font-weight: 600 !important;
+  font-size: 0.9em !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: rgba(255, 255, 255, 1.0) !important;
+}
+
+table tr {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: background-color 0.2s ease !important;
+}
+
+table tr:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+table tr:nth-child(2n) {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+table tr:nth-child(2n):hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+table td {
+  background: transparent !important;
+  border: none !important;
+  padding: 10px 16px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  vertical-align: middle !important;
+}
+
+table tbody tr:last-child {
+  border-bottom: none !important;
+}
+
+/* Clean table for light backgrounds */
+@media (prefers-color-scheme: light) {
+  table {
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  table thead tr {
+    background: rgba(0, 0, 0, 0.08) !important;
+  }
+  
+  table th {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
+    color: rgba(0, 0, 0, 0.9) !important;
+  }
+  
+  table tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+  }
+  
+  table tr:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  table tr:nth-child(2n) {
+    background: rgba(0, 0, 0, 0.03) !important;
+  }
+  
+  table tr:nth-child(2n):hover {
+    background: rgba(0, 0, 0, 0.08) !important;
+  }
+  
+  table td {
+    color: rgba(0, 0, 0, 0.9) !important;
+  }
+}
+
 /* Image styling - curved corners for all images */
 img {
   border-radius: 20px;
