@@ -384,39 +384,58 @@ html[data-viewport-method*="webview"] {
   }
 }
 
-/* Clean table for light backgrounds */
+/* Force consistent table styling regardless of browser color scheme detection */
+/* This ensures tables are always readable on our dark background */
+table {
+  /* Override any browser-specific color scheme detection */
+  color-scheme: dark !important;
+}
+
+table th {
+  /* Force light text for headers regardless of detected color scheme */
+  color: rgba(255, 255, 255, 1.0) !important;
+}
+
+table td {
+  /* Force light text for cells regardless of detected color scheme */
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Backup: Clean table styling that works with light mode detection but dark background */
 @media (prefers-color-scheme: light) {
   table {
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* Force light text even when browser thinks it's light mode */
+    color: rgba(255, 255, 255, 0.95) !important;
   }
   
   table thead tr {
-    background: rgba(0, 0, 0, 0.08) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
   }
   
   table th {
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
-    color: rgba(0, 0, 0, 0.9) !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 1.0) !important;
   }
   
   table tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
   }
   
   table tr:hover {
-    background: rgba(0, 0, 0, 0.05) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
   }
   
   table tr:nth-child(2n) {
-    background: rgba(0, 0, 0, 0.03) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
   }
   
   table tr:nth-child(2n):hover {
-    background: rgba(0, 0, 0, 0.08) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
   }
   
   table td {
-    color: rgba(0, 0, 0, 0.9) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
   }
 }
 
