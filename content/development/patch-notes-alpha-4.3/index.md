@@ -1,5 +1,5 @@
 ---
-title: "Star Citizen Alpha 4.3: Onyx Facilities, Flight Rework & More"
+title: "Star Citizen Alpha 4.3: อัปเดตใหญ่ Onyx Facilities & ยกเครื่องยาน Light Fighter!"
 subtitle: "เจาะลึกทุกรายละเอียดใน Alpha 4.3: ภารกิจใหม่ Onyx Facilities, การปรับปรุง Light Fighter, อาวุธใหม่ และการแก้ไขบั๊กมากมาย"
 date: "2025-08-17"
 lastmod: "2025-08-17"
