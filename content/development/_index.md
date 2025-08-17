@@ -18,6 +18,7 @@ lastmod: 2025-08-10
 
 ### 📝 Patch Notes
 * [Star Citizen Alpha 4.3 Patch Notes](patch-notes-alpha-4.3/) - มีอะไรใหม่ใน Alpha 4.3
+* [Star Citizen Alpha 4.3 Patch Changes](patch-changes-alpha-4.3/) - สรุปการเปลี่ยนแปลง Alpha 4.3
 * สรุปการเปลี่ยนแปลงและรายละเอียด Patch ล่าสุด
 
 ### 🗞️ News & Announcements
