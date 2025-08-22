@@ -44,21 +44,32 @@ description: "บทความเปรียบเทียบยาน Mediu
 
 | <center>Ship</center> | <center>Hull HP</center> | <center>Shield</center> | <center>Main Weapons</center> | <center>Stock DPS</center> | <center>Missiles</center> | <center>Nav Speed (m/s)</center> | <center>SCM Speed (Boost)</center> | <center>Pitch/Yaw/Roll (Boosted)</center> | <center>Price (aUEC)</center> |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| F7C Hornet Mk I | 15,550 | 2x S1 | 2x S3 (Wing Only) | <span style="color: #FF6B6B; font-weight: bold;">582</span> | 4x S2, 4x S1 | 1,150 | 220<br>(480) | 55/44/149<br>(66/52.8/178.8) | 2,910,600 |
-| F7C Hornet Mk II | 16,050 | 2x S1 | 2x S4 Ballistic | <span style="color: #4ECDC4; font-weight: bold;">1,688</span> | 8x S1 | 1,150 | 220<br>(480) | 52/43/148<br>(62.4/51.6/177.6) | 4,895,100 |
-| Hornet Tracker Mk I | 15,550 | 2x S1 | 2x S3 (Wing Only) | <span style="color: #FF6B6B; font-weight: bold;">582</span> | 4x S2, 4x S1 | 1,142 | 219<br>(477) | 56/45/150<br>(67.2/54/180) | 3,210,480 |
-| Hornet Tracker Mk II | 12,751 | 2x S1 | 2x S4 Ballistic, 1x S3 | <span style="color: #4ECDC4; font-weight: bold;">1,688</span> | 8x S1 | 1,150 | 220<br>(480) | 52/43/148<br>(62.4/51.6/177.6) | N/A |
-| Super Hornet Mk I | 15,450 | 2x S1 | 2x S1 Nose, 2x S3 Ballistic Wing, 2x S2 Ball Turret | <span style="color: #4ECDC4; font-weight: bold;">1,201</span> | 8x S1 | 1,142 | 219<br>(477) | 53/42/145<br>(63.6/50.4/174) | 4,762,800 |
-| Super Hornet Mk II | 15,250 | 3x S1 | 2x S3 Nose, 2x S4 Ballistic Wing, 2x S3 Ball Turret | <span style="color: #FFD93D; font-weight: bold;">2,825</span> | 8x S2 | 1,125 | 215<br>(465) | 50/40/140<br>(60/48/168) | N/A |
-| Hornet Heartseeker Mk I | 15,450 | 2x S1 | 2x S1 Nose, 2x S3 Ballistic Wing, 1x S4 Ball Turret | <span style="color: #4ECDC4; font-weight: bold;">1,490</span> | 4x S2 | 1,142 | 219<br>(477) | 53/42/145<br>(63.6/50.4/174) | N/A |
-| Hornet Heartseeker Mk II | 15,250 | 3x S1 | 2x S3 Nose, 2x S4 Ballistic Wing, Empty Ball Turret | <span style="color: #FFD93D; font-weight: bold;">3,404</span> | 8x S2 | 1,125 | 215<br>(465) | 50/40/140<br>(60/48/168) | N/A |
-| Hornet Ghost Mk II | 12,551 | 2x S1 | Empty Nose, 2x S4 Ballistic Wing | <span style="color: #4ECDC4; font-weight: bold;">1,688</span> | 8x S1 | 1,150 | 220<br>(480) | 51/42/147<br>(61.2/50.4/176.4) | 5,384,600 |
-| San'tok.yāi | 11,476 | 1x S2 | 4x S3 Gimbaled | <span style="color: #FF6B6B; font-weight: bold;">870</span> | Empty Missile Hardpoints | 1,161 | 227<br>(493) | 58/58/160<br>(69.6/69.6/192) | 9,355,500 |
-| Cutlass Black | 29,760 | 1x S2 | 4x S3 Gimbaled, Empty Manned Turret | <span style="color: #4ECDC4; font-weight: bold;">1,206</span> | Empty Missile Hardpoints | 1,150 | 217<br>(465) | 39/35/110<br>(46.8/42/132) | 2,116,800 |
-| Cutlass Blue | 35,770 | 1x S2 | 2x S3 Ballistic Body, 2x S3 Distortion Wing, Empty Manned Turret | <span style="color: #4ECDC4; font-weight: bold;">1,140</span> | 24x S2 | 1,165 | 220<br>(467) | 38/34/110<br>(45.6/40.8/132) | 3,704,400 |
-| Glaive | <span style="color: #FF6B6B; font-weight: bold;">10,962</span> | 2x S1 | 2x S1, 2x S5 Plasma | <span style="color: #4ECDC4; font-weight: bold;">1,670</span> | 8x S2 | <span style="color: #FF6B6B; font-weight: bold;">1,150</span> | 218<br>(<span style="color: #FF6B6B; font-weight: bold;">480</span>) | <span style="color: #4ECDC4; font-weight: bold;">60/43/155</span><br>(<span style="color: #4ECDC4; font-weight: bold;">72/51.6/186</span>) | <span style="color: #FF6B6B; font-weight: bold;">N/A</span> |
-| Meteor | <span style="color: #4ECDC4; font-weight: bold;">30,150</span> | 2x S1 | 4x S3, 2x S5 Ballistic | <span style="color: #FFD93D; font-weight: bold;">3,351</span> | 8x S2 | <span style="color: #4ECDC4; font-weight: bold;">1,405</span> | <span style="color: #4ECDC4; font-weight: bold;">229</span><br>(<span style="color: #4ECDC4; font-weight: bold;">570</span>) | <span style="color: #FF6B6B; font-weight: bold;">46/38/155</span><br>(<span style="color: #FF6B6B; font-weight: bold;">55.2/45.6/186</span>) | <span style="color: #FF6B6B; font-weight: bold;">N/A</span> |
-| Scythe | <span style="color: #FF6B6B; font-weight: bold;">11,701</span> | 2x S1 | 2x S1, 1x S5 Neutron, 1x S5 Plasma | <span style="color: #4ECDC4; font-weight: bold;">1,012</span> | 8x S1 | <span style="color: #FF6B6B; font-weight: bold;">1,150</span> | 222<br>(<span style="color: #FF6B6B; font-weight: bold;">480</span>) | <span style="color: #4ECDC4; font-weight: bold;">56/52/147</span><br>(<span style="color: #4ECDC4; font-weight: bold;">67.2/62.4/176.4</span>) | <span style="color: #FF6B6B; font-weight: bold;">N/A</span> |
+| F7C Hornet Mk II | 16,050 | 2x S1 | 2x S4 | 1,688 | 8x S1 | 1,150 | 220<br>(480) | 52/43/148<br>(62.4/51.6/177.6) | 4,895,100 |
+| Hornet Tracker Mk II | 12,751 | 2x S1 | 2x S4 | 1,688 | 8x S1 | 1,150 | 220<br>(480) | 52/43/148<br>(62.4/51.6/177.6) | N/A |
+| Super Hornet Mk II | 15,250 | 3x S1 | 4x S3<br>2x S4 | 2,825 | 8x S2 | <span style="color:#FF6B6B">1,125</span> | <span style="color:#FF6B6B">215</span><br>(<span style="color:#FF6B6B">465</span>) | 50/40/<span style="color:#FF6B6B">140</span><br>(60/48/<span style="color:#FF6B6B">168</span>) | N/A |
+| Hornet Heartseeker Mk II | 15,250 | 3x S1 | 2x S3<br>4x S4 | <span style="color:#4ECDC4">3,404</span> | 8x S2 | <span style="color:#FF6B6B">1,125</span> | <span style="color:#FF6B6B">215</span><br>(<span style="color:#FF6B6B">465</span>) | 50/40/<span style="color:#FF6B6B">140</span><br>(60/48/<span style="color:#FF6B6B">168</span>) | N/A |
+| Hornet Ghost Mk II | 12,551 | 2x S1 | 2x S4 | 1,688 | 8x S1 | 1,150 | 220<br>(480) | 51/42/147<br>(61.2/50.4/176.4) | 5,384,600 |
+| San'tok.yāi | <span style="color:#FF6B6B">11,476</span> | 1x S2 | 4x S3 | <span style="color:#FF6B6B">870</span> | 8x S2 | 1,161 | 227<br>(493) | 58/<span style="color:#4ECDC4">58</span>/<span style="color:#4ECDC4">160</span><br>(69.6/<span style="color:#4ECDC4">69.6</span>/<span style="color:#4ECDC4">192</span>) | 9,355,500 |
+| Glaive | <span style="color:#FF6B6B">10,962</span> | 2x S1 | 2x S1<br>2x S5 | 1,670 | 8x S2 | 1,150 | 218<br>(480) | <span style="color:#4ECDC4">60</span>/43/155<br>(<span style="color:#4ECDC4">72</span>/51.6/186) | N/A |
+| Meteor | <span style="color:#4ECDC4">30,150</span> | 2x S1 | 4x S3<br>2x S5 | <span style="color:#4ECDC4">3,351</span> | 8x S2 | <span style="color:#4ECDC4">1,405</span> | <span style="color:#4ECDC4">229</span><br>(<span style="color:#4ECDC4">570</span>) | <span style="color:#FF6B6B">46</span>/<span style="color:#FF6B6B">38</span>/155<br>(<span style="color:#FF6B6B">55.2</span>/<span style="color:#FF6B6B">45.6</span>/186) | N/A |
+| Scythe | <span style="color:#FF6B6B">11,701</span> | 2x S1 | 2x S1<br>2x S5 | 1,012 | 8x S1 | 1,150 | 222<br>(480) | 56/52/147<br>(67.2/62.4/176.4) | N/A |
+
+**Anvil Hornet Mk I Series** เป็นยานตกรุ่น ความสามารถส่วนใหญ่จะด้อยกว่า Mk II และ Mk II มักจะถูกพูดถึงและแนะนำมากกว่า จึงขอแยกตาราง Mk I ออกมา
+
+| <center>Ship</center> | <center>Hull HP</center> | <center>Shield</center> | <center>Main Weapons</center> | <center>Stock DPS</center> | <center>Missiles</center> | <center>Nav Speed (m/s)</center> | <center>SCM Speed (Boost)</center> | <center>Pitch/Yaw/Roll (Boosted)</center> | <center>Price (aUEC)</center> |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| F7C Hornet Mk I | <span style="color:#4ECDC4">15,550</span> | 2x S1 | 2x S3 | <span style="color:#FF6B6B">582</span> | 4x S2<br>4x S1 | <span style="color:#4ECDC4">1,150</span> | <span style="color:#4ECDC4">220</span><br>(<span style="color:#4ECDC4">480</span>) | 55/44/149<br>(66/52.8/178.8) | 2,910,600 |
+| Hornet Tracker Mk I | <span style="color:#4ECDC4">15,550</span> | 2x S1 | 2x S3 | <span style="color:#FF6B6B">582</span> | 4x S2<br>4x S1 | <span style="color:#FF6B6B">1,142</span> | <span style="color:#FF6B6B">219</span><br>(<span style="color:#FF6B6B">477</span>) | <span style="color:#4ECDC4">56</span>/<span style="color:#4ECDC4">45</span>/<span style="color:#4ECDC4">150</span><br>(<span style="color:#4ECDC4">67.2</span>/<span style="color:#4ECDC4">54</span>/<span style="color:#4ECDC4">180</span>) | 3,210,480 |
+| Super Hornet Mk I | 15,450 | 2x S1 | 2x S1<br>2x S2<br>2x S3 | 1,201 | 8x S1 | <span style="color:#FF6B6B">1,142</span> | <span style="color:#FF6B6B">219</span><br>(<span style="color:#FF6B6B">477</span>) | <span style="color:#FF6B6B">53</span>/<span style="color:#FF6B6B">42</span>/<span style="color:#FF6B6B">145</span><br>(<span style="color:#FF6B6B">63.6</span>/<span style="color:#FF6B6B">50.4</span>/<span style="color:#FF6B6B">174</span>) | 4,762,800 |
+| Hornet Heartseeker Mk I | 15,450 | 2x S1 | 2x S1<br>2x S3<br>1x S4 | <span style="color:#4ECDC4">1,490</span> | 4x S2 | <span style="color:#FF6B6B">1,142</span> | <span style="color:#FF6B6B">219</span><br>(<span style="color:#FF6B6B">477</span>) | <span style="color:#FF6B6B">53</span>/<span style="color:#FF6B6B">42</span>/<span style="color:#FF6B6B">145</span><br>(<span style="color:#FF6B6B">63.6</span>/<span style="color:#FF6B6B">50.4</span>/<span style="color:#FF6B6B">174</span>) | N/A |
+| Hornet Ghost Mk I | <span style="color:#FF6B6B">15,350</span> | 2x S1 | 2x S3 | <span style="color:#FF6B6B">582</span> | 4x S2<br>4x S1 | <span style="color:#FF6B6B">1,142</span> | <span style="color:#FF6B6B">219</span><br>(<span style="color:#FF6B6B">477</span>) | 55/44/149<br>(66/52.8/178.8) | 3,307,500 |
+
+**Cutlass Series** เป็น Multi-Role (Medium Fighter + Medium Freight) แต่ด้วยค่าความที่ความสามารถต่างๆ ออกไปทางยานขนาด Medium ซะมากกว่า เลยขอแยกออกมาเป็นอีกตาราง 
+
+| <center>Ship</center> | <center>Hull HP</center> | <center>Shield</center> | <center>Main Weapons</center> | <center>Stock DPS</center> | <center>Missiles</center> | <center>Nav Speed (m/s)</center> | <center>SCM Speed (Boost)</center> | <center>Pitch/Yaw/Roll (Boosted)</center> | <center>Price (aUEC)</center> |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Cutlass Black | <span style="color:#FF6B6B">29,760</span> | 1x S2 | 4x S3<br>2x S3 Turret | <span style="color:#4ECDC4">1,206</span> | 8x S2<br>8x S3 | <span style="color:#FF6B6B">1,150</span> | <span style="color:#FF6B6B">217</span><br>(<span style="color:#FF6B6B">465</span>) | <span style="color:#4ECDC4">39</span>/<span style="color:#4ECDC4">35</span>/110<br>(<span style="color:#4ECDC4">46.8</span>/<span style="color:#4ECDC4">42</span>/132) | 2,116,800 |
+| Cutlass Blue | <span style="color:#4ECDC4">35,770</span> | 1x S2 | 4x S3<br>2x S3 Turret | <span style="color:#FF6B6B">1,140</span> | 24x S2 | <span style="color:#4ECDC4">1,165</span> | <span style="color:#4ECDC4">220</span><br>(<span style="color:#4ECDC4">467</span>) | <span style="color:#FF6B6B">38</span>/<span style="color:#FF6B6B">34</span>/110<br>(<span style="color:#FF6B6B">45.6</span>/<span style="color:#FF6B6B">40.8</span>/132) | 3,704,400 |
 
 ---
 
@@ -66,107 +77,92 @@ description: "บทความเปรียบเทียบยาน Mediu
 
 นี่คือการวิเคราะห์ยานแต่ละลำโดยอิงจากข้อมูลในตารางสถิติ เพื่อให้เห็นภาพรวมจุดแข็งและจุดอ่อนของยานแต่ละลำในสนามรบ
 
-### **ตระกูล Anvil Hornet Series**
+### **กลุ่ม Modern Fighters: The New Generation**
 
-![alt text](img/hornet-family.webp)
+ยานในกลุ่มนี้คือมาตรฐานใหม่ของ Medium Fighter ในยุคปัจจุบัน มีประสิทธิภาพสูงกว่ายานรุ่นเก่าอย่างชัดเจนในทุกๆ ด้าน
 
-ตระกูล Hornet คือความมั่นคงและความน่าเชื่อถือของ UEE Navy โดยแบ่งออกเป็นหลายรุ่นตามการใช้งาน:
+#### **ตระกูล Anvil Hornet Mk II: The Modern Standard**
 
-#### **F7C Hornet Mk I & F7C Hornet Mk II**
-ยานรุ่นพื้นฐานที่สมดุลทุกด้าน มี HP ปานกลาง (15,520) พร้อมเกราะ 3x S1 และอาวุธที่หลากหลาย (2x S3, 1x S4) ให้ DPS ที่เหมาะสม (1,092) เป็นตัวเลือกที่ดีสำหรับนักบินที่ต้องการความสมดุล
+ตระกูล Hornet Mk II คือการยกระดับของยานรบระดับตำนานที่ได้รับการปรับปรุงใหม่ทั้งหมดเพื่อสนามรบยุคใหม่ มีพลังทำลายล้าง, ความทนทาน และเทคโนโลยีที่เหนือกว่ารุ่น Mk I อย่างชัดเจน ทำให้เป็นตัวเลือกอันดับต้นๆ สำหรับนักบินที่ต้องการประสิทธิภาพสูงสุด
+- **F7C Hornet Mk II**: **รุ่นมาตรฐานที่สมดุลที่สุด** มี Hull HP (16,050) และ DPS (1,688) ที่ดีในระดับเริ่มต้นของ Mk II ทำให้เป็นยานที่เหมาะสำหรับนักบินที่ต้องการความยืดหยุ่นและประสิทธิภาพที่เชื่อถือได้ในทุกสถานการณ์
+- **Super Hornet Mk II**: **Brawler ที่แท้จริง** โดดเด่นด้วย DPS ที่สูงถึง 2,825 และเป็นยานที่นั่งคู่ (Two-Seater) ทำให้มีป้อมปืน (Turret) สำหรับพลปืนคนที่สอง เพิ่มพลังการยิงและครอบคลุมพื้นที่ได้ 360 องศา แม้จะแลกมาด้วยความคล่องตัวที่ลดลง แต่ก็เหมาะอย่างยิ่งสำหรับการต่อสู้แบบทีม
+- **Heartseeker Mk II**: **นักล่าที่อันตรายที่สุดในกลุ่ม Modern Fighter** โดยพื้นฐานแล้วคือ Super Hornet Mk II ที่ติดตั้งชุดอัปเกรดพิเศษ มาพร้อมกับปืน Ballistic Gatling คู่บนป้อมปืน (Turret) และสกินที่เป็นเอกลักษณ์ ทำให้มี **DPS สูงที่สุดในกลุ่มถึง 3,404** เหมาะสำหรับนักบินที่ต้องการพลังทำลายล้างสูงสุดและไม่เกรงกลัวที่จะเข้าปะทะ
+- **Ghost Mk II**: **นักฆ่าในเงามืด** แม้จะมี Hull HP ที่ต่ำที่สุดในบรรดา Mk II (12,551) แต่ก็ชดเชยด้วยอุปกรณ์ Stealth ที่ดีที่สุด ทำให้ตรวจจับได้ยาก เหมาะสำหรับภารกิจลอบโจมตี, สอดแนม, หรือการโจมตีแบบฉาบฉวยที่ศัตรูไม่ทันตั้งตัว
+- **Tracker Mk II**: **ผู้สอดแนมแห่งสมรภูมิ** มาพร้อมกับระบบสแกนและเรดาร์ขั้นสูงที่เหนือกว่ารุ่นอื่น ทำให้สามารถตรวจจับและติดตามเป้าหมายได้จากระยะไกล แม้จะมี Hull HP ที่เปราะบาง (12,751) แต่ก็เป็นตัวเลือกที่ยอดเยี่ยมสำหรับภารกิจลาดตระเวนและรวบรวมข้อมูลข่าวกรอง (ยังไม่มีในเกมตอนนี้)
 
-#### **F7C-M Super Hornet Mk I & II**
-รุ่นขยายความสามารถจาก Hornet พื้นฐาน มี Hull HP สูงสุดในตระกูล (16,756) และ DPS ที่ดีขึ้น (1,200) พร้อมมิสไซล์ S2 แทน S1 ทำให้มันเป็นยานที่แข็งแกร่งและทนทานกว่า
+#### **Aopoa San'tok.yāi: The Agile Alien Fighter**
 
-#### **F7C-R Hornet Tracker Mk I & II**
-รุ่นลาดตระเวนที่มี Hull HP สูงเท่า Super Hornet (16,756) และมิสไซล์มากที่สุดในตระกูล (12x S1) แต่เสียเรื่องความเร็วเล็กน้อย (SCM 215 vs 220) เหมาะสำหรับภารกิจสอดแนม
+San'tok.yāi คือยานรบจากเผ่า Xi'an ที่โดดเด่นด้วยเทคโนโลยีและความคล่องตัว แม้จะมีจุดอ่อนที่ **Hull HP ต่ำ (11,476)** และ **ขนาดตัวยานที่ใหญ่** ทำให้เป็นเป้าได้ง่าย แต่ก็เป็นยานเดียวในกลุ่ม Modern Fighter ที่มีโล่ S2 ทำให้ทนทานกว่าที่เห็น จุดเด่นที่สุดคือ **ความคล่องตัวที่สูงและสมดุล (Pitch/Yaw 58/58)** และ **SCM Speed ที่เร็ว (227 m/s)** ทำให้เป็นยานที่หลบหลีกและควบคุมได้ดีเยี่ยม เหมาะสำหรับนักบินที่ชอบสไตล์ Dogfight ที่เน้นทักษะ
 
-#### **F7C-M Hornet Heartseeker Mk I & II**
-รุ่นล่าสัตว์ที่โหดเหี้ยมที่สุดในตระกูล มีอาวุธ 4x S3 ให้ DPS สูง (1,200) และความเร็ว SCM ที่ดีที่สุดในตระกูล (220/480) เหมาะสำหรับการล่าเป้าหมายขนาดใหญ่
+#### **Vanduul Alien Ships: The Glass Cannons**
+- **Esperia Glaive**: เครื่องจักรสังหาร Vanduul ที่มี **Hull HP ต่ำที่สุดในกลุ่ม Modern Fighter (10,962)** แต่มี **DPS สูงถึง 1,670** และ **ความคล่องตัวในแกน Pitch ที่สูง (60/72)** ทำให้เป็นยานที่อันตรายอย่างยิ่งในมือของนักบินที่มีทักษะ
+- **Esperia Scythe**: ยาน Vanduul อีกลำที่มี **Hull HP ต่ำ (11,701)** และ DPS ที่ 1,012 แต่มีความโดดเด่นที่ **ความคล่องตัวในแกน Yaw ที่สูง (52/62.4)** ทำให้ควบคุมได้ดีในแนวระนาบ
 
-#### **F7C-S Hornet Ghost Mk II**
-รุ่น Stealth ที่เน้นการแอบซ่อน มีอาวุธที่แตกต่าง (2x S4, 1x S3 Gimbal) แต่เสียเรื่องเกราะที่น้อยกว่า (2x S1) และ Hull HP ที่ต่ำสุดในตระกูล (12,551) แต่ชดเชยด้วยอุปกรณ์ Stealth
+#### **RSI Meteor: The Flying Fortress**
 
-### **[Aopoa San'tok.yāi](https://robertsspaceindustries.com/pledge/ships/santok-yai/San-tok-yai)**
-![alt text](img/santokyai.webp)
-ยานรบ Xi'an ที่โดดเด่นด้วยเทคโนโลยีขั้นสูง มี DPS ที่น่าประทับใจ (1,344) จากปืน S3 สี่กระบอก และความคล่องตัวที่ยอดเยี่ยม (Pitch/Yaw 69.6°/s) ที่เท่ากันทั้งสองแกน นอกจากนี้ยังเป็นยานเดียวในคลาสที่มี Shield S2 เพียงตัวเดียวแต่แข็งแกร่ง แม้ Hull HP จะไม่สูงมาก (11,476) แต่ก็ชดเชยด้วยความสามารถในการหลบหลีกที่เป็นเลิศ
+Meteor คือ "ป้อมปราการบินได้" อย่างแท้จริง มี **Hull HP สูงที่สุดในกลุ่ม Modern Fighter (30,150)** และ **DPS สูงเป็นอันดับสองที่ 3,351** (รองจาก Heartseeker Mk II) นอกจากนี้ยังมี **ความเร็วที่สูงที่สุด (Nav 1,405 m/s, SCM 229/570)** แต่ต้องแลกมาด้วย **ความคล่องตัวที่ต่ำที่สุดในทุกแกน** ทำให้เป็นยานที่เหมาะสำหรับการโจมตีแบบซึ่งๆ หน้ามากกว่าการ Dogfight
 
-### **ตระกูล Drake Cutlass**
+---
+### **กลุ่ม Anvil Hornet Mk I: The Classic Fighters**
+ยาน Hornet รุ่นแรกทั้งหมด (F7C, Super, Tracker, Heartseeker, Ghost) คือมรดกที่ถูกส่งต่อมา แม้จะเคยเป็นยานที่โดดเด่นในอดีต แต่ในปัจจุบันมีประสิทธิภาพที่ด้อยกว่ารุ่น Mk II อย่างมาก โดยเฉพาะในด้านพลังทำลายล้าง (DPS) ที่ต่ำกว่าอย่างเห็นได้ชัด ทำให้ไม่เหมาะกับการใช้งานในสนามรบสมัยใหม่ แต่ยังคงเป็นตัวเลือกที่ยอดเยี่ยมสำหรับนักบินใหม่ที่มีงบจำกัด หรือนักสะสมที่ชื่นชอบดีไซน์คลาสสิก
+- **F7C Hornet Mk I**: รุ่นพื้นฐานที่มีความสมดุลในกลุ่ม Mk I มี **Hull HP สูง (15,550)** แต่ DPS ค่อนข้างต่ำ
+- **Super Hornet Mk I**: รุ่นที่เน้นพลังยิงมากขึ้นในตระกูล Mk I มี DPS ที่ 1,201 ซึ่งสูงกว่ารุ่นอื่นในกลุ่มเดียวกัน
+- **Heartseeker Mk I**: มี **DPS สูงที่สุดในตระกูล Mk I (1,490)** ทำให้เป็นตัวเลือกที่อันตรายที่สุดในกลุ่มนี้
+- **Ghost Mk I & Tracker Mk I**: รุ่นพิเศษสำหรับภารกิจลอบเร้นและสอดแนมตามลำดับ ยังคงคุณสมบัติเฉพาะทางไว้ แต่มีประสิทธิภาพโดยรวมที่ด้อยกว่ารุ่น Mk II
 
-![alt text](img/cutlass-family.webp)
+---
+### **กลุ่ม Cutlass Series: The Versatile Powerhouses**
 
-#### **[Drake Cutlass Black](https://robertsspaceindustries.com/pledge/ships/drake-cutlass/Cutlass-Black)**
-"กบเหล่า" ที่แข็งแกร่งที่สุดในคลาส มี Hull HP สูงมาก (29,760) และเป็นยานที่หลากหลายที่สุด มีพื้นที่ Cargo (46 SCU) และ Turret แบบ Manned สำหรับ Co-pilot นอกจากการต่อสู้แล้วยังสามารถทำงาน Multi-role ได้ แต่ความคล่องตัวต่ำที่สุดในคลาส (Pitch 46.8°/s)
-
-#### **[Drake Cutlass Blue](https://robertsspaceindustries.com/pledge/ships/drake-cutlass/Cutlass-Blue)**
-รุ่น Law Enforcement ที่แข็งแกร่งที่สุด มี Hull HP สูงสุดในคลาสทั้งหมด (35,770) และมิสไซล์มากที่สุด (24x S2) พร้อม Quantum Interdiction Device สำหรับจับกุมอาชญากร แต่มี DPS ต่ำกว่า Black เล็กน้อย (1,020) เพราะปืนครึ่งหนึ่งเป็น Distortion
-
-### **ตระกูล Vanduul Alien Ships**
-
-#### **[Esperia Glaive](https://robertsspaceindustries.com/pledge/ships/glaive/Glaive)**
-![alt text](img/glaive.webp)
-เครื่องจักรสังหาร Vanduul ที่มี DPS สูงเป็นอันดับสาม (2,040) จากปืน Plasma S5 สองกระบอก พร้อมความคล่องตัวที่ดี (Pitch 72°/s) แต่มี Hull HP ที่ต่ำ (10,962) และหาซื้อได้ยาก เหมาะสำหรับนักบินที่ต้องการพลังทำลายล้างสูงและไม่กลัวความเสี่ยง
-
-#### **[Esperia Scythe](https://robertsspaceindustries.com/pledge/ships/scythe/Scythe)**
-![alt text](img/scythe.webp)
-ยาน Vanduul อีกลำที่มี DPS สูงเป็นอันดับสอง (2,120) จากการผสมผสานปืน Neutron และ Plasma S5 พร้อมความคล่องตัวที่ยอดเยี่ยม (Pitch 67.2°/s, Yaw 62.4°/s) แต่เช่นเดียวกับ Glaive มี Hull HP ที่ต่ำ (11,701) และหาซื้อได้ยาก
-
-### **[RSI Meteor](https://robertsspaceindustries.com/pledge/ships/meteor/Meteor)**
-![alt text](img/meteor.webp)
-ยานรบหนักที่โหดเหี้ยมที่สุดในคลาส มี DPS สูงสุดในคลาสทั้งหมด (2,240) จากปืน Ballistic S5 สองกระบอกและปืน S3 สี่กระบอก นอกจากนี้ยังมี Hull HP ที่สูงมาก (30,150) และความเร็วที่น่าประทับใจ (Nav 1,405, SCM 229/570) ทำให้มันเป็น "ปืนใหญ่บินได้" ที่สมบูรณ์แบบ แต่ความคล่องตัวต่ำที่สุด (Pitch 55.2°/s)
+- **Cutlass Black**: "กบฏแห่งวงการ" ที่มาพร้อมความอเนกประสงค์ มี **Hull HP สูงถึง 29,760** และมิสไซล์ 8x S2 + 8x S3 ทำให้เป็นยานที่ทรงพลังและทนทาน แต่ต้องแลกมาด้วย **ความคล่องตัวที่ต่ำ**
+- **Cutlass Blue**: รุ่น Law Enforcement ที่มี **Hull HP สูงที่สุดในกลุ่ม (35,770)** และมิสไซล์มากถึง 24x S2 ทำให้เป็นป้อมปราการลอยฟ้าที่แท้จริง แต่ก็ยังคงมี **ความคล่องตัวที่ต่ำ** เช่นเดียวกับ Cutlass Black
 
 ---
 
 ## ภาพรวมและคำแนะนำ : Summary & Recommendations
 
-Medium Fighter ใน Alpha 4.3 มีความหลากหลายมากกว่า Light Fighter การเลือกยานที่ใช่ขึ้นอยู่กับสไตล์การเล่น งบประมาณ และภารกิจที่ต้องการ นี่คือการจัดกลุ่มตามความถนัด:
+Medium Fighter ใน Alpha 4.3 มีความหลากหลายสูง การเลือกยานที่ใช่ขึ้นอยู่กับสไตล์การเล่น งบประมาณ และภารกิจที่ต้องการ นี่คือการจัดกลุ่มตามความถนัดโดยอิงจากตารางใหม่
 
-### **สาย Balanced เน้นความสมดุล**
-![alt text](img/c1.png)
-สำหรับนักบินที่ต้องการยานที่ทำได้ทุกอย่างในระดับดี
-- **Anvil Hornet Series:** ครอบครัวที่สมบูรณ์แบบ เลือกรุ่นได้ตามงบประมาณและการใช้งาน
-- **Aopoa San'tok.yāi:** ความสมดุลแบบ Xi'an ที่มีเทคโนโลยีขั้นสูงและความคล่องตัวเป็นเลิศ
-- **Drake Cutlass Black:** Multi-role ที่แท้จริง สามารถต่อสู้, ขนส่ง, และทำงานหลากหลาย
+### **สาย Heavy Firepower พลังทำลายล้างสูงสุด**
 
-### **สาย Tank เน้นความทนทาน**
-![alt text](img/c2.png)
-ยานที่สร้างมาเพื่อรับความเสียหายและยืนหยัดในสนามรบ
-- **Drake Cutlass Blue:** Hull HP สูงสุดในคลาส (35,770) พร้อมมิสไซล์มากมาย
-- **Drake Cutlass Black:** ทนทานและหลากหลาย มี Hull HP สูงมาก (29,760)
-- **RSI Meteor:** Tank ที่มีปืนใหญ่ Hull HP สูง (30,150) พร้อมพลังทำลายล้างมหาศาล
+  - **Anvil Heartseeker Mk II:** DPS สูงที่สุดในกลุ่ม (3,404) เหมาะสำหรับนักบินที่ต้องการปิดเกมเร็ว
+  - **RSI Meteor:** DPS สูงเป็นอันดับสอง (3,351) และทนทานมาก แต่ความคล่องตัวต่ำ
+  - **Anvil Super Hornet Mk II:** DPS สูง (2,825) และมีพลปืนคนที่สองช่วยยิง
+### **สาย Agile Fighter Dogfight คล่องตัวสูง**
 
-### **สาย Heavy Firepower เน้นพลังทำลายล้าง**
-![alt text](img/c3.png)
-เมื่อต้องการ DPS สูงสุดเพื่อทำลายเป้าหมายใหญ่
-- **RSI Meteor:** DPS สูงสุดในคลาส (2,240) จากปืน Ballistic S5 คู่
-- **Esperia Scythe:** DPS สูงเป็นอันดับสอง (2,120) จากอาวุธ Vanduul ที่แปลกตา
-- **Esperia Glaive:** DPS สูงเป็นอันดับสาม (2,040) จากปืน Plasma S5 สองกระบอก
+  - **Aopoa San'tok.yāi:** ความคล่องตัวสมดุลและสูงที่สุด (Pitch/Yaw 69.6°/s) เหมาะกับการต่อสู้ที่เน้นทักษะ
+  - **Esperia Glaive:** Pitch rate สูง (72°/s) ทำให้เข้าโจมตีจากมุมสูงหรือต่ำได้ดีเยี่ยม
+  - **Esperia Scythe:** Yaw rate สูง (62.4°/s) ควบคุมในแนวระนาบได้ดี
+### **สาย Balanced สมดุลและยืดหยุ่น**
 
-### **สาย Agile Fighter เน้นความคล่องตัว**
-![alt text](img/c4.png)
-สำหรับนักบินที่ชอบการต่อสู้แบบ Dogfight ที่ต้องใช้ทักษะ
-- **Aopoa San'tok.yāi:** ความคล่องตัวที่สมดุลที่สุด (Pitch/Yaw 69.6°/s เท่ากัน)
-- **Esperia Glaive:** ความคล่องตัวสูง (Pitch 72°/s) พร้อมพลังทำลายล้าง
-- **Esperia Scythe:** Dogfighter ที่เป็นตำนาน (Pitch 67.2°/s, Yaw 62.4°/s)
+  - **Anvil F7C Hornet Mk II:** เป็นยานที่สมดุลที่สุดในกลุ่ม มีทุกอย่างในระดับที่ดี
+### **สาย Specialized ภารกิจเฉพาะทาง**
 
-### **สาย Multi-Role เน้นความหลากหลาย**
-![alt text](img/c5.png)
-ยานที่สามารถทำงานได้หลายอย่างนอกจากการต่อสู้
-- **Drake Cutlass Black:** สามารถขนส่ง, ต่อสู้, และทำภารกิจ Search & Rescue
-- **Drake Cutlass Blue:** Law Enforcement พร้อม Quantum Interdiction และ Holding Cells
-- **Anvil Hornet Tracker:** Reconnaissance และ Long-range Patrol
+  - **Anvil Ghost Mk II:** สำหรับภารกิจลอบเร้น (Stealth)
+  - **Anvil Tracker Mk II:** สำหรับการสอดแนมและลาดตระเวน (Recon)
 
-### **สาย Specialized เน้นภารกิจเฉพาะ**
-![alt text](img/c6.png)
-ยานที่ถูกออกแบบมาสำหรับงานเฉพาะทาง
-- **Anvil Hornet Ghost:** Stealth Operations พร้อมอุปกรณ์ลดการถูกตรวจจับ
-- **Anvil Hornet Heartseeker:** Ship Hunting พร้อม Shield Cracking Missiles
-- **Drake Cutlass Blue:** Bounty Hunting และ Law Enforcement
+### **กลุ่ม Anvil Hornet Mk I: The Classics**
+
+ยานกลุ่มนี้เป็นตัวเลือกที่ยอดเยี่ยมสำหรับนักบินใหม่ หรือผู้ที่ชื่นชอบดีไซน์คลาสสิกและมีงบประมาณจำกัด แม้ประสิทธิภาพโดยรวมจะด้อยกว่า Mk II แต่ก็ยังคงใช้งานได้ดีในสถานการณ์ส่วนใหญ่
+
+- **Anvil Heartseeker Mk I:** มี DPS สูงที่สุดในกลุ่ม Mk I (1,490)
+- **Anvil Super Hornet Mk I:** เป็นรุ่นที่มี DPS รองลงมา (1,201) และเป็น Two-Seater
+- **Anvil F7C Hornet Mk I:** รุ่นมาตรฐานที่สมดุลและมี Hull HP สูงที่สุดในกลุ่ม
+
+### **กลุ่ม Cutlass Series: Multi-Role Powerhouses**
+
+ยานในตระกูล Cutlass เน้นความหลากหลายและความทนทาน เหมาะสำหรับผู้ที่ต้องการยานที่ทำได้มากกว่าการต่อสู้
+
+- **Drake Cutlass Blue:** **Tanker ที่แท้จริง** มี Hull HP สูงที่สุดในบรรดายานในกลุ่ม (35,770) และมีมิสไซล์จำนวนมาก เหมาะสำหรับภารกิจ Law Enforcement
+- **Drake Cutlass Black:** **Jack-of-all-trades** มีความทนทานสูงและสามารถบรรทุกสินค้าหรือยานพาหนะขนาดเล็กได้ ทำให้เป็นยานเริ่มต้นที่ยอดเยี่ยมสำหรับผู้เล่นใหม่ที่ต้องการความยืดหยุ่น
 
 ---
 
 ## สรุป
 
-Medium Fighter คือหัวใจสำคัญของยุทธภัณฑ์อวกาศใน Star Citizen โดยเฉพาะสำหรับนักบินที่ต้องการความสมดุลระหว่างพลังทำลายล้าง ความทนทาน และความคล่องตัว ไม่ว่าคุณจะเลือกความมั่นคงของ Hornet Series ความแปลกตาของ Xi'an San'tok.yāi ความหลากหลายของ Cutlass หรือพลังทำลายล้างของ Vanduul ships แต่ละลำล้วนมีเอกลักษณ์เป็นของตัวเอง
+การแยกตารางระหว่าง Modern Fighters, Hornet Mk I, และ Cutlass Series ทำให้เห็นภาพชัดเจนขึ้นว่ายานแต่ละกลุ่มถูกออกแบบมาเพื่อวัตถุประสงค์ที่แตกต่างกัน
 
-การเลือกยานควรพิจารณาจากสไตล์การเล่น งบประมาณ และภารกิจหลักที่ต้องการทำ Medium Fighter เหมาะสำหรับนักบินที่ต้องการความแข็งแกร่งมากกว่า Light Fighter แต่ยังคงความคล่องตัวมากกว่า Heavy Fighter หวังว่าบทความนี้จะช่วยให้คุณตัดสินใจได้ง่ายขึ้นในการเลือก "สหาย" ลำใหม่!
+- **Modern Fighters** คือกลุ่มยานที่มีประสิทธิภาพสูงสุด เหมาะสำหรับนักบินที่ต้องการความได้เปรียบในสนามรบ
+- **Hornet Mk I Series** คือตัวเลือกที่คุ้มค่าสำหรับนักบินใหม่และนักสะสม
+- **Cutlass Series** คือยานสำหรับผู้ที่ต้องการความหลากหลายและทนทาน
+
+การเลือกยานควรพิจารณาจากสไตล์การเล่น งบประมาณ และภารกิจหลักที่ต้องการทำ หวังว่าบทความที่ปรับปรุงใหม่นี้จะช่วยให้คุณตัดสินใจได้ง่ายขึ้นในการเลือก "สหาย" ลำใหม่!
