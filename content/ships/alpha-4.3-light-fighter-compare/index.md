@@ -36,6 +36,22 @@ description: "บทความเปรียบเทียบยาน Light
 - [Origin 125a](https://robertsspaceindustries.com/en/pledge/ships/origin-100/125a)
 - [RSI Aurora LN](https://robertsspaceindustries.com/en/pledge/ships/rsi-aurora/aurora-ln)
 
+<!--
+
+Missing "Light" "Fighter"
+
+- Sabre Firebird / 2 / Stealth Fighter / Combat
+- Sabre Raven / 2 / Interceptor / Combat
+- 325a / 2 / Interceptor / Combat
+- Avenger Stalker / 2 / Interceptor / Combat
+- Avenger Warlock / 2 / Interceptor / Combat
+- Avenger Titan / 2 / Courier / Transporter
+- Avenger Titan Renegade / 2 / Courier / Transporter
+- Sabre / 2 / Stealth Fighter / Combat
+- Sabre Comet / 2 / Stealth Fighter / Combat
+
+-->
+
 ---
 
 ## จุดเด่นและจุดด้อยของแต่ละลำ : Key Stats & Highlights

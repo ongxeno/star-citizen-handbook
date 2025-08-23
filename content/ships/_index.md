@@ -34,7 +34,8 @@ lastmod: 2025-07-18
 
 ### ⚔️ยานรบ
 
-- [เปรียบเทียบ Light Fighter ทุกลำใน Star Citizen Alpha 4.3 (2025)](alpha-4.3-light-fighter-compare/) - เจาะลึกจุดเด่น จุดด้อย และความแตกต่างของยานรบเบาแห่งปี 2955!
+- [เปรียบเทียบ Light Fighter ทุกลำใน Star Citizen Alpha 4.3 (2025)](alpha-4.3-light-fighter-compare/) - เจาะลึกจุดเด่น จุดด้อย และความแตกต่างของยาน Light Fighter แห่งปี 2955!
+- [เปรียบเทียบ Medium Fighter ทุกลำใน Star Citizen Alpha 4.3 (2025)](alpha-4.3-medium-fighter-compare/) - เจาะลึกจุดเด่น จุดด้อย และความแตกต่างของยาน Medium Fighter แห่งปี 2955!
 - [Kruger L-21 Wolf](preview-kruger-l21-wolf/) - ยานขับไล่เบารุ่นใหม่ล่าสุดจาก Kruger Intergalactic โดดเด่นด้วยดีไซน์และอาวุธ S4 Ballistic Gatling คู่
 - Gladius - ยานขับไล่เบา (เร็วๆ นี้)
 - Hornet F7C - ยานรบอเนกประสงค์ (เร็วๆ นี้)
