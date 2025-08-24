@@ -82,6 +82,7 @@ lastmod: 2025-07-18
 
 ### โลจิสติกส์ (Logistics)
 - [Auto-load Trading Tips](auto-load-trading-tips/) - เคล็ดลับการเทรดแบบ Auto-load สำหรับนักเทรดมืออาชีพ
+- [วิธีออกจากยาน Hercules (C2, M2, A2) อย่างรวดเร็ว](tips-quick-exit-hercules/)
 - การค้าขายและขนส่ง (Trading & Hauling) (เร็วๆ นี้)
 - ภารกิจส่งของ (Delivery Missions) (เร็วๆ นี้)
 
