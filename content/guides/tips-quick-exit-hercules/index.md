@@ -9,7 +9,7 @@ tags: ["Star Citizen", "Hercules", "Tips", "Guide", "คู่มือ"]
 categories: ["Guides"]
 author: "Star Citizen Handbook"
 weight: 1
-image: "guides/tips-quick-exit-hercules/index.md"
+image: "guides/tips-quick-exit-hercules/img/cover.jpg"
 description: "คู่มือแนะนำทีละขั้นตอนในการออกจากยาน Hercules C2, M2, หรือ A2 อย่างรวดเร็วและมีประสิทธิภาพ"
 ---
 
