@@ -7,10 +7,27 @@ import sys
 def parse_value(v_str):
     """Cleans and parses a string from the table into a numeric value or tuple."""
     v_str = str(v_str).strip()
-    # Remove any HTML tags (like <span>) to get the raw value
-    v_str = re.sub(r'<[^>]+>', '', v_str)
     if v_str == 'N/A':
         return None
+    
+    # Check for price format BEFORE removing HTML tags - NEW FORMAT
+    # Handle both plain and highlighted price formats
+    # Pattern 1: Plain format like "642,600<br>($30)"
+    price_br_match = re.search(r'([\d,.]+)\s*<br>\s*\(\$(\d+)\)', v_str)
+    if price_br_match:
+        auec = float(price_br_match.group(1).replace(',', ''))
+        usd = float(price_br_match.group(2))
+        return {'type': 'price', 'auec': auec, 'usd': usd}
+    
+    # Pattern 2: Highlighted format like "<span>642,600</span><br>($<span>30</span>)"
+    price_highlighted_match = re.search(r'(?:<span[^>]*>)?([\d,.]+)(?:</span>)?\s*<br>\s*\(\$(?:<span[^>]*>)?(\d+)(?:</span>)?\)', v_str)
+    if price_highlighted_match:
+        auec = float(price_highlighted_match.group(1).replace(',', ''))
+        usd = float(price_highlighted_match.group(2))
+        return {'type': 'price', 'auec': auec, 'usd': usd}
+    
+    # Remove any HTML tags (like <span>) to get the raw value
+    v_str = re.sub(r'<[^>]+>', '', v_str)
     
     # Regex for 'Value<br>(Boosted Value)' format
     br_match = re.search(r'([\d,.]+)\s*<br>\s*\(([\d,.]+)\)', v_str)
@@ -138,6 +155,12 @@ def get_numeric_columns(df, header_names_raw, header_names):
         for val in test_data:
             if isinstance(val, (int, float)):
                 numeric_data.append(val)
+            elif isinstance(val, dict) and val.get('type') == 'price':
+                # Handle price format: {'type': 'price', 'auec': auec_value, 'usd': usd_value}
+                if 'auec' in val and val['auec'] is not None:
+                    numeric_data.append(val['auec'])
+                if 'usd' in val and val['usd'] is not None:
+                    numeric_data.append(val['usd'])
             elif isinstance(val, tuple) and len(val) == 2 and all(isinstance(x, (int, float)) for x in val):
                 numeric_data.extend(val)
             elif isinstance(val, tuple) and len(val) == 2:
@@ -352,19 +375,35 @@ def process_table_interactive(table_md):
             else:
                 # Check if this is a base/boost pair column (like SCM Speed (Boost))
                 is_base_boost = False
+                is_price = False
                 base_values = []
                 boost_values = []
                 single_values = []
+                auec_values = []
+                usd_values = []
                 
                 for val in data:
-                    if isinstance(val, (int, float)):
+                    if isinstance(val, dict) and val.get('type') == 'price':
+                        is_price = True
+                        if 'auec' in val and val['auec'] is not None:
+                            auec_values.append(val['auec'])
+                        if 'usd' in val and val['usd'] is not None:
+                            usd_values.append(val['usd'])
+                    elif isinstance(val, (int, float)):
                         single_values.append(val)
                     elif isinstance(val, tuple) and len(val) == 2 and all(isinstance(x, (int, float)) for x in val):
                         is_base_boost = True
                         base_values.append(val[0])
                         boost_values.append(val[1])
                 
-                if is_base_boost and base_values and boost_values:
+                if is_price and (auec_values or usd_values):
+                    # Handle price format with separate ranges for aUEC and USD
+                    stats[clean_name] = {
+                        'type': 'price',
+                        'auec': {'min': min(auec_values), 'max': max(auec_values)} if auec_values else None,
+                        'usd': {'min': min(usd_values), 'max': max(usd_values)} if usd_values else None,
+                    }
+                elif is_base_boost and base_values and boost_values:
                     # Handle base/boost pairs with separate ranges
                     stats[clean_name] = {
                         'type': 'base_boost',
@@ -465,6 +504,48 @@ def process_table_interactive(table_md):
                         val, col_stats['min'], col_stats['max'], 
                         low_threshold, high_threshold, is_bad_low
                     )
+                elif isinstance(val, dict) and val.get('type') == 'price':
+                    # Handle price format: {'type': 'price', 'auec': auec_value, 'usd': usd_value}
+                    auec_val = val.get('auec')
+                    usd_val = val.get('usd')
+                    
+                    parts = []
+                    
+                    # Handle aUEC value (for aUEC, lower is typically better for price)
+                    if auec_val is not None and 'auec' in col_stats:
+                        is_bad_low = False  # For prices, lower is better
+                        h_auec = highlight(
+                            auec_val, 
+                            col_stats['auec']['min'], 
+                            col_stats['auec']['max'], 
+                            low_threshold, high_threshold, is_bad_low
+                        )
+                        parts.append(h_auec)
+                    elif auec_val is not None:
+                        # No stats available, just format the number
+                        parts.append(f"{auec_val:,.0f}" if auec_val == int(auec_val) else f"{auec_val:,.1f}")
+                    
+                    # Handle USD value (for USD, lower is typically better for price)  
+                    if usd_val is not None and 'usd' in col_stats:
+                        is_bad_low = False  # For prices, lower is better
+                        h_usd = highlight(
+                            usd_val, 
+                            col_stats['usd']['min'], 
+                            col_stats['usd']['max'], 
+                            low_threshold, high_threshold, is_bad_low
+                        )
+                        parts.append(f"(${h_usd})")
+                    elif usd_val is not None:
+                        # No stats available, just format the number
+                        parts.append(f"(${usd_val})")
+                    
+                    # Join with <br> if both parts exist
+                    if len(parts) == 2:
+                        df_highlighted.loc[ship_name, raw_name] = f"{parts[0]}<br>{parts[1]}"
+                    elif len(parts) == 1:
+                        df_highlighted.loc[ship_name, raw_name] = parts[0]
+                    else:
+                        df_highlighted.loc[ship_name, raw_name] = "N/A"
                 elif isinstance(val, tuple) and len(val) == 2:
                     # Handle simple base/boost format (fallback for any missed cases)
                     base, boost = val
