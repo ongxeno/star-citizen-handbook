@@ -13,7 +13,7 @@ lastmod: 2025-07-18
 - [เปรียบเทียบ Starter Ship ทุกลำใน Star Citizen Alpha 4.3 (2025)](alpha-4.3-starter-compare/) - คู่มือเลือกยานลำแรกสำหรับนักบินใหม่ เจาะลึกจุดเด่น จุดด้อย และคำแนะนำสายต่าง ๆ
 
 ### ยานอเนกประสงค์
-
+- [รีวิว Drake Cutter Rambler](alpha-4.3-drake-cutter-rambler-review) - คู่มือฉบับสมบูรณ์สำหรับนักสำรวจ Solo
 - [RSI Aurora MR](rsi_aurora_mr/) - ยานเริ่มต้นราคาประหยัด
 - Mustang Alpha - ยานเริ่มต้นเน้นความเร็ว (เร็วๆ นี้)
 - [Aegis Dynamics Avenger Titan](aegis-avenger-titan) - ยานอเนกประสงค์ขนาดเล็ก
