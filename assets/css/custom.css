@@ -48,6 +48,157 @@ body {
   color: #e0e0e0 !important;
 }
 
+/* Collapsible Section Styling with Arrow Indicators */
+details {
+  margin: 1rem 0;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+details > summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px 8px 0 0;
+  transition: background-color 0.2s ease;
+  position: relative;
+  padding-left: 4.4rem; /* Make space for arrow */
+}
+
+details > summary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+details[open] > summary {
+  border-bottom: 1px solid #444;
+  border-radius: 8px 8px 0 0;
+}
+
+details > summary > * {
+  display: inline;
+  margin: 0;
+}
+
+/* Arrow indicator - single arrow shape rotated for consistency */
+details > summary::before {
+  content: "▼";
+  position: absolute;
+  left: 1.7rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  color: #888;
+  font-size: 1.2em;
+  transition: all 0.2s ease;
+  font-family: monospace; /* Ensure consistent arrow appearance */
+  transform-origin: center; /* Ensure rotation happens from center */
+}
+
+details[open] > summary::before {
+  transform: translateY(-50%) rotate(0deg);
+  color: #aaa;
+}
+
+/* Hover effect for arrows */
+details > summary:hover::before {
+  color: #ccc;
+  transform: translateY(-50%) rotate(-90deg) scale(1.1);
+}
+
+details[open] > summary:hover::before {
+  transform: translateY(-50%) rotate(0deg) scale(1.1);
+}
+
+/* Alternative: CSS-drawn triangle arrows (uncomment to use instead of Unicode) */
+/*
+details > summary::before {
+  content: "";
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid #888;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+details[open] > summary::before {
+  transform: translateY(-50%) rotate(90deg);
+  border-left-color: #aaa;
+}
+
+details > summary:hover::before {
+  border-left-color: #ccc;
+  transform: translateY(-50%) scale(1.1);
+}
+
+details[open] > summary:hover::before {
+  transform: translateY(-50%) rotate(90deg) scale(1.1);
+}
+*/
+
+/* Alternative: Chevron-style arrows (uncomment to use instead) */
+/*
+details > summary::before {
+  content: "";
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid #888;
+  border-bottom: 2px solid #888;
+  transition: all 0.2s ease;
+}
+
+details[open] > summary::before {
+  transform: translateY(-50%) rotate(135deg);
+  border-color: #aaa;
+}
+
+details > summary:hover::before {
+  border-color: #ccc;
+  transform: translateY(-50%) rotate(45deg) scale(1.1);
+}
+
+details[open] > summary:hover::before {
+  transform: translateY(-50%) rotate(135deg) scale(1.1);
+}
+*/
+
+.collapse-content {
+  padding: 1rem;
+}
+
+/* Details content styling with proper margins */
+.details-content {
+  padding: 1.5rem 2rem;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+details > :not(summary) {
+  padding: 1rem;
+}
+
+/* Hide default browser disclosure triangle since we have custom arrows */
+details > summary {
+  list-style: none; /* Remove default triangle */
+}
+
+details > summary::marker {
+  display: none; /* Hide marker in browsers that support it */
+}
+
+details > summary::-webkit-details-marker {
+  display: none; /* Hide marker in WebKit browsers */
+}
+
 /* Force dark theme for all media queries */
 @media (prefers-color-scheme: light), (prefers-color-scheme: dark) {
   html, body {

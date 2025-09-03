@@ -35,6 +35,7 @@ lastmod: 2025-07-18
 
 ### เทคนิคขั้นสูง (Advanced Techniques)
 - [Advanced Camera Control](advance-camera-control/) - การควบคุมกล้องขั้นสูง, Director Mode, และเทคนิคการถ่ายภาพ
+- [Alpha 4.3 Graphic Setting & Performance Guide](alpha-4.3-graphic-setting/) - เจาะลึกผลกระทบของการตั้งค่ากราฟิกแต่ละอย่างต่อ FPS และวิธีปรับให้ลื่นสุด
 
 ---
 
