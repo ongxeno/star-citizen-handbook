@@ -127,8 +127,7 @@ class HugoBlogGenerator:
         print("🔬 Step 3: Conducting deep research...")
         
         try:
-            response = self.deep_research_model.generate_content(research_prompt)
-            research_data = response.text.strip()
+            research_data = generate_text(prompt=research_prompt, model_key="deep_research")
             print("✅ Deep research completed")
             return research_data
         except Exception as e:
