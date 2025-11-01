@@ -80,6 +80,7 @@ lastmod: 2025-07-18
 ### การแยกชิ้นส่วน (Salvaging)
 - Salvaging 101 - พื้นฐานการแยกชิ้นส่วน (เร็วๆ นี้)
 - Hand Salvage และ Vulture (เร็วๆ นี้)
+- [คู่มือ Solo Salvage ด้วย Vulture และ Fortune](alpha-4.3.2-solo-salvage-guide/) - หาเงินแบบชิลๆ ด้วยการขูดสี Recycled Material Composite
 
 ### โลจิสติกส์ (Logistics)
 - [Auto-load Trading Tips](auto-load-trading-tips/) - เคล็ดลับการเทรดแบบ Auto-load สำหรับนักเทรดมืออาชีพ
